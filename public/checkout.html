@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .checkout-layout {
@@ -77,7 +77,13 @@
     </div>
   </header>
 
-  <div class="dk-container" style="max-width: 1040px; margin-top: 1rem;">
+  <div class="dk-container" style="max-width: 1040px; margin-top: 1rem; position: relative;">
+    <!-- Ambient Animated Logo Watermark behind checkout -->
+    <div class="ambient-logo-watermark top-right" style="opacity: 0.055; top: -30px; right: -30px;">
+      <div class="watermark-ring"></div>
+      <div class="watermark-inner-ring"></div>
+      <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
+    </div>
     <div style="margin-bottom: 2rem;">
       <a href="/products" style="color: var(--dk-muted); font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.35rem;">
         &larr; Back to Products
@@ -151,12 +157,27 @@
       <!-- Right Column: Dynamic UPI QR & Payment Interface -->
       <div>
         <!-- Waiting state before form submit -->
-        <div id="qr-placeholder-card" class="card" style="text-align: center; padding: 3.5rem 1.5rem;">
-          <div style="width: 72px; height: 72px; background: var(--dk-orange-light); color: var(--dk-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
-            ⚡
+        <div id="qr-placeholder-card" class="card" style="text-align: center; padding: 3.5rem 1.5rem; position: relative; overflow: hidden;">
+          <!-- Ambient Watermark -->
+          <div class="ambient-logo-watermark center-bg" style="opacity: 0.04; width: 340px; height: 340px;">
+            <div class="watermark-ring"></div>
+            <div class="watermark-inner-ring"></div>
+            <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
           </div>
-          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Dynamic UPI QR Generator</h3>
-          <p class="text-muted" style="font-size: 0.9rem; max-width: 320px; margin: 0 auto;">
+
+          <!-- Futuristic Animated Emblem in Placeholder -->
+          <div class="hero-emblem-wrap" style="transform: scale(0.85); margin-bottom: 1rem;">
+            <div class="hero-emblem-orbital-outer"></div>
+            <div class="hero-emblem-orbital-inner"></div>
+            <div class="hero-emblem-glow-core"></div>
+            <div class="hero-emblem-box">
+              <div class="hero-emblem-scanline"></div>
+              <img src="/assets/dropkit-icon.png" alt="DropKit Icon" class="hero-emblem-icon">
+            </div>
+          </div>
+
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; position: relative; z-index: 2;">Dynamic UPI QR Generator</h3>
+          <p class="text-muted" style="font-size: 0.9rem; max-width: 320px; margin: 0 auto; position: relative; z-index: 2;">
             Fill in your delivery details on the left to generate your transaction-specific UPI QR code with instant verification.
           </p>
         </div>

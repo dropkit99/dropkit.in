@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -30,8 +30,15 @@
     </div>
   </header>
 
-  <div class="dk-container" style="max-width: 860px;">
-    <div style="text-align: center; margin-bottom: 2.5rem;">
+  <div class="dk-container" style="max-width: 860px; position: relative;">
+    <!-- Ambient Animated Logo Watermark -->
+    <div class="ambient-logo-watermark top-right" style="opacity: 0.055; top: -30px; right: -30px;">
+      <div class="watermark-ring"></div>
+      <div class="watermark-inner-ring"></div>
+      <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
+    </div>
+
+    <div style="text-align: center; margin-bottom: 2.5rem; position: relative; z-index: 2;">
       <div class="badge badge-navy" style="margin-bottom: 0.5rem;">Digital Vault</div>
       <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">My Digital Library & Downloads</h1>
       <p class="text-muted">
@@ -40,7 +47,7 @@
     </div>
 
     <!-- Search Box -->
-    <div class="card" style="margin-bottom: 2rem;">
+    <div class="card" style="margin-bottom: 2rem; position: relative; z-index: 2;">
       <form id="lookup-form" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
         <input type="text" id="lookup-input" class="form-control" placeholder="Enter your email (e.g. aarav.sharma@gmail.com) or Order ID (e.g. ORD-202611...)" style="flex: 1; min-width: 280px;" required>
         <button type="submit" id="btn-lookup" class="btn btn-primary" style="padding: 0.75rem 1.75rem;">
@@ -50,9 +57,18 @@
     </div>
 
     <!-- Results Section -->
-    <div id="results-container">
-      <div class="card" style="text-align: center; padding: 3rem 1.5rem; color: var(--dk-muted);">
-        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">📦</span>
+    <div id="results-container" style="position: relative; z-index: 2;">
+      <div class="card" style="text-align: center; padding: 3.5rem 1.5rem; color: var(--dk-muted); position: relative; overflow: hidden;">
+        <div class="hero-emblem-wrap" style="transform: scale(0.85); margin-bottom: 1rem;">
+          <div class="hero-emblem-orbital-outer"></div>
+          <div class="hero-emblem-orbital-inner"></div>
+          <div class="hero-emblem-glow-core"></div>
+          <div class="hero-emblem-box">
+            <div class="hero-emblem-scanline"></div>
+            <img src="/assets/dropkit-icon.png" alt="DropKit Icon" class="hero-emblem-icon">
+          </div>
+        </div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--dk-navy); margin-bottom: 0.35rem;">Protected Digital Product Repository</div>
         Your purchased publications will appear here after entering your verified customer email.
       </div>
     </div>

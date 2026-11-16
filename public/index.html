@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .hero-section {
@@ -109,6 +109,18 @@
   <section class="hero-section">
     <div class="hero-glow"></div>
 
+    <!-- Ambient Animated Logo Watermarks in Blank Spaces -->
+    <div class="ambient-logo-watermark top-right">
+      <div class="watermark-ring"></div>
+      <div class="watermark-inner-ring"></div>
+      <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
+    </div>
+    <div class="ambient-logo-watermark bottom-left">
+      <div class="watermark-ring"></div>
+      <div class="watermark-inner-ring"></div>
+      <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
+    </div>
+
     <!-- Futuristic Quantum HUD Animated DropKit Emblem Model -->
     <div class="hero-emblem-wrap" title="DropKit — Official Platform">
       <div class="hero-emblem-orbital-outer"></div>
@@ -188,8 +200,15 @@
   </section>
 
   <!-- Dynamic UPI QR Workflow Explainer -->
-  <section id="how-it-works" style="background: #FFFFFF; border-top: 1px solid var(--dk-border); border-bottom: 1px solid var(--dk-border); padding: 4.5rem 1.5rem;">
-    <div class="dk-container" style="padding: 0;">
+  <section id="how-it-works" style="background: #FFFFFF; border-top: 1px solid var(--dk-border); border-bottom: 1px solid var(--dk-border); padding: 4.5rem 1.5rem; position: relative; overflow: hidden;">
+    <!-- Ambient Animated Logo Watermark in Blank Corner -->
+    <div class="ambient-logo-watermark top-right" style="opacity: 0.055; top: -60px; right: -60px;">
+      <div class="watermark-ring"></div>
+      <div class="watermark-inner-ring"></div>
+      <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
+    </div>
+
+    <div class="dk-container" style="padding: 0; position: relative; z-index: 2;">
       <div style="text-align: center; max-width: 650px; margin: 0 auto 3.5rem;">
         <div class="badge badge-orange" style="margin-bottom: 0.5rem;">How DropKit Works</div>
         <h2 style="font-size: 2.25rem;">From Scan to Download in Under 10 Seconds</h2>
@@ -281,8 +300,15 @@
 
   <!-- Quick Preview Modal -->
   <div id="preview-modal" class="modal-overlay" style="display: none;">
-    <div class="card" style="width: 100%; max-width: 740px; padding: 2rem; max-height: 90vh; overflow-y: auto;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div class="card" style="width: 100%; max-width: 740px; padding: 2rem; max-height: 90vh; overflow-y: auto; position: relative; overflow: hidden;">
+      <!-- Ambient Animated Logo Watermark behind modal content -->
+      <div class="ambient-logo-watermark center-bg" style="opacity: 0.045; width: 420px; height: 420px;">
+        <div class="watermark-ring"></div>
+        <div class="watermark-inner-ring"></div>
+        <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; position: relative; z-index: 2;">
         <span class="badge badge-orange">Digital Publication Preview</span>
         <button onclick="closePreviewModal()" style="background: none; border: none; font-size: 1.35rem; cursor: pointer; color: var(--dk-muted);">✕</button>
       </div>

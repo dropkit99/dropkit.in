@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -24,11 +24,26 @@
     </div>
   </header>
 
-  <div class="dk-container" style="max-width: 680px; margin-top: 1.5rem;">
+  <div class="dk-container" style="max-width: 680px; margin-top: 1.5rem; position: relative;">
+    <!-- Ambient Animated Logo Watermark -->
+    <div class="ambient-logo-watermark top-right" style="opacity: 0.055; top: -30px; right: -30px;">
+      <div class="watermark-ring"></div>
+      <div class="watermark-inner-ring"></div>
+      <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
+    </div>
+
     <!-- Loading Card -->
-    <div id="status-loading-card" class="card" style="text-align: center; padding: 4rem 2rem;">
-      <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔄</div>
-      <h3>Verifying Transaction Status...</h3>
+    <div id="status-loading-card" class="card" style="text-align: center; padding: 4rem 2rem; position: relative; overflow: hidden;">
+      <div class="hero-emblem-wrap" style="transform: scale(0.85); margin-bottom: 1.25rem;">
+        <div class="hero-emblem-orbital-outer"></div>
+        <div class="hero-emblem-orbital-inner"></div>
+        <div class="hero-emblem-glow-core"></div>
+        <div class="hero-emblem-box">
+          <div class="hero-emblem-scanline"></div>
+          <img src="/assets/dropkit-icon.png" alt="DropKit Icon" class="hero-emblem-icon">
+        </div>
+      </div>
+      <h3 style="font-size: 1.35rem;">Verifying Transaction Status...</h3>
       <p class="text-muted" style="margin-top: 0.5rem;">Querying payment gateway and authenticating cryptographic receipt.</p>
     </div>
 
