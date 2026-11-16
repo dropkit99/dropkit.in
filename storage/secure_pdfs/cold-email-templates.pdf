@@ -1,61 +1,889 @@
 %PDF-1.4
-1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
-2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
-3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj
-4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj
-5 0 obj << /Length 777 >>
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R 13 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 3 0 R
+      /F3 5 0 R
+      /F4 6 0 R
+    >>
+  >>
+  /Contents 8 0 R
+>>
+endobj
+8 0 obj
+<< /Length 1948 >>
 stream
+0.11 0.11 0.23 rg
+0 520 595.28 321.89 re f
+1.0 0.40 0.24 rg
+0 513 595.28 7 re f
+1.0 0.40 0.24 rg
+50 780 180 20 re f
+BT
+/F1 9 Tf
+1 1 1 rg
+60 786 Td
+(SALES & OUTBOUND) Tj
+ET
 BT
 /F1 22 Tf
-50 720 Td
+1 1 1 rg
+50 730 Td
+(50+ Micro-SaaS Cold Email & Outreach) Tj
+ET
+BT
+/F1 22 Tf
+1 1 1 rg
+50 702 Td
+(Templates) Tj
+ET
+BT
+/F2 12 Tf
+0.88 0.90 0.96 rg
+50 668 Td
+(The Complete B2B Outbound Playbook for Landing) Tj
+ET
+BT
+/F2 12 Tf
+0.88 0.90 0.96 rg
+50 650 Td
+(Enterprise Demos, Agency Retainers & Strategic) Tj
+ET
+BT
+/F2 12 Tf
+0.88 0.90 0.96 rg
+50 632 Td
+(Partnerships.) Tj
+ET
+0.96 0.97 0.99 rg
+50 200 495 280 re f
+0.85 0.86 0.90 rg
+50 200 495 1 re f
+50 479 495 1 re f
+50 200 1 280 re f
+544 200 1 280 re f
+BT
+/F1 11 Tf
+0.11 0.11 0.23 rg
+70 450 Td
+(OFFICIAL PUBLICATION METADATA & LICENSING) Tj
+ET
+BT
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 415 Td
+(Title:) Tj
+ET
+BT
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 415 Td
 (50+ Micro-SaaS Cold Email & Outreach Templates) Tj
 ET
 BT
-/F1 13 Tf
-50 690 Td
-(DropKit Official Digital Edition - Official Edition) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 391 Td
+(Category:) Tj
 ET
 BT
-/F1 10 Tf
-50 650 Td
-(Thank you for purchasing this verified digital publication through DropKit.) Tj
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 391 Td
+(Outbound B2B Sales / Revenue Engineering) Tj
 ET
 BT
-/F1 10 Tf
-50 630 Td
-(Licensed to authorized purchaser. All rights reserved. DropKit Technology.) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 367 Td
+(Publisher:) Tj
 ET
 BT
-/F1 14 Tf
-50 580 Td
-(CHAPTER 1: EXECUTIVE ROADMAP & STRATEGY) Tj
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 367 Td
+(DropKit Digital Publications) Tj
 ET
 BT
-/F1 10 Tf
-50 550 Td
-(1. Core principles of digital product positioning and frictionless UPI payments.) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 343 Td
+(Target Audience:) Tj
 ET
 BT
-/F1 10 Tf
-50 530 Td
-(2. Streamlining customer conversions using Dynamic QR and instant fulfillment.) Tj
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 343 Td
+(Sales Leaders, Agency Owners, B2B Founders) Tj
 ET
 BT
-/F1 10 Tf
-50 510 Td
-(3. Building recurring audience trust and automated Instagram DM lead nurturing.) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 319 Td
+(Format:) Tj
+ET
+BT
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 319 Td
+(Verified Architectural PDF Handbook) Tj
+ET
+BT
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 295 Td
+(License:) Tj
+ET
+BT
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 295 Td
+(Single Commercial & Personal Deployment License) Tj
+ET
+BT
+/F3 9 Tf
+0.45 0.47 0.55 rg
+50 140 Td
+(Issued by DropKit Digital Commerce Platform - Verified Cryptographic Release.) Tj
+ET
+BT
+/F2 8.5 Tf
+0.55 0.57 0.65 rg
+50 120 Td
+(This digital edition is protected by international copyright law. Single user license.) Tj
 ET
 endstream
 endobj
+9 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 3 0 R
+      /F3 5 0 R
+      /F4 6 0 R
+    >>
+  >>
+  /Contents 10 0 R
+>>
+endobj
+10 0 obj
+<< /Length 4299 >>
+stream
+0.85 0.86 0.90 rg
+50 790 495 0.75 re f
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+50 796 Td
+(DROPKIT PUBLICATION SERIES) Tj
+ET
+BT
+/F3 8.5 Tf
+0.45 0.47 0.55 rg
+330 796 Td
+(Cold Email & Outreach) Tj
+ET
+BT
+/F1 18 Tf
+0.11 0.11 0.23 rg
+50 760 Td
+(Table of Contents) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 730 Td
+(This master handbook provides an end-to-end operational blueprint. Below is) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 716 Td
+(the full index of topics and frameworks covered in this verified digital) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 702 Td
+(edition:) Tj
+ET
+0.97 0.98 0.99 rg
+50 632 495 42 re f
+0.88 0.89 0.92 rg
+50 632 495 1 re f
+1.0 0.40 0.24 rg
+50 632 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 656 Td
+(Chapter 1: Technical Deliverability & Domain Infrastructure) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 642 Td
+(Secondary domains, SPF, DKIM, DMARC, custom tracking domains, inbox warmup.) Tj
+ET
+0.97 0.98 0.99 rg
+50 584 495 42 re f
+0.88 0.89 0.92 rg
+50 584 495 1 re f
+1.0 0.40 0.24 rg
+50 584 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 608 Td
+(Chapter 2: ICP Precision & Lead Enrichment) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 594 Td
+(Scraping verified decision-maker emails via Apollo and Sales Navigator.) Tj
+ET
+0.97 0.98 0.99 rg
+50 536 495 42 re f
+0.88 0.89 0.92 rg
+50 536 495 1 re f
+1.0 0.40 0.24 rg
+50 536 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 560 Td
+(Chapter 3: The 4-Sentence High-Conversion Anatomy) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 546 Td
+(Hook, pain observation, quantified social proof, zero-friction CTA.) Tj
+ET
+0.97 0.98 0.99 rg
+50 488 495 42 re f
+0.88 0.89 0.92 rg
+50 488 495 1 re f
+1.0 0.40 0.24 rg
+50 488 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 512 Td
+(Chapter 4: The 5-Touch Follow-Up Cadence) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 498 Td
+(Value adds, video teardowns, case study breakdowns, and polite breakups.) Tj
+ET
+0.97 0.98 0.99 rg
+50 440 495 42 re f
+0.88 0.89 0.92 rg
+50 440 495 1 re f
+1.0 0.40 0.24 rg
+50 440 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 464 Td
+(Chapter 5: Swipe Files: 50+ Real-World Categorized Templates) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 450 Td
+(Enterprise SaaS, agency retainers, consulting services, and tech pilots.) Tj
+ET
+1.0 0.40 0.24 rg
+50 414 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 419 Td
+(CHAPTER 1) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 390 Td
+(Technical Deliverability & Domain) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 368 Td
+(Infrastructure) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 338 Td
+(1.1 Protecting Your Primary Domain) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 318 Td
+(Never send outbound cold emails from your primary operating domain. A sudden) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 304 Td
+(spike in spam reports can blacklist your company's primary Google Workspace or) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 290 Td
+(Microsoft 365 tenant, preventing day-to-day investor and customer) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 276 Td
+(communications. Always purchase 2-3 secondary lookalike domains \(e.g.,) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 262 Td
+(getdropkit.com, trydropkit.io\).) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 240 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 240 Td
+(SPF \(Sender Policy Framework\): Authorizes specific IP addresses to) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 227 Td
+(transmit mail on behalf of your domain.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 210 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 210 Td
+(DKIM \(DomainKeys Identified Mail\): Adds a cryptographic signature) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 197 Td
+(verifying email integrity.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 180 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 180 Td
+(DMARC: Instructs recipient servers to reject or quarantine unauthorized) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 167 Td
+(messages.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 150 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 150 Td
+(Gradual Warmup: Ramp sending from 5 emails/day to 35 emails/day over a) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 137 Td
+(strict 21-day timeline.) Tj
+ET
+0.85 0.86 0.90 rg
+50 55 495 0.75 re f
+BT
+/F2 8 Tf
+0.45 0.47 0.55 rg
+50 42 Td
+(Confidential & Licensed to Purchaser - DropKit Verified Digital Product) Tj
+ET
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+490 42 Td
+(Page 2 of 4) Tj
+ET
+
+endstream
+endobj
+11 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 3 0 R
+      /F3 5 0 R
+      /F4 6 0 R
+    >>
+  >>
+  /Contents 12 0 R
+>>
+endobj
+12 0 obj
+<< /Length 4107 >>
+stream
+0.85 0.86 0.90 rg
+50 790 495 0.75 re f
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+50 796 Td
+(DROPKIT PUBLICATION SERIES) Tj
+ET
+BT
+/F3 8.5 Tf
+0.45 0.47 0.55 rg
+330 796 Td
+(Cold Email & Outreach) Tj
+ET
+1.0 0.40 0.24 rg
+50 746 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 751 Td
+(CHAPTER 2) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 722 Td
+(ICP Precision & Lead Enrichment) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 692 Td
+(2.1 High-Intent Signal Scraping) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 672 Td
+(Generic cold emails fail because they lack timely relevance. Scrape prospect) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 658 Td
+(lists based on explicit hiring signals, recent funding announcements, tech) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 644 Td
+(stack migrations, or executive leadership changes. Relevancy beats volume) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 630 Td
+(every single time.) Tj
+ET
+1.0 0.40 0.24 rg
+50 594 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 599 Td
+(CHAPTER 3) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 570 Td
+(The 4-Sentence High-Conversion Anatomy) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 540 Td
+(3.1 The Low-Friction B2B Formula) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 520 Td
+(Modern executives read email on mobile devices during commutes. Long) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 506 Td
+(paragraphs get deleted instantly. Restrict cold emails to four concise) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 492 Td
+(sentences:) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 470 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 470 Td
+(Sentence 1 \(Observation\): Acknowledge a specific public initiative or) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 457 Td
+(technical milestone they recently completed.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 440 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 440 Td
+(Sentence 2 \(Problem Hook\): Introduce the hidden operational bottleneck) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 427 Td
+(commonly associated with that initiative.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 410 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 410 Td
+(Sentence 3 \(Social Proof\): Quantify how you eliminated that bottleneck for) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 397 Td
+(a peer company \(e.g. 'boosted checkout conversion by 28%'\).) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 380 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 380 Td
+(Sentence 4 \(Low-Friction CTA\): 'Open to taking a look at a 2-minute video) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 367 Td
+(breakdown this Thursday?') Tj
+ET
+1.0 0.40 0.24 rg
+50 330 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 335 Td
+(CHAPTER 4) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 306 Td
+(Swipe Files: 50+ Battle-Tested Templates) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 276 Td
+(4.1 Selected Top-Performing Templates) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 256 Td
+(Below are representative templates with verified open rates exceeding 70% and) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 242 Td
+(reply rates exceeding 14%:) Tj
+ET
+0.96 0.97 0.99 rg
+50 104 495 116 re f
+1.0 0.40 0.24 rg
+50 104 4 116 re f
+0.85 0.86 0.90 rg
+54  104 491 1 re f
+54 219 491 1 re f
+544 104 1 116 re f
+BT
+/F1 9.5 Tf
+0.11 0.11 0.23 rg
+65 202 Td
+(TEMPLATE A: THE RECENT HIRING TRIGGER) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 188 Td
+(Subject: Quick question re: [Company] engineering team Hi) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 174 Td
+([First_Name], Noticed you're expanding your frontend team in) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 160 Td
+(Bengaluru. Usually when teams scale UI engineering this fast, design) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 146 Td
+(system consistency and regression testing start slipping. We helped) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 132 Td
+([Client_Name] automate their component audits, cutting QA cycles by) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 118 Td
+(40%. Worth sharing a 3-minute video breakdown of how we did it?) Tj
+ET
+0.85 0.86 0.90 rg
+50 55 495 0.75 re f
+BT
+/F2 8 Tf
+0.45 0.47 0.55 rg
+50 42 Td
+(Confidential & Licensed to Purchaser - DropKit Verified Digital Product) Tj
+ET
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+490 42 Td
+(Page 3 of 4) Tj
+ET
+
+endstream
+endobj
+13 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 3 0 R
+      /F3 5 0 R
+      /F4 6 0 R
+    >>
+  >>
+  /Contents 14 0 R
+>>
+endobj
+14 0 obj
+<< /Length 1395 >>
+stream
+0.85 0.86 0.90 rg
+50 790 495 0.75 re f
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+50 796 Td
+(DROPKIT PUBLICATION SERIES) Tj
+ET
+BT
+/F3 8.5 Tf
+0.45 0.47 0.55 rg
+330 796 Td
+(Cold Email & Outreach) Tj
+ET
+0.96 0.97 0.99 rg
+50 630 495 130 re f
+1.0 0.40 0.24 rg
+50 630 4 130 re f
+0.85 0.86 0.90 rg
+54  630 491 1 re f
+54 759 491 1 re f
+544 630 1 130 re f
+BT
+/F1 9.5 Tf
+0.11 0.11 0.23 rg
+65 742 Td
+(TEMPLATE B: THE COMPETITOR COMPARISON TRIGGER) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 728 Td
+(Subject: Alternative to [Competitor_Name] for [Company] Hi) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 714 Td
+([First_Name], Saw your team recently migrated away from) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 700 Td
+([Old_Platform]. A lot of engineering leads we speak with found) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 686 Td
+([Competitor]'s API rate limits and enterprise pricing restrictive as) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 672 Td
+(transaction volumes scaled. DropKit provides self-hosted dynamic) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 658 Td
+(checkout APIs at zero revenue commission. Open to reviewing our 1-page) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 644 Td
+(architectural benchmark?) Tj
+ET
+0.85 0.86 0.90 rg
+50 55 495 0.75 re f
+BT
+/F2 8 Tf
+0.45 0.47 0.55 rg
+50 42 Td
+(Confidential & Licensed to Purchaser - DropKit Verified Digital Product) Tj
+ET
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+490 42 Td
+(Page 4 of 4) Tj
+ET
+
+endstream
+endobj
 xref
-0 6
+0 15
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000224 00000 n 
-0000000310 00000 n 
-trailer << /Size 6 /Root 1 0 R >>
+0000000015 00000 n 
+0000000064 00000 n 
+0000000141 00000 n 
+0000000238 00000 n 
+0000000340 00000 n 
+0000000445 00000 n 
+0000000540 00000 n 
+0000000746 00000 n 
+0000002746 00000 n 
+0000002953 00000 n 
+0000007305 00000 n 
+0000007513 00000 n 
+0000011673 00000 n 
+0000011881 00000 n 
+trailer
+<<
+  /Size 15
+  /Root 1 0 R
+>>
 startxref
-420
+13329
 %%EOF

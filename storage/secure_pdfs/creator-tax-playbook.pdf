@@ -1,61 +1,751 @@
 %PDF-1.4
-1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj
-2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj
-3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >> endobj
-4 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj
-5 0 obj << /Length 789 >>
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 3 0 R
+      /F3 5 0 R
+      /F4 6 0 R
+    >>
+  >>
+  /Contents 8 0 R
+>>
+endobj
+8 0 obj
+<< /Length 1978 >>
 stream
+0.11 0.11 0.23 rg
+0 520 595.28 321.89 re f
+1.0 0.40 0.24 rg
+0 513 595.28 7 re f
+1.0 0.40 0.24 rg
+50 780 180 20 re f
+BT
+/F1 9 Tf
+1 1 1 rg
+60 786 Td
+(FINANCE & LEGAL) Tj
+ET
 BT
 /F1 22 Tf
-50 720 Td
+1 1 1 rg
+50 730 Td
+(Indian Tax & Accounting Playbook for) Tj
+ET
+BT
+/F1 22 Tf
+1 1 1 rg
+50 702 Td
+(Solo Digital Creators) Tj
+ET
+BT
+/F2 12 Tf
+0.88 0.90 0.96 rg
+50 668 Td
+(A Practical Guide to Presumptive Taxation \(Section) Tj
+ET
+BT
+/F2 12 Tf
+0.88 0.90 0.96 rg
+50 650 Td
+(44ADA\), GST LUT for Export, and Legitimate Business) Tj
+ET
+BT
+/F2 12 Tf
+0.88 0.90 0.96 rg
+50 632 Td
+(Deductions.) Tj
+ET
+0.96 0.97 0.99 rg
+50 200 495 280 re f
+0.85 0.86 0.90 rg
+50 200 495 1 re f
+50 479 495 1 re f
+50 200 1 280 re f
+544 200 1 280 re f
+BT
+/F1 11 Tf
+0.11 0.11 0.23 rg
+70 450 Td
+(OFFICIAL PUBLICATION METADATA & LICENSING) Tj
+ET
+BT
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 415 Td
+(Title:) Tj
+ET
+BT
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 415 Td
 (Indian Tax & Accounting Playbook for Solo Digital Creators) Tj
 ET
 BT
-/F1 13 Tf
-50 690 Td
-(DropKit Official Digital Edition - Official Edition) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 391 Td
+(Category:) Tj
 ET
 BT
-/F1 10 Tf
-50 650 Td
-(Thank you for purchasing this verified digital publication through DropKit.) Tj
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 391 Td
+(Taxation / Legal Compliance India) Tj
 ET
 BT
-/F1 10 Tf
-50 630 Td
-(Licensed to authorized purchaser. All rights reserved. DropKit Technology.) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 367 Td
+(Publisher:) Tj
 ET
 BT
-/F1 14 Tf
-50 580 Td
-(CHAPTER 1: EXECUTIVE ROADMAP & STRATEGY) Tj
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 367 Td
+(DropKit Digital Publications) Tj
 ET
 BT
-/F1 10 Tf
-50 550 Td
-(1. Core principles of digital product positioning and frictionless UPI payments.) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 343 Td
+(Jurisdiction:) Tj
 ET
 BT
-/F1 10 Tf
-50 530 Td
-(2. Streamlining customer conversions using Dynamic QR and instant fulfillment.) Tj
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 343 Td
+(Republic of India \(Income Tax Act & GST Council\)) Tj
 ET
 BT
-/F1 10 Tf
-50 510 Td
-(3. Building recurring audience trust and automated Instagram DM lead nurturing.) Tj
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 319 Td
+(Format:) Tj
+ET
+BT
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 319 Td
+(Verified Architectural PDF Handbook) Tj
+ET
+BT
+/F1 9.5 Tf
+0.45 0.47 0.55 rg
+70 295 Td
+(License:) Tj
+ET
+BT
+/F2 9.5 Tf
+0.11 0.11 0.23 rg
+190 295 Td
+(Single Commercial & Personal Deployment License) Tj
+ET
+BT
+/F3 9 Tf
+0.45 0.47 0.55 rg
+50 140 Td
+(Issued by DropKit Digital Commerce Platform - Verified Cryptographic Release.) Tj
+ET
+BT
+/F2 8.5 Tf
+0.55 0.57 0.65 rg
+50 120 Td
+(This digital edition is protected by international copyright law. Single user license.) Tj
 ET
 endstream
 endobj
+9 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 3 0 R
+      /F3 5 0 R
+      /F4 6 0 R
+    >>
+  >>
+  /Contents 10 0 R
+>>
+endobj
+10 0 obj
+<< /Length 3758 >>
+stream
+0.85 0.86 0.90 rg
+50 790 495 0.75 re f
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+50 796 Td
+(DROPKIT PUBLICATION SERIES) Tj
+ET
+BT
+/F3 8.5 Tf
+0.45 0.47 0.55 rg
+330 796 Td
+(Indian Creator Tax Playbook) Tj
+ET
+BT
+/F1 18 Tf
+0.11 0.11 0.23 rg
+50 760 Td
+(Table of Contents) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 730 Td
+(This master handbook provides an end-to-end operational blueprint. Below is) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 716 Td
+(the full index of topics and frameworks covered in this verified digital) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 702 Td
+(edition:) Tj
+ET
+0.97 0.98 0.99 rg
+50 632 495 42 re f
+0.88 0.89 0.92 rg
+50 632 495 1 re f
+1.0 0.40 0.24 rg
+50 632 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 656 Td
+(Chapter 1: Entity Structuring: Sole Prop vs LLP vs Pvt Ltd) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 642 Td
+(When to incorporate, opening current accounts, compliance costs.) Tj
+ET
+0.97 0.98 0.99 rg
+50 584 495 42 re f
+0.88 0.89 0.92 rg
+50 584 495 1 re f
+1.0 0.40 0.24 rg
+50 584 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 608 Td
+(Chapter 2: Section 44ADA: The 50% Presumptive Tax Superpower) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 594 Td
+(Eligibility, calculating taxable net profits, audit exemptions.) Tj
+ET
+0.97 0.98 0.99 rg
+50 536 495 42 re f
+0.88 0.89 0.92 rg
+50 536 495 1 re f
+1.0 0.40 0.24 rg
+50 536 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 560 Td
+(Chapter 3: GST Registration & LUT for Zero-Rated Export) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 546 Td
+(Mandatory turnover limits, filing Letter of Undertaking for foreign sales.) Tj
+ET
+0.97 0.98 0.99 rg
+50 488 495 42 re f
+0.88 0.89 0.92 rg
+50 488 495 1 re f
+1.0 0.40 0.24 rg
+50 488 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 512 Td
+(Chapter 4: Allowable Business Expense Deductions) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 498 Td
+(Laptops, phones, SaaS subscriptions, co-working, and utility allocations.) Tj
+ET
+0.97 0.98 0.99 rg
+50 440 495 42 re f
+0.88 0.89 0.92 rg
+50 440 495 1 re f
+1.0 0.40 0.24 rg
+50 440 3 42 re f
+BT
+/F1 10 Tf
+0.11 0.11 0.23 rg
+62 464 Td
+(Chapter 5: Advance Tax Calendar, TDS Reconciliation & ITR Forms) Tj
+ET
+BT
+/F2 8.5 Tf
+0.45 0.47 0.55 rg
+62 450 Td
+(Quarterly deadlines, Form 26AS matching, and filing ITR-3/ITR-4.) Tj
+ET
+1.0 0.40 0.24 rg
+50 414 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 419 Td
+(CHAPTER 1) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 390 Td
+(Entity Structuring: Sole Prop vs LLP vs Pvt) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 368 Td
+(Ltd) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 338 Td
+(1.1 The Solopreneur Dilemma) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 318 Td
+(Many Indian digital creators incorporate a Private Limited company) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 304 Td
+(prematurely, incurring INR 40,000 to INR 75,000 in annual statutory audit and) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 290 Td
+(secretarial filing expenses before achieving product-market fit. A Sole) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 276 Td
+(Proprietorship operates as the most agile structure for solo creators) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 262 Td
+(generating under INR 50 Lakhs annually, offering zero incorporation cost and) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 248 Td
+(simplified tax filing.) Tj
+ET
+1.0 0.40 0.24 rg
+50 212 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 217 Td
+(CHAPTER 2) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 188 Td
+(Section 44ADA: The 50% Presumptive Tax) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 166 Td
+(Superpower) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 136 Td
+(2.1 Legally Declaring 50% Profit) Tj
+ET
+0.85 0.86 0.90 rg
+50 55 495 0.75 re f
+BT
+/F2 8 Tf
+0.45 0.47 0.55 rg
+50 42 Td
+(Confidential & Licensed to Purchaser - DropKit Verified Digital Product) Tj
+ET
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+490 42 Td
+(Page 2 of 3) Tj
+ET
+
+endstream
+endobj
+11 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /MediaBox [0 0 595.28 841.89]
+  /Resources <<
+    /Font <<
+      /F1 4 0 R
+      /F2 3 0 R
+      /F3 5 0 R
+      /F4 6 0 R
+    >>
+  >>
+  /Contents 12 0 R
+>>
+endobj
+12 0 obj
+<< /Length 4218 >>
+stream
+0.85 0.86 0.90 rg
+50 790 495 0.75 re f
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+50 796 Td
+(DROPKIT PUBLICATION SERIES) Tj
+ET
+BT
+/F3 8.5 Tf
+0.45 0.47 0.55 rg
+330 796 Td
+(Indian Creator Tax Playbook) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 760 Td
+(Under Section 44ADA of the Indian Income Tax Act, eligible professionals) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 746 Td
+(\(software engineers, technical consultants, UI designers, content creators\)) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 732 Td
+(earning gross receipts up to INR 75 Lakhs \(where digital receipts exceed 95%\)) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 718 Td
+(can declare flat 50% of their gross receipts as taxable income.) Tj
+ET
+0.96 0.97 0.99 rg
+50 608 495 88 re f
+1.0 0.40 0.24 rg
+50 608 4 88 re f
+0.85 0.86 0.90 rg
+54  608 491 1 re f
+54 695 491 1 re f
+544 608 1 88 re f
+BT
+/F1 9.5 Tf
+0.11 0.11 0.23 rg
+65 678 Td
+(FINANCIAL IMPACT EXAMPLE) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 664 Td
+(If your digital product store earns INR 30,00,000 in annual revenue,) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 650 Td
+(you declare only INR 15,00,000 as taxable income under Section 44ADA) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 636 Td
+(without maintaining detailed daily expense vouchers or undergoing) Tj
+ET
+BT
+/F3 9 Tf
+0.25 0.27 0.35 rg
+65 622 Td
+(statutory CA audit.) Tj
+ET
+1.0 0.40 0.24 rg
+50 580 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 585 Td
+(CHAPTER 3) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 556 Td
+(GST Registration & LUT for Zero-Rated Export) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 526 Td
+(3.1 Exporting Digital Products Internationally) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 506 Td
+(Digital downloads sold to customers outside India qualify as an 'Export of) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 492 Td
+(Services' under GST law. By filing a free Letter of Undertaking \(LUT - Form) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 478 Td
+(GST RFD-11\) at the start of each fiscal year, you can export digital products) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 464 Td
+(at a 0% effective GST rate without paying tax upfront.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 442 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 442 Td
+(Domestic Threshold: GST registration mandatory once annual domestic) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 429 Td
+(turnover crosses INR 20 Lakhs.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 412 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 412 Td
+(Foreign Invoicing: Must retain foreign inward remittance certificates) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 399 Td
+(\(FIRC / FIRA\) as proof of foreign currency receipt.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 382 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 382 Td
+(Input Tax Credit \(ITC\): Claim full GST refund on business laptops, cloud) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 369 Td
+(hosting, and SaaS subscriptions.) Tj
+ET
+1.0 0.40 0.24 rg
+50 332 70 16 re f
+BT
+/F1 8.5 Tf
+1 1 1 rg
+58 337 Td
+(CHAPTER 4) Tj
+ET
+BT
+/F1 17 Tf
+0.11 0.11 0.23 rg
+50 308 Td
+(Advance Tax Calendar & ITR Filing) Tj
+ET
+BT
+/F1 12.5 Tf
+0.11 0.11 0.23 rg
+50 278 Td
+(4.1 Quarterly Deadlines) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 258 Td
+(If your total tax liability for the financial year exceeds INR 10,000, you) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 244 Td
+(must pay Advance Tax in four installments to avoid penal interest under) Tj
+ET
+BT
+/F2 10 Tf
+0.15 0.16 0.22 rg
+50 230 Td
+(Sections 234B and 234C:) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 208 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 208 Td
+(June 15: 15% of estimated tax liability.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 191 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 191 Td
+(September 15: 45% of estimated tax liability.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 174 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 174 Td
+(December 15: 75% of estimated tax liability.) Tj
+ET
+BT
+/F1 10 Tf
+1.0 0.40 0.24 rg
+55 157 Td
+(*) Tj
+ET
+BT
+/F2 9.5 Tf
+0.15 0.16 0.22 rg
+68 157 Td
+(March 15: 100% of estimated tax liability.) Tj
+ET
+0.85 0.86 0.90 rg
+50 55 495 0.75 re f
+BT
+/F2 8 Tf
+0.45 0.47 0.55 rg
+50 42 Td
+(Confidential & Licensed to Purchaser - DropKit Verified Digital Product) Tj
+ET
+BT
+/F1 8.5 Tf
+0.11 0.11 0.23 rg
+490 42 Td
+(Page 3 of 3) Tj
+ET
+
+endstream
+endobj
 xref
-0 6
+0 13
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000224 00000 n 
-0000000310 00000 n 
-trailer << /Size 6 /Root 1 0 R >>
+0000000015 00000 n 
+0000000064 00000 n 
+0000000134 00000 n 
+0000000231 00000 n 
+0000000333 00000 n 
+0000000438 00000 n 
+0000000533 00000 n 
+0000000739 00000 n 
+0000002769 00000 n 
+0000002976 00000 n 
+0000006787 00000 n 
+0000006995 00000 n 
+trailer
+<<
+  /Size 13
+  /Root 1 0 R
+>>
 startxref
-420
+11266
 %%EOF

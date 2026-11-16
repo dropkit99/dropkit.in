@@ -200,11 +200,14 @@ def seed_database():
 
     prod_ids = []
     for p in products:
-        # Generate real PDF file on disk
-        pdf_bytes = make_sample_pdf(p['title'], "Official Edition", p['pdf_pages'])
         pdf_path = SECURE_PDF_DIR / p['pdf_filename']
-        with open(pdf_path, 'wb') as f:
-            f.write(pdf_bytes)
+        if not pdf_path.exists():
+            try:
+                from scripts.generate_original_pdfs import main as gen_original_pdfs
+                gen_original_pdfs()
+            except Exception as e:
+                print("PDF generation warning:", e)
+        pdf_size = pdf_path.stat().st_size if pdf_path.exists() else 20000
 
         # Check existing product
         cursor.execute("SELECT id FROM products WHERE slug = ?", (p['slug'],))
@@ -220,7 +223,7 @@ def seed_database():
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
             """, (
                 p['title'], p['slug'], p['description'], cat_id, p['price_inr'], p['compare_price_inr'],
-                p['pdf_filename'], len(pdf_bytes), p['pdf_pages'], p['cover_image'], now, now, now
+                p['pdf_filename'], pdf_size, p['pdf_pages'], p['cover_image'], now, now, now
             ))
             prod_ids.append(cursor.lastrowid)
         else:
