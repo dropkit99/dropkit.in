@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Downloads — DropKit Digital Library</title>
+  <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dk-header">
+    <div class="dk-nav-container">
+      <a href="/" class="dk-logo-link">
+        <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit Logo" class="dk-logo-img">
+      </a>
+      <ul class="dk-nav-menu">
+        <li class="dk-nav-item"><a href="/">Home</a></li>
+        <li class="dk-nav-item"><a href="/products">All Products</a></li>
+        <li class="dk-nav-item"><a href="/my-downloads" class="active">My Downloads</a></li>
+        <li class="dk-nav-item"><a href="/contact">Contact</a></li>
+      </ul>
+      <div class="dk-nav-actions">
+        <a href="/admin/login" class="btn btn-navy btn-sm">Admin Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="dk-container" style="max-width: 860px;">
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+      <div class="badge badge-navy" style="margin-bottom: 0.5rem;">Digital Vault</div>
+      <h1 style="font-size: 2.25rem; margin-bottom: 0.5rem;">My Digital Library & Downloads</h1>
+      <p class="text-muted">
+        Enter the email address or Order ID you used during checkout to retrieve your purchased guides.
+      </p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <form id="lookup-form" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <input type="text" id="lookup-input" class="form-control" placeholder="Enter your email (e.g. aarav.sharma@gmail.com) or Order ID (e.g. ORD-202611...)" style="flex: 1; min-width: 280px;" required>
+        <button type="submit" id="btn-lookup" class="btn btn-primary" style="padding: 0.75rem 1.75rem;">
+          Find My Products
+        </button>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results-container">
+      <div class="card" style="text-align: center; padding: 3rem 1.5rem; color: var(--dk-muted);">
+        <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">📦</span>
+        Your purchased publications will appear here after entering your verified customer email.
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById('lookup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const val = document.getElementById('lookup-input').value.trim();
+      const btn = document.getElementById('btn-lookup');
+      btn.disabled = true;
+      btn.textContent = 'Searching...';
+
+      try {
+        const res = await DropKit.api(`/api/customer/downloads?query=${encodeURIComponent(val)}`);
+        const container = document.getElementById('results-container');
+        const downloads = res.downloads || [];
+
+        if (downloads.length === 0) {
+          container.innerHTML = `
+            <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+              <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+              <h3>No Verified Purchases Found</h3>
+              <p class="text-muted" style="margin-top: 0.5rem;">
+                We could not find any paid orders matching "<strong>${val}</strong>". Please make sure you entered the exact email used during checkout.
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <div style="margin-bottom: 1rem; font-weight: 700; color: var(--dk-navy);">
+            Found ${downloads.length} Verified Publication${downloads.length > 1 ? 's' : ''}:
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            ${downloads.map(d => `
+              <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                  <div style="width: 52px; height: 52px; background: var(--dk-navy); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 1.5rem;">
+                    📄
+                  </div>
+                  <div>
+                    <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">${d.product_title}</h3>
+                    <div style="font-size: 0.8rem; color: var(--dk-muted); display: flex; gap: 1rem; flex-wrap: wrap;">
+                      <span>Order: <strong style="font-family: monospace;">${d.order_number}</strong></span>
+                      <span>Purchased: ${d.created_at_ist}</span>
+                      <span>Amount: ${DropKit.formatINR(d.amount_inr)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  ${d.is_revoked ? `
+                    <span class="badge badge-danger">Revoked / Refunded</span>
+                  ` : `
+                    <a href="/api/download/${d.download_token}" class="btn btn-primary btn-sm">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      Download PDF (${d.download_count}/${d.max_downloads} used)
+                    </a>
+                  `}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Find My Products';
+      }
+    });
+  </script>
+</body>
+</html>

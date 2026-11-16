@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout & Dynamic UPI QR — DropKit</title>
+  <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .checkout-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .upi-app-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: #FFFFFF;
+      border: 1px solid var(--dk-border);
+      border-radius: var(--dk-radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dk-navy);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .upi-app-btn:hover {
+      border-color: var(--dk-orange);
+      background: var(--dk-orange-light);
+    }
+    .timer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: #FEF3C7;
+      color: #92400E;
+    }
+    .simulator-bar {
+      background: #EEF0F7;
+      border: 1px dashed var(--dk-navy);
+      border-radius: var(--dk-radius);
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dk-header">
+    <div class="dk-nav-container">
+      <a href="/" class="dk-logo-link">
+        <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit Logo" class="dk-logo-img">
+      </a>
+      <div style="font-size: 0.85rem; color: var(--dk-muted); display: flex; align-items: center; gap: 0.4rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>256-Bit SSL Encrypted Checkout</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="dk-container" style="max-width: 1040px; margin-top: 1rem;">
+    <div style="margin-bottom: 2rem;">
+      <a href="/products" style="color: var(--dk-muted); font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+        &larr; Back to Products
+      </a>
+    </div>
+
+    <div class="checkout-layout">
+      <!-- Left Column: Product Summary & Customer Info -->
+      <div>
+        <div class="card" style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.25rem; margin-bottom: 1.25rem;">Order Summary</h3>
+          <div id="product-loading">
+            <p class="text-muted">Loading product pricing...</p>
+          </div>
+
+          <div id="product-summary" style="display: none;">
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem;">
+              <div style="width: 58px; height: 58px; background: var(--dk-navy); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 1.75rem;">
+                📄
+              </div>
+              <div style="flex: 1;">
+                <h4 id="prod-title" style="font-size: 1.05rem; margin-bottom: 0.2rem;"></h4>
+                <div style="font-size: 0.8rem; color: var(--dk-muted);">
+                  <span id="prod-pages"></span> Pages • Direct PDF Delivery
+                </div>
+              </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--dk-border); padding-top: 1rem;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <span class="text-muted">Authoritative Store Price:</span>
+                <span id="prod-price" style="font-weight: 600;"></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                <span class="text-muted">Convenience & Gateway Fee:</span>
+                <span style="font-weight: 600; color: var(--dk-success);">FREE</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800; border-top: 1px dashed var(--dk-border); padding-top: 0.75rem; margin-top: 0.5rem; color: var(--dk-navy);">
+                <span>Total Amount:</span>
+                <span id="prod-total" class="text-orange"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Form -->
+        <div class="card" id="customer-form-card">
+          <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Buyer Information</h3>
+          <form id="checkout-form">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" id="cust-name" class="form-control" placeholder="e.g. Aarav Sharma" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address (for PDF Delivery) *</label>
+              <input type="email" id="cust-email" class="form-control" placeholder="aarav@example.com" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mobile Number (Optional for UPI SMS)</label>
+              <input type="tel" id="cust-phone" class="form-control" placeholder="+91 98765 43210">
+            </div>
+
+            <button type="submit" id="btn-generate-qr" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
+              Generate Dynamic UPI QR &rarr;
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Dynamic UPI QR & Payment Interface -->
+      <div>
+        <!-- Waiting state before form submit -->
+        <div id="qr-placeholder-card" class="card" style="text-align: center; padding: 3.5rem 1.5rem;">
+          <div style="width: 72px; height: 72px; background: var(--dk-orange-light); color: var(--dk-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
+            ⚡
+          </div>
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Dynamic UPI QR Generator</h3>
+          <p class="text-muted" style="font-size: 0.9rem; max-width: 320px; margin: 0 auto;">
+            Fill in your delivery details on the left to generate your transaction-specific UPI QR code with instant verification.
+          </p>
+        </div>
+
+        <!-- Live QR Card (shown after order creation) -->
+        <div id="live-qr-card" class="card" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div>
+              <span class="badge badge-orange" style="margin-bottom: 0.25rem;">Dynamic UPI QR</span>
+              <div style="font-size: 0.8rem; color: var(--dk-muted);">Scan with any Indian UPI App</div>
+            </div>
+            <div class="timer-badge" id="qr-timer">
+              ⏱️ <span id="timer-display">09:59</span>
+            </div>
+          </div>
+
+          <!-- QR SVG Container -->
+          <div class="upi-qr-box">
+            <div class="qr-scan-pulse"></div>
+            <div id="qr-code-mount" style="width: 240px; height: 240px; display: flex; align-items: center; justify-content: center;">
+              <!-- Pure SVG rendered here -->
+            </div>
+            <div style="margin-top: 1rem; text-align: center;">
+              <div style="font-size: 0.85rem; color: var(--dk-muted);">Pay Exact Amount:</div>
+              <div id="qr-amount-large" style="font-size: 1.9rem; font-weight: 800; color: var(--dk-navy);">₹0.00</div>
+            </div>
+          </div>
+
+          <!-- Order & VPA Details -->
+          <div style="margin-top: 1.25rem; background: var(--dk-bg); border-radius: var(--dk-radius-sm); padding: 0.85rem 1rem; font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span class="text-muted">Order ID:</span>
+              <span id="disp-order-num" style="font-family: monospace; font-weight: 700;"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="text-muted">Merchant UPI ID:</span>
+              <span style="font-weight: 600; cursor: pointer; color: var(--dk-orange);" onclick="DropKit.copy(currentVpa, 'Merchant UPI ID copied')">
+                <span id="disp-upi-vpa"></span> 📋
+              </span>
+            </div>
+          </div>
+
+          <!-- Mobile UPI Intent Buttons -->
+          <div style="margin-top: 1.25rem;">
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--dk-muted); margin-bottom: 0.6rem; text-align: center;">
+              OR TAP TO PAY DIRECTLY ON MOBILE:
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;">
+              <a id="btn-intent-gpay" class="upi-app-btn" href="#">
+                <span>🔵</span> Google Pay
+              </a>
+              <a id="btn-intent-phonepe" class="upi-app-btn" href="#">
+                <span>🟣</span> PhonePe
+              </a>
+              <a id="btn-intent-paytm" class="upi-app-btn" href="#">
+                <span>🔷</span> Paytm
+              </a>
+              <a id="btn-intent-bhim" class="upi-app-btn" href="#">
+                <span>🇮🇳</span> BHIM UPI
+              </a>
+            </div>
+          </div>
+
+          <!-- Live Status Indicator -->
+          <div style="margin-top: 1.5rem; text-align: center; border-top: 1px solid var(--dk-border); padding-top: 1rem;">
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--dk-navy); font-weight: 600;">
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981; animation: blink 1.5s infinite;"></span>
+              <span id="status-text">Awaiting payment verification...</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--dk-muted); margin-top: 0.25rem;">
+              System polls server every 2s. Do not close this window.
+            </div>
+          </div>
+
+          <!-- Sandbox Simulator Bar -->
+          <div class="simulator-bar">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--dk-navy); margin-bottom: 0.4rem;">
+              ⚡ SANDBOX TEST CONTROLS (Demo Mode)
+            </div>
+            <div style="font-size: 0.75rem; color: var(--dk-muted); margin-bottom: 0.75rem;">
+              Simulate genuine payment callback to test signature verification & PDF unlock:
+            </div>
+            <div style="display: flex; gap: 0.5rem; justify-content: center;">
+              <button class="btn btn-navy btn-sm" onclick="simulatePayment('SUCCESS')">
+                Simulate Successful UPI Pay
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="simulatePayment('FAILED')">
+                Simulate Payment Failure
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+  </style>
+
+  <script src="/js/app.js"></script>
+  <script>
+    let currentProduct = null;
+    let currentOrder = null;
+    let currentVpa = '';
+    let pollInterval = null;
+    let timerInterval = null;
+    let secondsLeft = 600; // 10 minutes
+
+    // Get product ID from URL path (e.g. /checkout/1)
+    const pathParts = window.location.pathname.split('/');
+    const prodId = pathParts[pathParts.length - 1] || '1';
+
+    async function initCheckout() {
+      try {
+        const data = await DropKit.api(`/api/products/${prodId}`);
+        currentProduct = data.product;
+
+        document.getElementById('product-loading').style.display = 'none';
+        document.getElementById('product-summary').style.display = 'block';
+
+        document.getElementById('prod-title').textContent = currentProduct.title;
+        document.getElementById('prod-pages').textContent = currentProduct.pdf_pages;
+        document.getElementById('prod-price').textContent = DropKit.formatINR(currentProduct.price_inr);
+        document.getElementById('prod-total').textContent = DropKit.formatINR(currentProduct.price_inr);
+      } catch (err) {
+        document.getElementById('product-loading').innerHTML = '<div class="text-danger">Failed to load product. Please check the URL.</div>';
+      }
+    }
+
+    document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-generate-qr');
+      btn.disabled = true;
+      btn.innerHTML = 'Generating Order & Dynamic QR...';
+
+      const payload = {
+        product_id: currentProduct.id,
+        customer_name: document.getElementById('cust-name').value.trim(),
+        customer_email: document.getElementById('cust-email').value.trim(),
+        customer_phone: document.getElementById('cust-phone').value.trim()
+      };
+
+      try {
+        const res = await DropKit.api('/api/checkout/create-order', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+
+        currentOrder = res.order;
+        currentVpa = currentOrder.upi_vpa;
+
+        // Render QR
+        document.getElementById('qr-placeholder-card').style.display = 'none';
+        document.getElementById('live-qr-card').style.display = 'block';
+
+        document.getElementById('qr-code-mount').innerHTML = currentOrder.qr_svg;
+        document.getElementById('qr-amount-large').textContent = DropKit.formatINR(currentOrder.amount_inr);
+        document.getElementById('disp-order-num').textContent = currentOrder.order_number;
+        document.getElementById('disp-upi-vpa').textContent = currentVpa;
+
+        // Setup Intent links
+        const intentUri = currentOrder.upi_uri;
+        ['btn-intent-gpay', 'btn-intent-phonepe', 'btn-intent-paytm', 'btn-intent-bhim'].forEach(id => {
+          document.getElementById(id).href = intentUri;
+        });
+
+        startTimer();
+        startPolling(currentOrder.order_number);
+        DropKit.toast('Dynamic UPI QR generated successfully!', 'upi');
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Generate Dynamic UPI QR &rarr;';
+      }
+    });
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      secondsLeft = 600;
+      timerInterval = setInterval(() => {
+        secondsLeft--;
+        if (secondsLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('timer-display').textContent = 'EXPIRED';
+          document.getElementById('status-text').textContent = 'QR Code Expired. Please retry.';
+          return;
+        }
+        const m = Math.floor(secondsLeft / 60);
+        const s = secondsLeft % 60;
+        document.getElementById('timer-display').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function startPolling(orderNumber) {
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(async () => {
+        try {
+          const res = await DropKit.api(`/api/orders/${orderNumber}`);
+          const order = res.order;
+          if (order.status === 'PAID') {
+            clearInterval(pollInterval);
+            clearInterval(timerInterval);
+            document.getElementById('status-text').textContent = '✅ Payment Verified! Redirecting...';
+            DropKit.toast('Payment confirmed! Unlocking digital product...', 'success');
+            setTimeout(() => {
+              window.location.href = `/payment-status?order_id=${orderNumber}`;
+            }, 1200);
+          } else if (order.status === 'FAILED') {
+            document.getElementById('status-text').textContent = '❌ Payment Failed or Cancelled';
+          }
+        } catch (e) {
+          console.error('Polling error', e);
+        }
+      }, 2000);
+    }
+
+    async function simulatePayment(status) {
+      if (!currentOrder) {
+        DropKit.toast('Please generate an order first.', 'error');
+        return;
+      }
+      try {
+        DropKit.toast(`Simulating UPI gateway callback (${status})...`, 'info');
+        const res = await DropKit.api('/api/payment/simulate', {
+          method: 'POST',
+          body: JSON.stringify({
+            order_number: currentOrder.order_number,
+            simulate_status: status
+          })
+        });
+        if (status === 'SUCCESS') {
+          DropKit.toast('Simulated payment received! Verified signature and transitioned to PAID.', 'success');
+        } else {
+          DropKit.toast('Simulated payment marked as FAILED.', 'warning');
+        }
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initCheckout);
+  </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Status & Secure Download — DropKit</title>
+  <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dk-header">
+    <div class="dk-nav-container">
+      <a href="/" class="dk-logo-link">
+        <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit Logo" class="dk-logo-img">
+      </a>
+      <div class="dk-nav-actions">
+        <a href="/my-downloads" class="btn btn-outline btn-sm">My Downloads</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="dk-container" style="max-width: 680px; margin-top: 1.5rem;">
+    <!-- Loading Card -->
+    <div id="status-loading-card" class="card" style="text-align: center; padding: 4rem 2rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 1rem;">🔄</div>
+      <h3>Verifying Transaction Status...</h3>
+      <p class="text-muted" style="margin-top: 0.5rem;">Querying payment gateway and authenticating cryptographic receipt.</p>
+    </div>
+
+    <!-- Verified Success Card -->
+    <div id="status-success-card" class="card" style="display: none; padding: 2.5rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="width: 68px; height: 68px; background: #D1FAE5; color: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
+          ✓
+        </div>
+        <span class="badge badge-success" style="font-size: 0.8rem; margin-bottom: 0.5rem;">Payment Verified</span>
+        <h2 style="font-size: 1.85rem; margin-bottom: 0.5rem;">Digital Product Unlocked!</h2>
+        <p class="text-muted" style="font-size: 0.95rem;">
+          Thank you for your purchase. Your payment was authenticated and your secure download entitlement has been generated.
+        </p>
+      </div>
+
+      <!-- Receipt Box -->
+      <div style="background: var(--dk-bg); border: 1px solid var(--dk-border); border-radius: var(--dk-radius); padding: 1.5rem; margin-bottom: 2rem;">
+        <h4 style="font-size: 0.95rem; margin-bottom: 1rem; color: var(--dk-navy); text-transform: uppercase; letter-spacing: 0.05em;">
+          Official Payment Receipt
+        </h4>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem;">
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-muted">Digital Product:</span>
+            <span id="rec-product" style="font-weight: 700; text-align: right; max-width: 300px;"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-muted">Order ID:</span>
+            <span id="rec-order" style="font-family: monospace; font-weight: 600;"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-muted">UPI Transaction Ref:</span>
+            <span id="rec-txn" style="font-family: monospace; font-weight: 600; color: var(--dk-orange);"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-muted">Licensed To:</span>
+            <span id="rec-customer" style="font-weight: 600;"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span class="text-muted">Purchase Date (IST):</span>
+            <span id="rec-date"></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--dk-border); padding-top: 0.75rem; font-size: 1.15rem; font-weight: 800; color: var(--dk-navy);">
+            <span>Amount Paid:</span>
+            <span id="rec-amount" class="text-success"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download Button Action -->
+      <div style="text-align: center;">
+        <a id="btn-download-pdf" href="#" class="btn btn-primary btn-lg" style="width: 100%; justify-content: center; font-size: 1.15rem; padding: 1rem;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF Now
+        </a>
+        <div style="font-size: 0.8rem; color: var(--dk-muted); margin-top: 0.75rem;">
+          Single-click secure token authorization • Maximum 5 downloads permitted
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; padding: 1rem; background: #FFF0EB; border-radius: var(--dk-radius-sm); font-size: 0.85rem; color: #9A2C0D; display: flex; gap: 0.75rem; align-items: center;">
+        <span style="font-size: 1.4rem;">💡</span>
+        <span>A receipt and access link have been recorded. You can revisit and download this file anytime using your email on the <strong>My Downloads</strong> page.</span>
+      </div>
+    </div>
+
+    <!-- Failed Card -->
+    <div id="status-failed-card" class="card" style="display: none; padding: 2.5rem; text-align: center;">
+      <div style="width: 68px; height: 68px; background: #FEE2E2; color: #DC2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
+        ✕
+      </div>
+      <span class="badge badge-danger" style="margin-bottom: 0.5rem;">Payment Not Completed</span>
+      <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Transaction Unsuccessful</h2>
+      <p class="text-muted" style="margin-bottom: 2rem;">
+        We could not verify a successful UPI payment for this order. Digital products remain locked until full payment verification.
+      </p>
+      <a href="/products" class="btn btn-primary">Try Another Product</a>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderNumber = urlParams.get('order_id');
+
+    async function checkStatus() {
+      if (!orderNumber) {
+        document.getElementById('status-loading-card').innerHTML = '<div class="text-danger">No order ID specified in URL.</div>';
+        return;
+      }
+
+      try {
+        const res = await DropKit.api(`/api/orders/${orderNumber}`);
+        const order = res.order;
+
+        document.getElementById('status-loading-card').style.display = 'none';
+
+        if (order.status === 'PAID') {
+          document.getElementById('status-success-card').style.display = 'block';
+          document.getElementById('rec-product').textContent = order.product_title;
+          document.getElementById('rec-order').textContent = order.order_number;
+          document.getElementById('rec-txn').textContent = order.upi_txn_ref || 'Verified UPI Gateway';
+          document.getElementById('rec-customer').textContent = `${order.customer_name} (${order.customer_email})`;
+          document.getElementById('rec-date').textContent = order.created_at_ist;
+          document.getElementById('rec-amount').textContent = DropKit.formatINR(order.amount_inr);
+
+          if (order.download_token) {
+            document.getElementById('btn-download-pdf').href = `/api/download/${order.download_token}`;
+          }
+        } else {
+          document.getElementById('status-failed-card').style.display = 'block';
+        }
+      } catch (err) {
+        document.getElementById('status-loading-card').innerHTML = `<div class="text-danger">${err.message}</div>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', checkStatus);
+  </script>
+</body>
+</html>

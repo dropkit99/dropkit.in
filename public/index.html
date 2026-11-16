@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DropKit — Your Digital Products. One Smart Destination.</title>
+  <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .hero-section {
+      background: linear-gradient(180deg, #FFFFFF 0%, #F7F8FC 100%);
+      padding: 5rem 1.5rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 101, 61, 0.12) 0%, rgba(27, 29, 59, 0) 70%);
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .hero-title {
+      font-size: 3.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--dk-muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+    }
+    .stats-ticker {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #FFFFFF;
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--dk-radius);
+      box-shadow: var(--dk-shadow-sm);
+      border: 1px solid var(--dk-border);
+    }
+    .product-cover-thumb {
+      height: 190px;
+      background: linear-gradient(135deg, #1B1D3B 0%, #2A2D5C 100%);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #FFFFFF;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-cover-thumb::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at top right, rgba(255, 101, 61, 0.4), transparent 60%);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header class="dk-header">
+    <div class="dk-nav-container">
+      <a href="/" class="dk-logo-link">
+        <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit Logo" class="dk-logo-img">
+      </a>
+      <ul class="dk-nav-menu">
+        <li class="dk-nav-item"><a href="/" class="active">Home</a></li>
+        <li class="dk-nav-item"><a href="/products">All Products</a></li>
+        <li class="dk-nav-item"><a href="/my-downloads">My Downloads</a></li>
+        <li class="dk-nav-item"><a href="/contact">Contact</a></li>
+      </ul>
+      <div class="dk-nav-actions">
+        <a href="/my-downloads" class="btn btn-outline btn-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Access Library
+        </a>
+        <a href="/admin/login" class="btn btn-navy btn-sm" title="Authorized Business Owner Login">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Admin Portal
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-glow"></div>
+    <div class="badge badge-orange" style="margin-bottom: 1.5rem;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Next-Gen Digital Product Commerce
+    </div>
+    <h1 class="hero-title">Your Digital Products.<br><span class="text-orange">One Smart Destination.</span></h1>
+    <p class="hero-subtitle">
+      Premium founder playbooks, engineering blueprints, design systems, and growth guides.
+      Purchased frictionlessly with Dynamic UPI QR and unlocked securely in seconds.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="/products" class="btn btn-primary btn-lg">
+        Explore Digital Products
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="/my-downloads" class="btn btn-outline btn-lg">
+        View Past Purchases
+      </a>
+    </div>
+
+    <!-- Stats Ticker -->
+    <div class="stats-ticker">
+      <div class="stat-pill">
+        <span style="font-size: 1.5rem;">⚡</span>
+        <div style="text-align: left;">
+          <div style="font-weight: 700; color: var(--dk-navy); font-size: 1.1rem;">Dynamic UPI QR</div>
+          <div style="font-size: 0.8rem; color: var(--dk-muted);">Instant Scan & Pay</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <span style="font-size: 1.5rem;">🔒</span>
+        <div style="text-align: left;">
+          <div style="font-weight: 700; color: var(--dk-navy); font-size: 1.1rem;">256-Bit Encrypted</div>
+          <div style="font-size: 0.8rem; color: var(--dk-muted);">Protected PDF Delivery</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <span style="font-size: 1.5rem;">🚀</span>
+        <div style="text-align: left;">
+          <div style="font-weight: 700; color: var(--dk-navy); font-size: 1.1rem;">Zero App Install</div>
+          <div style="font-size: 0.8rem; color: var(--dk-muted);">Direct Mobile Unlock</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="dk-container">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+      <div>
+        <div class="badge badge-navy" style="margin-bottom: 0.5rem;">Curated Library</div>
+        <h2 style="font-size: 2rem;">Featured Digital Products</h2>
+      </div>
+      <a href="/products" style="color: var(--dk-orange); font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem;">
+        View All Products &rarr;
+      </a>
+    </div>
+
+    <div id="featured-products-grid" class="grid-cols-3">
+      <!-- Loaded dynamically via JS -->
+      <div class="card" style="text-align: center; padding: 3rem; grid-column: span 3;">
+        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔄 Loading verified DropKit products...</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic UPI QR Workflow Explainer -->
+  <section style="background: #FFFFFF; border-top: 1px solid var(--dk-border); border-bottom: 1px solid var(--dk-border); padding: 4.5rem 1.5rem;">
+    <div class="dk-container" style="padding: 0;">
+      <div style="text-align: center; max-width: 650px; margin: 0 auto 3.5rem;">
+        <div class="badge badge-orange" style="margin-bottom: 0.5rem;">How DropKit Works</div>
+        <h2 style="font-size: 2.25rem;">From Scan to Download in Under 10 Seconds</h2>
+        <p class="text-muted" style="margin-top: 0.75rem;">
+          No passwords to remember, no complex credit card forms. Just scan with your favorite UPI app and unlock your publication instantly.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+        <div class="card" style="text-align: center;">
+          <div style="width: 52px; height: 52px; background: var(--dk-orange-light); color: var(--dk-orange); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">1</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Select Product</h3>
+          <p class="text-muted" style="font-size: 0.9rem;">Choose from verified high-impact digital guides priced individually in INR.</p>
+        </div>
+
+        <div class="card" style="text-align: center;">
+          <div style="width: 52px; height: 52px; background: #EEF0F7; color: var(--dk-navy); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">2</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Dynamic UPI QR</h3>
+          <p class="text-muted" style="font-size: 0.9rem;">Server creates a unique order with exact amount and real-time reconciliation ID.</p>
+        </div>
+
+        <div class="card" style="text-align: center;">
+          <div style="width: 52px; height: 52px; background: #D1FAE5; color: #065F46; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">3</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Instant Verification</h3>
+          <p class="text-muted" style="font-size: 0.9rem;">Cryptographic webhook authenticates payment status in real-time.</p>
+        </div>
+
+        <div class="card" style="text-align: center;">
+          <div style="width: 52px; height: 52px; background: #FEF3C7; color: #92400E; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">4</div>
+          <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Secure PDF Unlock</h3>
+          <p class="text-muted" style="font-size: 0.9rem;">One-click PDF download entitlement generated with email confirmation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="dk-footer">
+    <div class="dk-footer-inner">
+      <div>
+        <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit" style="height: 38px; margin-bottom: 1rem;">
+        <p class="text-muted" style="font-size: 0.9rem; max-width: 320px; margin-bottom: 1.5rem;">
+          Your Digital Products. One Smart Destination. Premium commerce infrastructure for modern digital creators and founders.
+        </p>
+        <div style="display: flex; gap: 0.75rem;">
+          <span class="badge badge-success">UPI Verified</span>
+          <span class="badge badge-navy">Secure Cloud</span>
+        </div>
+      </div>
+
+      <div>
+        <h4 style="font-size: 1rem; margin-bottom: 1rem;">Customer Store</h4>
+        <ul style="list-style: none; font-size: 0.9rem; color: var(--dk-muted); display: flex; flex-direction: column; gap: 0.6rem;">
+          <li><a href="/products">Browse All Guides</a></li>
+          <li><a href="/my-downloads">My Download Library</a></li>
+          <li><a href="/contact">Customer Support</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-size: 1rem; margin-bottom: 1rem;">Compliance & Trust</h4>
+        <ul style="list-style: none; font-size: 0.9rem; color: var(--dk-muted); display: flex; flex-direction: column; gap: 0.6rem;">
+          <li><a href="/privacy">Privacy Notice</a></li>
+          <li><a href="/terms">Terms & Conditions</a></li>
+          <li><a href="/terms#refunds">Refund & License Policy</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="font-size: 1rem; margin-bottom: 1rem;">Business Portal</h4>
+        <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1rem;">
+          Restricted access for the authorized DropKit store owner and administrator.
+        </p>
+        <a href="/admin/login" class="btn btn-navy btn-sm" style="width: 100%;">
+          Secure Admin Login
+        </a>
+      </div>
+    </div>
+
+    <div style="max-width: 1240px; margin: 2.5rem auto 0; padding-top: 1.5rem; border-top: 1px solid var(--dk-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--dk-muted); flex-wrap: wrap; gap: 1rem;">
+      <div>&copy; 2026 DropKit Digital Products. All rights reserved.</div>
+      <div>Designed with official DropKit brand identity (#1B1D3B & #FF653D).</div>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script>
+    async function loadFeaturedProducts() {
+      try {
+        const data = await DropKit.api('/api/products');
+        const container = document.getElementById('featured-products-grid');
+        if (!data.products || data.products.length === 0) {
+          container.innerHTML = '<div style="grid-column: span 3; text-align: center;">No published products available.</div>';
+          return;
+        }
+
+        container.innerHTML = data.products.slice(0, 6).map(p => `
+          <div class="card card-hover" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="product-cover-thumb">
+                <span style="font-size: 2.5rem; margin-bottom: 0.5rem; position: relative; z-index: 2;">📄</span>
+                <span style="font-weight: 700; font-size: 0.95rem; position: relative; z-index: 2;">${p.title}</span>
+                <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.75rem; color: rgba(255,255,255,0.8); z-index: 2;">
+                  ${p.pdf_pages} Pages • PDF
+                </div>
+              </div>
+              <div style="margin-top: 1.25rem;">
+                <span class="badge badge-navy" style="font-size: 0.7rem; margin-bottom: 0.5rem;">${p.category_name || 'Guide'}</span>
+                <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">${p.title}</h3>
+                <p class="text-muted" style="font-size: 0.875rem; line-height: 1.5; margin-bottom: 1.25rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                  ${p.description}
+                </p>
+              </div>
+            </div>
+            
+            <div style="border-top: 1px solid var(--dk-border); padding-top: 1rem; display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <span style="font-size: 1.4rem; font-weight: 800; color: var(--dk-navy);">${DropKit.formatINR(p.price_inr)}</span>
+                ${p.compare_price_inr ? `<span style="font-size: 0.9rem; text-decoration: line-through; color: var(--dk-muted); margin-left: 0.4rem;">${DropKit.formatINR(p.compare_price_inr)}</span>` : ''}
+              </div>
+              <a href="/checkout/${p.id}" class="btn btn-primary btn-sm">
+                Buy Now
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </a>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFeaturedProducts);
+  </script>
+</body>
+</html>

@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DropKit — Private Business Dashboard & Analytics</title>
+  <link rel="icon" type="image/png" href="/assets/dropkit-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background-color: #F7F8FC;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .admin-sidebar {
+      width: 260px;
+      background: #1B1D3B;
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      z-index: 100;
+      padding: 1.5rem 1rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .admin-main {
+      margin-left: 260px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .admin-topbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--dk-border);
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .admin-content {
+      padding: 2rem;
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .nav-link-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--dk-radius-sm);
+      color: #A0A3BD;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .nav-link-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFFFF;
+    }
+    .nav-link-btn.active {
+      background: var(--dk-orange);
+      color: #FFFFFF;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(255, 101, 61, 0.35);
+    }
+    .stat-card-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 1200px) {
+      .stat-card-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 800px) {
+      .stat-card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .stat-card {
+      background: #FFFFFF;
+      border: 1px solid var(--dk-border);
+      border-radius: var(--dk-radius);
+      padding: 1.25rem;
+      box-shadow: var(--dk-shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    .stat-card:hover {
+      border-color: #D1D5DB;
+      transform: translateY(-2px);
+    }
+    .table-container {
+      background: #FFFFFF;
+      border: 1px solid var(--dk-border);
+      border-radius: var(--dk-radius);
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+    th {
+      background: #F9FAFB;
+      padding: 0.85rem 1.25rem;
+      font-weight: 600;
+      color: var(--dk-navy);
+      border-bottom: 1px solid var(--dk-border);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+    }
+    td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--dk-border-light);
+      color: var(--dk-text);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover td {
+      background: #F8FAFC;
+    }
+    .tab-pill {
+      padding: 0.5rem 1rem;
+      border-radius: var(--dk-radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: #FFFFFF;
+      border: 1px solid var(--dk-border);
+      color: var(--dk-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-pill.active {
+      background: var(--dk-navy);
+      color: #FFFFFF;
+      border-color: var(--dk-navy);
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(18, 19, 39, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div>
+      <div style="padding: 0.5rem 0.5rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 1rem;">
+        <a href="/" target="_blank" style="display: block;">
+          <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit Logo" style="height: 38px; filter: brightness(0) invert(1);">
+        </a>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem;">
+          <span id="env-badge" class="badge badge-warning" style="font-size: 0.65rem;">DEMO MODE</span>
+          <span style="font-size: 0.7rem; color: #A0A3BD;">v2.6 Enterprise</span>
+        </div>
+      </div>
+
+      <nav style="display: flex; flex-direction: column; gap: 0.35rem;">
+        <button class="nav-link-btn active" onclick="switchSection('overview')">
+          <span>📊</span> Overview
+        </button>
+        <button class="nav-link-btn" onclick="switchSection('analytics')">
+          <span>📈</span> Sales Analytics
+        </button>
+        <button class="nav-link-btn" onclick="switchSection('products')">
+          <span>📦</span> Digital Products
+        </button>
+        <button class="nav-link-btn" onclick="switchSection('customers')">
+          <span>👥</span> Customers & Buyers
+        </button>
+        <button class="nav-link-btn" onclick="switchSection('orders')">
+          <span>🛒</span> Orders Ledger
+        </button>
+        <button class="nav-link-btn" onclick="switchSection('finances')">
+          <span>💳</span> Financial Settlements
+        </button>
+        <button class="nav-link-btn" onclick="switchSection('instagram')">
+          <span>🤖</span> Instagram Automation
+        </button>
+        <button class="nav-link-btn" onclick="switchSection('settings')">
+          <span>⚙️</span> System Settings
+        </button>
+      </nav>
+    </div>
+
+    <!-- Owner Profile & Logout -->
+    <div style="padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: var(--dk-orange); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">
+            DK
+          </div>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #FFFFFF;" id="admin-display-name">Store Owner</div>
+            <div style="font-size: 0.7rem; color: #A0A3BD;">Super Admin</div>
+          </div>
+        </div>
+        <button onclick="logoutAdmin()" title="Log out" style="background: none; border: none; color: #EF4444; cursor: pointer; font-size: 1.1rem;">
+          🚪
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="admin-main">
+    <!-- Topbar -->
+    <header class="admin-topbar">
+      <div>
+        <h2 id="section-title" style="font-size: 1.35rem; color: var(--dk-navy);">Dashboard Overview</h2>
+        <div style="font-size: 0.8rem; color: var(--dk-muted);" id="current-ist-time">Timezone: Asia/Kolkata (IST)</div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="/" target="_blank" class="btn btn-outline btn-sm">
+          <span>🌐</span> View Public Store
+        </a>
+        <button onclick="toggleDemoMode()" id="btn-toggle-mode" class="btn btn-outline btn-sm" style="border-color: var(--dk-warning); color: #92400E;">
+          Switch to Live Mode
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- ==============================================
+           SECTION 1: OVERVIEW
+           ============================================== -->
+      <section id="section-overview">
+        <!-- 10 Top Stat Cards -->
+        <div class="stat-card-grid" id="stat-cards-container">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- Sales Trend & Recent Transactions -->
+        <div style="display: grid; grid-template-columns: 1.7fr 1.3fr; gap: 1.75rem; margin-bottom: 2rem;">
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.1rem;">Revenue Performance</h3>
+              <span class="badge badge-navy">Last 30 Days</span>
+            </div>
+            <canvas id="overview-chart" style="width: 100%; height: 260px;"></canvas>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+              <h3 style="font-size: 1.1rem;">Live Transactions Stream</h3>
+              <span class="badge badge-orange" style="font-size: 0.65rem;">Auto-Reconciliation</span>
+            </div>
+            <div id="recent-txns-container" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 260px; overflow-y: auto;">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==============================================
+           SECTION 2: ADVANCED SALES ANALYTICS
+           ============================================== -->
+      <section id="section-analytics" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <!-- 7 Granular Time Filters -->
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="tab-pill active" onclick="loadAnalyticsTab('minute')">1. Minute-by-Minute (Live)</button>
+            <button class="tab-pill" onclick="loadAnalyticsTab('hourly')">2. Hourly</button>
+            <button class="tab-pill" onclick="loadAnalyticsTab('daily')">3. Daily</button>
+            <button class="tab-pill" onclick="loadAnalyticsTab('weekly')">4. Weekly</button>
+            <button class="tab-pill" onclick="loadAnalyticsTab('monthly')">5. Monthly</button>
+            <button class="tab-pill" onclick="loadAnalyticsTab('yearly')">6. Yearly</button>
+            <button class="tab-pill" onclick="loadAnalyticsTab('custom')">7. Custom Range</button>
+          </div>
+
+          <div>
+            <a href="/api/admin/analytics/export" class="btn btn-navy btn-sm" download>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Sales CSV
+            </a>
+          </div>
+        </div>
+
+        <!-- Custom Range Controls (Hidden until Custom tab selected) -->
+        <div id="custom-range-controls" class="card" style="display: none; margin-bottom: 1.5rem; padding: 1.25rem;">
+          <div style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+            <div>
+              <label class="form-label">Start Date</label>
+              <input type="date" id="custom-start-date" class="form-control" style="width: auto;">
+            </div>
+            <div>
+              <label class="form-label">End Date</label>
+              <input type="date" id="custom-end-date" class="form-control" style="width: auto;">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="fetchCustomRangeAnalytics()">
+              Apply Date Filter
+            </button>
+          </div>
+        </div>
+
+        <!-- Analytics Visual Display Card -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div>
+              <h3 id="analytics-chart-title" style="font-size: 1.2rem;">Live Minute-by-Minute Transaction Activity</h3>
+              <div id="analytics-chart-subtitle" style="font-size: 0.85rem; color: var(--dk-muted);">Refreshed in Asia/Kolkata timezone</div>
+            </div>
+            <div id="minute-refresh-indicator" style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--dk-success);">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; animation: blink 1.5s infinite;"></span>
+              Auto-updating every 5s
+            </div>
+          </div>
+          <canvas id="analytics-chart" style="width: 100%; height: 320px;"></canvas>
+        </div>
+
+        <!-- Analytics Metric Breakdown Summary -->
+        <div id="analytics-summary-cards" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;">
+          <!-- Injected via JS -->
+        </div>
+      </section>
+
+
+      <!-- ==============================================
+           SECTION 3: PRODUCTS MANAGEMENT
+           ============================================== -->
+      <section id="section-products" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1.25rem;">Digital PDF Catalog</h3>
+            <p class="text-muted" style="font-size: 0.85rem;">Manage publications, set individual prices in INR, and upload protected PDFs.</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddProductModal()">
+            + Add New PDF Product
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price (INR)</th>
+                <th>Compare Price</th>
+                <th>PDF File</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-table">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+      <!-- ==============================================
+           SECTION 4: CUSTOMERS & BUYERS
+           ============================================== -->
+      <section id="section-customers" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="font-size: 1.25rem;">Customers & Buyers</h3>
+            <p class="text-muted" style="font-size: 0.85rem;">Verified buyer directory, lifetime value metrics, and download history.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+            <input type="text" id="cust-search" class="form-control" placeholder="Search customer name or email..." style="width: 260px;" oninput="loadCustomers(this.value)">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Email Address</th>
+                <th>Total Orders</th>
+                <th>Total Spent (INR)</th>
+                <th>Last Purchase (IST)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-customers-table">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+      <!-- ==============================================
+           SECTION 5: ORDERS LEDGER
+           ============================================== -->
+      <section id="section-orders" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="font-size: 1.25rem;">Orders Ledger</h3>
+            <p class="text-muted" style="font-size: 0.85rem;">Comprehensive transaction history, UPI reconciliation, and refund processing.</p>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="tab-pill active" onclick="filterOrders('')">All</button>
+            <button class="tab-pill" onclick="filterOrders('PAID')">Paid</button>
+            <button class="tab-pill" onclick="filterOrders('PENDING')">Pending</button>
+            <button class="tab-pill" onclick="filterOrders('FAILED')">Failed</button>
+            <button class="tab-pill" onclick="filterOrders('REFUNDED')">Refunded</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Payment Ref</th>
+                <th>Date (IST)</th>
+                <th>Download Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-table">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+
+      <!-- ==============================================
+           SECTION 6: FINANCIAL MANAGEMENT
+           ============================================== -->
+      <section id="section-finances" style="display: none;">
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.25rem;">Financial Accounting & Settlements</h3>
+          <p class="text-muted" style="font-size: 0.85rem;">
+            Merchant accounting ledger. Payouts are settled automatically into the authorized business bank account.
+          </p>
+        </div>
+
+        <div class="stat-card-grid" style="grid-template-columns: repeat(4, 1fr);" id="finances-cards-container">
+          <!-- Injected via JS -->
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h3 style="font-size: 1.1rem;">Bank Settlement History (HDFC Bank ****4921)</h3>
+            <span class="badge badge-success">Verified Current Account</span>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Settlement Ref</th>
+                  <th>Gross Amount</th>
+                  <th>Gateway Fee (2%)</th>
+                  <th>Net Bank Transfer</th>
+                  <th>Bank Account</th>
+                  <th>Bank UTR Number</th>
+                  <th>Settlement Date (IST)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="admin-settlements-table">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==============================================
+           SECTION 7: INSTAGRAM AUTOMATION
+           ============================================== -->
+      <section id="section-instagram" style="display: none;">
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.25rem;">Instagram Reel & Comment Automation</h3>
+          <p class="text-muted" style="font-size: 0.85rem;">
+            Automatically detect trigger keywords in Reel comments and dispatch personalized DMs with direct DropKit Dynamic UPI checkout links.
+          </p>
+        </div>
+
+        <!-- Workflow Visualizer Banner -->
+        <div class="card" style="background: linear-gradient(135deg, #1B1D3B 0%, #2A2D5C 100%); color: #FFFFFF; padding: 1.75rem; margin-bottom: 2rem;">
+          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--dk-orange); font-weight: 700; margin-bottom: 0.75rem;">
+            Meta-Approved Automated Conversion Architecture
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; font-size: 0.95rem; font-weight: 600;">
+            <span>📸 Reel Comment</span> &rarr;
+            <span class="text-orange">🔍 Keyword Match</span> &rarr;
+            <span>💬 Instant DM Sent</span> &rarr;
+            <span>🛒 DropKit Checkout</span> &rarr;
+            <span>⚡ Dynamic UPI QR</span> &rarr;
+            <span class="text-success">📄 Secure PDF Unlocked</span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.3fr 1fr; gap: 2rem;">
+          <!-- Active Rules Table -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Active Trigger Rules</h3>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Keyword</th>
+                    <th>Linked Product</th>
+                    <th>Triggers</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="instagram-rules-table">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Interactive Simulator -->
+          <div class="card">
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Test DM Flow Simulator</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
+              Simulate an incoming reel comment and preview the auto-rendered Instagram DM response:
+            </p>
+
+            <form id="insta-simulator-form">
+              <div class="form-group">
+                <label class="form-label">Trigger Keyword</label>
+                <select id="sim-keyword" class="form-control">
+                  <option value="DROP">DROP (SaaS Growth Engine)</option>
+                  <option value="GROWTH">GROWTH (0 to 10L Roadmap)</option>
+                  <option value="FUNNEL">FUNNEL (Instagram Reel Funnel Guide)</option>
+                  <option value="KIT">KIT (Modern UI/UX Design System)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Commenter First Name</label>
+                <input type="text" id="sim-first-name" class="form-control" value="Aarav">
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">
+                Run DM Simulation &rarr;
+              </button>
+            </form>
+
+            <div id="sim-result-box" style="display: none; margin-top: 1.25rem; background: #EEF0F7; border-radius: var(--dk-radius-sm); padding: 1rem; font-size: 0.85rem;">
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.4rem;">Dispatched DM Preview:</div>
+              <div id="sim-rendered-text" style="background: #FFFFFF; border: 1px solid var(--dk-border); padding: 0.85rem; border-radius: 8px; font-family: sans-serif; white-space: pre-wrap;"></div>
+              <div style="margin-top: 0.75rem;">
+                <a id="sim-checkout-btn" href="#" target="_blank" class="btn btn-navy btn-sm" style="font-size: 0.8rem;">
+                  Open Generated Checkout Page &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==============================================
+           SECTION 8: SYSTEM SETTINGS
+           ============================================== -->
+      <section id="section-settings" style="display: none;">
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.25rem;">Platform & Payment Settings</h3>
+          <p class="text-muted" style="font-size: 0.85rem;">Manage merchant gateway credentials, UPI VPAs, and owner security.</p>
+        </div>
+
+        <div class="card" style="max-width: 720px; padding: 2rem;">
+          <form id="settings-form">
+            <h4 style="font-size: 1rem; margin-bottom: 1rem; color: var(--dk-orange);">Payment Gateway Configuration</h4>
+            
+            <div class="form-group">
+              <label class="form-label">Merchant UPI VPA (Virtual Payment Address)</label>
+              <input type="text" id="cfg-upi-vpa" class="form-control" value="dropkit.pay@icici" required>
+              <small class="text-muted">Dynamic QR codes will request payment to this verified business VPA.</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Merchant Display Name</label>
+              <input type="text" id="cfg-merchant-name" class="form-control" value="DropKit Digital" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Webhook HMAC Secret</label>
+              <input type="text" id="cfg-webhook-secret" class="form-control" value="whsec_dropkit_live_2026_98fa72cb4109" required>
+              <small class="text-muted">Used for cryptographic signature verification on incoming payment callbacks.</small>
+            </div>
+
+            <h4 style="font-size: 1rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--dk-orange);">Support & Merchant Contacts</h4>
+
+            <div class="form-group">
+              <label class="form-label">Support Email</label>
+              <input type="email" id="cfg-support-email" class="form-control" value="support@dropkit.io">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Support WhatsApp / Helpline</label>
+              <input type="text" id="cfg-support-phone" class="form-control" value="+91 98765 43210">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+              Save System Settings
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+
+  <!-- ==============================================
+       MODALS: ADD PRODUCT & CUSTOMER HISTORY
+       ============================================== -->
+  <!-- Add Product Modal -->
+  <div id="add-product-modal" class="modal-overlay">
+    <div class="card" style="width: 100%; max-width: 580px; padding: 2rem; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <h3 style="font-size: 1.25rem;">Add New PDF Digital Product</h3>
+        <button onclick="closeAddProductModal()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="add-product-form" enctype="multipart/form-data">
+        <div class="form-group">
+          <label class="form-label">Product Title *</label>
+          <input type="text" name="title" class="form-control" required placeholder="e.g. Creator Growth Guide 2026">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select name="category_id" id="modal-category-select" class="form-control">
+            <option value="1">Business & SaaS</option>
+            <option value="2">Marketing & Sales</option>
+            <option value="3">Developer Playbooks</option>
+            <option value="4">Design & UI Kits</option>
+            <option value="5">Finance & Investing</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea name="description" rows="3" class="form-control" required placeholder="Key takeaways and outline..."></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Individual Price in INR (₹) *</label>
+            <input type="number" step="0.01" name="price_inr" class="form-control" required placeholder="99.00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Compare-at Price (₹)</label>
+            <input type="number" step="0.01" name="compare_price_inr" class="form-control" placeholder="299.00">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Upload PDF Publication *</label>
+          <input type="file" name="pdf_file" accept=".pdf" class="form-control">
+          <small class="text-muted">PDF is stored in encrypted private directory (never public).</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Upload Cover Image Preview</label>
+          <input type="file" name="cover_file" accept="image/*" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="checkbox" name="is_published" value="1" checked>
+            <span>Publish immediately to customer storefront</span>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeAddProductModal()">Cancel</button>
+          <button type="submit" id="btn-save-prod" class="btn btn-primary" style="flex: 1;">Upload & Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Customer History Modal -->
+  <div id="customer-history-modal" class="modal-overlay">
+    <div class="card" style="width: 100%; max-width: 680px; padding: 2rem; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+        <div>
+          <h3 style="font-size: 1.25rem;" id="cust-modal-title">Customer Order History</h3>
+          <div style="font-size: 0.85rem; color: var(--dk-muted);" id="cust-modal-subtitle"></div>
+        </div>
+        <button onclick="closeCustomerHistoryModal()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">✕</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Product</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Downloads</th>
+            </tr>
+          </thead>
+          <tbody id="cust-history-table-body">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Chart.js & App Scripts -->
+  <script src="/js/chart.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    let overviewChart = null;
+    let analyticsChart = null;
+    let minutePollInterval = null;
+    let isLiveMode = false;
+
+    // Check admin authentication
+    async function checkAuth() {
+      const token = localStorage.getItem('dropkit_admin_token');
+      if (!token) {
+        window.location.href = '/admin/login';
+        return false;
+      }
+      try {
+        const res = await DropKit.api('/api/admin/me');
+        document.getElementById('admin-display-name').textContent = res.user.full_name || res.user.username;
+        return true;
+      } catch (e) {
+        localStorage.removeItem('dropkit_admin_token');
+        window.location.href = '/admin/login';
+        return false;
+      }
+    }
+
+    // Navigation Switcher
+    function switchSection(sectionId) {
+      document.querySelectorAll('main > div > section').forEach(sec => sec.style.display = 'none');
+      document.querySelectorAll('.nav-link-btn').forEach(btn => btn.classList.remove('active'));
+
+      const target = document.getElementById(`section-${sectionId}`);
+      if (target) target.style.display = 'block';
+
+      // Update button state
+      const matchingBtn = Array.from(document.querySelectorAll('.nav-link-btn')).find(b => b.getAttribute('onclick')?.includes(sectionId));
+      if (matchingBtn) matchingBtn.classList.add('active');
+
+      const titles = {
+        'overview': 'Dashboard Overview',
+        'analytics': 'Advanced Sales Analytics',
+        'products': 'Digital PDF Product Management',
+        'customers': 'Customers & Buyers Directory',
+        'orders': 'Orders & Payment Reconciliation Ledger',
+        'finances': 'Financial Accounting & Bank Settlements',
+        'instagram': 'Instagram Reel & Comment Automation',
+        'settings': 'Platform & Payment Settings'
+      };
+      document.getElementById('section-title').textContent = titles[sectionId] || 'Admin Dashboard';
+
+      if (sectionId === 'overview') loadOverview();
+      else if (sectionId === 'analytics') loadAnalyticsTab('minute');
+      else if (sectionId === 'products') loadProducts();
+      else if (sectionId === 'customers') loadCustomers();
+      else if (sectionId === 'orders') loadOrders();
+      else if (sectionId === 'finances') loadFinances();
+      else if (sectionId === 'instagram') loadInstagram();
+      else if (sectionId === 'settings') loadSettings();
+
+      // Clear minute polling if leaving analytics
+      if (sectionId !== 'analytics' && minutePollInterval) {
+        clearInterval(minutePollInterval);
+        minutePollInterval = null;
+      }
+    }
+
+    // SECTION 1: OVERVIEW
+    async function loadOverview() {
+      try {
+        const res = await DropKit.api('/api/admin/overview');
+        
+        // Render 10 Stat Cards
+        const cardContainer = document.getElementById('stat-cards-container');
+        cardContainer.innerHTML = res.stat_cards.map(c => `
+          <div class="stat-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.75rem; font-weight: 600; color: var(--dk-muted); text-transform: uppercase;">${c.title}</span>
+              <span class="badge ${c.trend === 'up' ? 'badge-success' : (c.trend === 'down' ? 'badge-danger' : 'badge-navy')}" style="font-size: 0.65rem;">
+                ${c.change_pct >= 0 ? '+' : ''}${c.change_pct}%
+              </span>
+            </div>
+            <div style="font-size: 1.45rem; font-weight: 800; color: var(--dk-navy); margin-bottom: 0.25rem;">
+              ${c.value}
+            </div>
+            <div style="font-size: 0.7rem; color: var(--dk-muted);">
+              ${c.period}
+            </div>
+          </div>
+        `).join('');
+
+        // Render Recent Transactions
+        const txnContainer = document.getElementById('recent-txns-container');
+        txnContainer.innerHTML = res.recent_transactions.map(t => `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.75rem; background: #F8FAFC; border-radius: 8px; font-size: 0.85rem;">
+            <div>
+              <div style="font-weight: 600; color: var(--dk-navy);">${t.customer_name}</div>
+              <div style="font-size: 0.75rem; color: var(--dk-muted);">${t.product_title} • ${t.created_at_ist}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight: 700; color: var(--dk-navy);">${DropKit.formatINR(t.amount_inr)}</div>
+              <span class="badge ${t.status === 'PAID' ? 'badge-success' : 'badge-danger'}" style="font-size: 0.65rem;">
+                ${t.status}
+              </span>
+            </div>
+          </div>
+        `).join('');
+
+        // Render Overview Chart (30-day daily trend)
+        const dailyData = await DropKit.api('/api/admin/analytics?tab=daily');
+        const items = dailyData.analytics.items || [];
+        const labels = items.map(i => i.label);
+        const revenues = items.map(i => i.revenue);
+
+        if (overviewChart) {
+          overviewChart.update({
+            labels: labels,
+            datasets: [{
+              label: 'Revenue',
+              data: revenues,
+              borderColor: '#FF653D',
+              backgroundColor: 'rgba(255, 101, 61, 0.2)',
+              fill: true
+            }]
+          });
+        } else {
+          overviewChart = new DropKitChart('overview-chart', {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Revenue',
+                data: revenues,
+                borderColor: '#FF653D',
+                backgroundColor: 'rgba(255, 101, 61, 0.2)',
+                fill: true
+              }]
+            }
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // SECTION 2: ADVANCED ANALYTICS
+    let currentAnalyticsTab = 'minute';
+    async function loadAnalyticsTab(tab) {
+      currentAnalyticsTab = tab;
+      document.querySelectorAll('#section-analytics .tab-pill').forEach(b => b.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('#section-analytics .tab-pill')).find(b => b.getAttribute('onclick')?.includes(tab));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('custom-range-controls').style.display = (tab === 'custom') ? 'block' : 'none';
+      document.getElementById('minute-refresh-indicator').style.display = (tab === 'minute') ? 'flex' : 'none';
+
+      if (minutePollInterval) {
+        clearInterval(minutePollInterval);
+        minutePollInterval = null;
+      }
+
+      await fetchAndRenderAnalytics(tab);
+
+      // Auto refresh for minute analytics
+      if (tab === 'minute') {
+        minutePollInterval = setInterval(() => {
+          fetchAndRenderAnalytics('minute', true);
+        }, 5000);
+      }
+    }
+
+    async function fetchAndRenderAnalytics(tab, isSilent = false) {
+      try {
+        let endpoint = `/api/admin/analytics?tab=${tab}`;
+        if (tab === 'custom') {
+          const s = document.getElementById('custom-start-date').value;
+          const e = document.getElementById('custom-end-date').value;
+          if (s && e) endpoint += `&start_date=${s}&end_date=${e}`;
+        }
+
+        const res = await DropKit.api(endpoint);
+        const an = res.analytics;
+
+        const summaryBox = document.getElementById('analytics-summary-cards');
+        const titleEl = document.getElementById('analytics-chart-title');
+        const subEl = document.getElementById('analytics-chart-subtitle');
+
+        if (tab === 'minute') {
+          titleEl.textContent = 'Minute-by-Minute Real-Time Orders & Sales';
+          subEl.textContent = `Auto-refresh active. Last refreshed: ${an.latest_refresh_ist}`;
+
+          summaryBox.innerHTML = `
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Period Sales</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(an.total_sales_period)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Paid Transactions</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-success);">${an.total_paid_orders}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Failed Attempts</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-danger);">${an.total_failed_orders}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Timeline Buckets</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${an.timeline.length} mins</div></div>
+          `;
+
+          renderChart('line', an.timeline.map(t => t.minute), an.timeline.map(t => t.sales), 'Sales (₹)');
+        }
+        else if (tab === 'hourly') {
+          titleEl.textContent = '24-Hour Timeline Analytics';
+          subEl.textContent = `Best Performing Hour: ${an.best_performing_hour} • Success Rate: ${an.success_rate_pct}%`;
+
+          summaryBox.innerHTML = `
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Peak Hour</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-orange);">${an.best_performing_hour}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Peak Hour Revenue</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(an.best_hour_revenue)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Success Rate</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-success);">${an.success_rate_pct}%</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Total Hourly Orders</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${an.total_hourly_orders}</div></div>
+          `;
+
+          renderChart('bar', an.items.map(i => i.hour), an.items.map(i => i.revenue), 'Hourly Revenue (₹)');
+        }
+        else if (tab === 'daily') {
+          titleEl.textContent = '30-Day Daily Sales & Unique Buyers';
+          subEl.textContent = `Top Product: ${an.best_selling_products[0]?.title || 'N/A'}`;
+
+          const totalRev = an.items.reduce((s, i) => s + i.revenue, 0);
+          const totalOrders = an.items.reduce((s, i) => s + i.orders, 0);
+
+          summaryBox.innerHTML = `
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">30-Day Gross Revenue</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(totalRev)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Total 30-Day Purchases</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-orange);">${totalOrders}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Best Seller Units</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-success);">${an.best_selling_products[0]?.units || 0}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Avg Order Value</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(totalOrders > 0 ? totalRev / totalOrders : 0)}</div></div>
+          `;
+
+          renderChart('line', an.items.map(i => i.label), an.items.map(i => i.revenue), 'Daily Revenue (₹)');
+        }
+        else if (tab === 'weekly') {
+          titleEl.textContent = 'Week-by-Week Revenue & Growth Rate';
+          subEl.textContent = 'Weekly order volume and conversion growth';
+
+          renderChart('bar', an.items.map(i => i.label), an.items.map(i => i.revenue), 'Weekly Revenue (₹)');
+          
+          summaryBox.innerHTML = an.items.slice(-4).map(w => `
+            <div class="card">
+              <div class="text-muted" style="font-size:0.8rem;">${w.label}</div>
+              <div style="font-size:1.4rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(w.revenue)}</div>
+              <div style="font-size:0.75rem;margin-top:0.25rem;">
+                <span class="badge ${w.growth_pct >= 0 ? 'badge-success' : 'badge-danger'}">${w.growth_pct >= 0 ? '+' : ''}${w.growth_pct}% WoW</span>
+                <span class="text-muted" style="margin-left:0.3rem;">${w.orders} orders</span>
+              </div>
+            </div>
+          `).join('');
+        }
+        else if (tab === 'monthly') {
+          titleEl.textContent = '12-Month Financial Performance & Net Sales';
+          subEl.textContent = 'Gross Revenue minus 2% gateway fees and customer refunds';
+
+          renderChart('bar', an.items.map(i => i.label), an.items.map(i => i.net_revenue), 'Net Revenue (₹)');
+
+          const totalGross = an.items.reduce((s, i) => s + i.gross_revenue, 0);
+          const totalFees = an.items.reduce((s, i) => s + i.gateway_fees, 0);
+          const totalNet = an.items.reduce((s, i) => s + i.net_revenue, 0);
+
+          summaryBox.innerHTML = `
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">12-Mo Gross Revenue</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(totalGross)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Total Gateway Fees (2%)</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-danger);">${DropKit.formatINR(totalFees)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Net Settled Revenue</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-success);">${DropKit.formatINR(totalNet)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Net Margin</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">98.0%</div></div>
+          `;
+        }
+        else if (tab === 'yearly') {
+          titleEl.textContent = 'Annual Revenue Comparison';
+          subEl.textContent = 'Year-over-year revenue, orders, and customer acquisition';
+
+          renderChart('bar', an.items.map(i => i.year), an.items.map(i => i.revenue), 'Annual Revenue (₹)');
+
+          summaryBox.innerHTML = an.items.map(y => `
+            <div class="card">
+              <div class="text-muted" style="font-size:0.8rem;">Year ${y.year}</div>
+              <div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(y.revenue)}</div>
+              <div style="font-size:0.8rem;color:var(--dk-muted);margin-top:0.25rem;">${y.orders} orders • ${y.unique_customers} buyers</div>
+            </div>
+          `).join('');
+        }
+        else if (tab === 'custom') {
+          titleEl.textContent = `Custom Date Range: ${an.start_date || 'All'} to ${an.end_date || 'Today'}`;
+          subEl.textContent = 'Reconciled sales, gateway processing fees, refunds, and net ledger';
+
+          summaryBox.innerHTML = `
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Gross Sales</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(an.gross_sales)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Gateway Fees</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-danger);">${DropKit.formatINR(an.gateway_fees)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Refunds</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-warning);">${DropKit.formatINR(an.refunds)}</div></div>
+            <div class="card"><div class="text-muted" style="font-size:0.8rem;">Net Settled Funds</div><div style="font-size:1.6rem;font-weight:800;color:var(--dk-success);">${DropKit.formatINR(an.net_sales)}</div></div>
+          `;
+
+          const dLabels = (an.daily_breakdown || []).map(d => d.date);
+          const dRevs = (an.daily_breakdown || []).map(d => d.revenue);
+          renderChart('line', dLabels, dRevs, 'Custom Range Revenue (₹)');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderChart(type, labels, dataPoints, labelName) {
+      if (analyticsChart) {
+        analyticsChart.type = type;
+        analyticsChart.update({
+          labels: labels,
+          datasets: [{
+            label: labelName,
+            data: dataPoints,
+            borderColor: '#FF653D',
+            backgroundColor: type === 'bar' ? '#FF653D' : 'rgba(255, 101, 61, 0.2)',
+            fill: type === 'line'
+          }]
+        });
+      } else {
+        analyticsChart = new DropKitChart('analytics-chart', {
+          type: type,
+          data: {
+            labels: labels,
+            datasets: [{
+              label: labelName,
+              data: dataPoints,
+              borderColor: '#FF653D',
+              backgroundColor: type === 'bar' ? '#FF653D' : 'rgba(255, 101, 61, 0.2)',
+              fill: type === 'line'
+            }]
+          }
+        });
+      }
+    }
+
+    function fetchCustomRangeAnalytics() {
+      fetchAndRenderAnalytics('custom');
+    }
+
+    // SECTION 3: PRODUCTS
+    async function loadProducts() {
+      try {
+        const res = await DropKit.api('/api/admin/products');
+        const tbody = document.getElementById('admin-products-table');
+        tbody.innerHTML = res.products.map(p => `
+          <tr>
+            <td>
+              <div style="font-weight:600;color:var(--dk-navy);">${p.title}</div>
+              <div style="font-size:0.75rem;color:var(--dk-muted);">${p.pdf_pages} Pages • ${p.pdf_filename}</div>
+            </td>
+            <td><span class="badge badge-navy">${p.category_name || 'Guide'}</span></td>
+            <td><strong style="color:var(--dk-navy);font-size:1rem;">${DropKit.formatINR(p.price_inr)}</strong></td>
+            <td><span class="text-muted" style="text-decoration:line-through;">${p.compare_price_inr ? DropKit.formatINR(p.compare_price_inr) : '—'}</span></td>
+            <td><span style="font-family:monospace;font-size:0.75rem;">${p.pdf_filename}</span></td>
+            <td>
+              <span class="badge ${p.is_published ? 'badge-success' : 'badge-warning'}">
+                ${p.is_published ? 'Published' : 'Draft'}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="deleteProduct(${p.id})">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function openAddProductModal() {
+      document.getElementById('add-product-modal').style.display = 'flex';
+    }
+    function closeAddProductModal() {
+      document.getElementById('add-product-modal').style.display = 'none';
+    }
+
+    document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      const btn = document.getElementById('btn-save-prod');
+      btn.disabled = true;
+      btn.textContent = 'Uploading...';
+
+      try {
+        const token = localStorage.getItem('dropkit_admin_token');
+        const response = await fetch('/api/admin/products', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const res = await response.json();
+        if (!response.ok) throw new Error(res.error || 'Failed to upload product');
+
+        DropKit.toast('Product and PDF successfully saved!', 'success');
+        closeAddProductModal();
+        form.reset();
+        loadProducts();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Upload & Save';
+      }
+    });
+
+    async function deleteProduct(id) {
+      if (!confirm('Are you sure you want to delete this product?')) return;
+      try {
+        await DropKit.api(`/api/admin/products/${id}`, { method: 'DELETE' });
+        DropKit.toast('Product deleted', 'success');
+        loadProducts();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    // SECTION 4: CUSTOMERS
+    async function loadCustomers(search = '') {
+      try {
+        const res = await DropKit.api(`/api/admin/customers?q=${encodeURIComponent(search)}`);
+        const tbody = document.getElementById('admin-customers-table');
+        tbody.innerHTML = res.customers.map(c => `
+          <tr>
+            <td>
+              <div style="font-weight:600;color:var(--dk-navy);">${c.name}</div>
+              <div style="font-size:0.75rem;color:var(--dk-muted);">${c.phone || 'No phone'}</div>
+            </td>
+            <td>${c.email}</td>
+            <td><strong>${c.total_orders}</strong></td>
+            <td><strong style="color:var(--dk-success);">${DropKit.formatINR(c.total_spent)}</strong></td>
+            <td>${c.last_order_date_ist}</td>
+            <td>
+              <button class="btn btn-navy btn-sm" onclick="viewCustomerHistory(${c.id}, '${c.name}', '${c.email}')">History</button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function viewCustomerHistory(id, name, email) {
+      document.getElementById('cust-modal-title').textContent = `${name}'s Purchases`;
+      document.getElementById('cust-modal-subtitle').textContent = email;
+      document.getElementById('customer-history-modal').style.display = 'flex';
+
+      try {
+        const res = await DropKit.api(`/api/admin/customers/${id}/history`);
+        const tbody = document.getElementById('cust-history-table-body');
+        tbody.innerHTML = res.orders.map(o => `
+          <tr>
+            <td><span style="font-family:monospace;font-weight:600;">${o.order_number}</span></td>
+            <td>${o.product_title}</td>
+            <td>${DropKit.formatINR(o.amount_inr)}</td>
+            <td><span class="badge ${o.status === 'PAID' ? 'badge-success' : 'badge-danger'}">${o.status}</span></td>
+            <td>${o.download_count}/${o.max_downloads} used</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    function closeCustomerHistoryModal() {
+      document.getElementById('customer-history-modal').style.display = 'none';
+    }
+
+    // SECTION 5: ORDERS
+    let currentOrderStatus = '';
+    async function loadOrders() {
+      try {
+        const res = await DropKit.api(`/api/admin/orders?status=${currentOrderStatus}`);
+        const tbody = document.getElementById('admin-orders-table');
+        tbody.innerHTML = res.orders.map(o => `
+          <tr>
+            <td><span style="font-family:monospace;font-weight:700;">${o.order_number}</span></td>
+            <td>
+              <div style="font-weight:600;">${o.customer_name}</div>
+              <div style="font-size:0.75rem;color:var(--dk-muted);">${o.customer_email}</div>
+            </td>
+            <td>${o.product_title}</td>
+            <td><strong>${DropKit.formatINR(o.amount_inr)}</strong></td>
+            <td>
+              <span class="badge ${o.status === 'PAID' ? 'badge-success' : (o.status === 'PENDING' ? 'badge-warning' : 'badge-danger')}">
+                ${o.status}
+              </span>
+            </td>
+            <td><span style="font-family:monospace;font-size:0.75rem;">${o.upi_txn_ref || 'Awaiting'}</span></td>
+            <td><span style="font-size:0.8rem;">${o.created_at_ist}</span></td>
+            <td>
+              ${o.is_revoked ? '<span class="badge badge-danger">Revoked</span>' : `${o.download_count}/${o.max_downloads} used`}
+            </td>
+            <td>
+              ${o.status === 'PAID' ? `
+                <button class="btn btn-outline btn-sm" onclick="refundOrder('${o.order_number}')" style="color:var(--dk-danger);border-color:var(--dk-danger);">Refund</button>
+              ` : '—'}
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function filterOrders(status) {
+      currentOrderStatus = status;
+      document.querySelectorAll('#section-orders .tab-pill').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      loadOrders();
+    }
+
+    async function refundOrder(orderNum) {
+      const reason = prompt(`Enter reason for refunding order ${orderNum}:`, 'Customer requested refund');
+      if (!reason) return;
+
+      try {
+        const res = await DropKit.api(`/api/admin/orders/${orderNum}/refund`, {
+          method: 'POST',
+          body: JSON.stringify({ reason })
+        });
+        DropKit.toast(res.message, 'success');
+        loadOrders();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    // SECTION 6: FINANCES
+    async function loadFinances() {
+      try {
+        const res = await DropKit.api('/api/admin/finances');
+        
+        document.getElementById('finances-cards-container').innerHTML = `
+          <div class="stat-card">
+            <span style="font-size:0.75rem;font-weight:600;color:var(--dk-muted);">GROSS REVENUE</span>
+            <div style="font-size:1.6rem;font-weight:800;color:var(--dk-navy);">${DropKit.formatINR(res.gross_revenue)}</div>
+            <div style="font-size:0.7rem;color:var(--dk-muted);">Verified Sales Total</div>
+          </div>
+          <div class="stat-card">
+            <span style="font-size:0.75rem;font-weight:600;color:var(--dk-muted);">GATEWAY CHARGES (2%)</span>
+            <div style="font-size:1.6rem;font-weight:800;color:var(--dk-danger);">${DropKit.formatINR(res.gateway_fees)}</div>
+            <div style="font-size:0.7rem;color:var(--dk-muted);">Processing Deductions</div>
+          </div>
+          <div class="stat-card">
+            <span style="font-size:0.75rem;font-weight:600;color:var(--dk-muted);">NET SETTLED REVENUE</span>
+            <div style="font-size:1.6rem;font-weight:800;color:var(--dk-success);">${DropKit.formatINR(res.net_revenue)}</div>
+            <div style="font-size:0.7rem;color:var(--dk-muted);">Net Business Earnings</div>
+          </div>
+          <div class="stat-card">
+            <span style="font-size:0.75rem;font-weight:600;color:var(--dk-muted);">AVAILABLE SETTLEMENTS</span>
+            <div style="font-size:1.6rem;font-weight:800;color:var(--dk-orange);">${DropKit.formatINR(res.pending_settlements)}</div>
+            <div style="font-size:0.7rem;color:var(--dk-muted);">Ready for Bank Transfer</div>
+          </div>
+        `;
+
+        document.getElementById('admin-settlements-table').innerHTML = res.settlements.map(s => `
+          <tr>
+            <td><span style="font-family:monospace;font-weight:700;">${s.settlement_ref}</span></td>
+            <td>${DropKit.formatINR(s.amount_inr)}</td>
+            <td><span class="text-danger">-${DropKit.formatINR(s.fee_inr)}</span></td>
+            <td><strong style="color:var(--dk-success);">${DropKit.formatINR(s.net_amount_inr)}</strong></td>
+            <td>${s.bank_account_masked}</td>
+            <td><span style="font-family:monospace;font-size:0.8rem;">${s.utr_number}</span></td>
+            <td>${s.settled_at_ist}</td>
+            <td><span class="badge badge-success">${s.status}</span></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    // SECTION 7: INSTAGRAM
+    async function loadInstagram() {
+      try {
+        const res = await DropKit.api('/api/admin/instagram');
+        document.getElementById('instagram-rules-table').innerHTML = res.rules.map(r => `
+          <tr>
+            <td><strong style="color:var(--dk-orange);">${r.keyword}</strong></td>
+            <td>${r.product_title} (${DropKit.formatINR(r.price_inr)})</td>
+            <td><span class="badge badge-navy">${r.trigger_count}</span></td>
+            <td><span class="badge badge-success">Active</span></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.getElementById('insta-simulator-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const keyword = document.getElementById('sim-keyword').value;
+      const firstName = document.getElementById('sim-first-name').value;
+
+      try {
+        const res = await DropKit.api('/api/admin/instagram/test', {
+          method: 'POST',
+          body: JSON.stringify({ keyword, first_name: firstName })
+        });
+
+        document.getElementById('sim-result-box').style.display = 'block';
+        document.getElementById('sim-rendered-text').textContent = res.generated_dm;
+        document.getElementById('sim-checkout-btn').href = res.checkout_url;
+        DropKit.toast('Instagram DM simulation rendered!', 'success');
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    });
+
+    // SECTION 8: SETTINGS
+    async function loadSettings() {
+      try {
+        const res = await DropKit.api('/api/admin/settings');
+        const s = res.settings;
+        document.getElementById('cfg-upi-vpa').value = s.upi_vpa || 'dropkit.pay@icici';
+        document.getElementById('cfg-merchant-name').value = s.merchant_name || 'DropKit Digital';
+        document.getElementById('cfg-webhook-secret').value = s.webhook_secret || '';
+        document.getElementById('cfg-support-email').value = s.support_email || 'support@dropkit.io';
+        document.getElementById('cfg-support-phone').value = s.support_phone || '+91 98765 43210';
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    document.getElementById('settings-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        upi_vpa: document.getElementById('cfg-upi-vpa').value.trim(),
+        merchant_name: document.getElementById('cfg-merchant-name').value.trim(),
+        webhook_secret: document.getElementById('cfg-webhook-secret').value.trim(),
+        support_email: document.getElementById('cfg-support-email').value.trim(),
+        support_phone: document.getElementById('cfg-support-phone').value.trim()
+      };
+      try {
+        await DropKit.api('/api/admin/settings', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        DropKit.toast('Platform settings updated successfully', 'success');
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    });
+
+    function toggleDemoMode() {
+      isLiveMode = !isLiveMode;
+      const badge = document.getElementById('env-badge');
+      const btn = document.getElementById('btn-toggle-mode');
+      if (isLiveMode) {
+        badge.className = 'badge badge-success';
+        badge.textContent = 'LIVE PRODUCTION';
+        btn.textContent = 'Switch to Demo Mode';
+        btn.style.color = '#065F46';
+        btn.style.borderColor = '#10B981';
+        DropKit.toast('Switched to LIVE MODE: Using real merchant credentials and genuine gateway verification.', 'success');
+      } else {
+        badge.className = 'badge badge-warning';
+        badge.textContent = 'DEMO MODE';
+        btn.textContent = 'Switch to Live Mode';
+        btn.style.color = '#92400E';
+        btn.style.borderColor = 'var(--dk-warning)';
+        DropKit.toast('Switched to DEMO MODE: Test UPI simulator active.', 'info');
+      }
+    }
+
+    async function logoutAdmin() {
+      try {
+        await DropKit.api('/api/admin/logout', { method: 'POST' });
+      } catch (e) {}
+      localStorage.removeItem('dropkit_admin_token');
+      window.location.href = '/admin/login';
+    }
+
+    // Initialize Dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      const ok = await checkAuth();
+      if (ok) {
+        loadOverview();
+      }
+    });
+  </script>
+</body>
+</html>
