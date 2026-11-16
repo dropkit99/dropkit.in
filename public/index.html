@@ -128,7 +128,7 @@
       Purchased frictionlessly with Dynamic UPI QR and unlocked securely in seconds.
     </p>
     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-      <a href="/products" class="btn btn-primary btn-lg">
+      <a href="#featured-products" class="btn btn-primary btn-lg">
         Explore Digital Products
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
@@ -139,32 +139,32 @@
 
     <!-- Stats Ticker -->
     <div class="stats-ticker">
-      <div class="stat-pill">
+      <a href="#how-it-works" class="stat-pill" style="cursor: pointer; text-decoration: none;" title="Learn about Dynamic UPI QR">
         <span style="font-size: 1.5rem;">⚡</span>
         <div style="text-align: left;">
           <div style="font-weight: 700; color: var(--dk-navy); font-size: 1.1rem;">Dynamic UPI QR</div>
           <div style="font-size: 0.8rem; color: var(--dk-muted);">Instant Scan & Pay</div>
         </div>
-      </div>
-      <div class="stat-pill">
+      </a>
+      <a href="#how-it-works" class="stat-pill" style="cursor: pointer; text-decoration: none;" title="Learn about 256-Bit Encrypted Delivery">
         <span style="font-size: 1.5rem;">🔒</span>
         <div style="text-align: left;">
           <div style="font-weight: 700; color: var(--dk-navy); font-size: 1.1rem;">256-Bit Encrypted</div>
           <div style="font-size: 0.8rem; color: var(--dk-muted);">Protected PDF Delivery</div>
         </div>
-      </div>
-      <div class="stat-pill">
+      </a>
+      <a href="#featured-products" class="stat-pill" style="cursor: pointer; text-decoration: none;" title="Browse All Digital Guides">
         <span style="font-size: 1.5rem;">🚀</span>
         <div style="text-align: left;">
           <div style="font-weight: 700; color: var(--dk-navy); font-size: 1.1rem;">Zero App Install</div>
           <div style="font-size: 0.8rem; color: var(--dk-muted);">Direct Mobile Unlock</div>
         </div>
-      </div>
+      </a>
     </div>
   </section>
 
   <!-- Featured Products Section -->
-  <section class="dk-container">
+  <section class="dk-container" id="featured-products">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
       <div>
         <div class="badge badge-navy" style="margin-bottom: 0.5rem;">Curated Library</div>
@@ -184,7 +184,7 @@
   </section>
 
   <!-- Dynamic UPI QR Workflow Explainer -->
-  <section style="background: #FFFFFF; border-top: 1px solid var(--dk-border); border-bottom: 1px solid var(--dk-border); padding: 4.5rem 1.5rem;">
+  <section id="how-it-works" style="background: #FFFFFF; border-top: 1px solid var(--dk-border); border-bottom: 1px solid var(--dk-border); padding: 4.5rem 1.5rem;">
     <div class="dk-container" style="padding: 0;">
       <div style="text-align: center; max-width: 650px; margin: 0 auto 3.5rem;">
         <div class="badge badge-orange" style="margin-bottom: 0.5rem;">How DropKit Works</div>
@@ -195,28 +195,32 @@
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
-        <div class="card" style="text-align: center;">
-          <div style="width: 52px; height: 52px; background: var(--dk-orange-light); color: var(--dk-orange); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">1</div>
+        <div class="card step-card" onclick="window.location.href='/products'" title="Click to browse products">
+          <div class="step-badge" style="width: 52px; height: 52px; background: var(--dk-orange-light); color: var(--dk-orange); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">1</div>
           <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Select Product</h3>
           <p class="text-muted" style="font-size: 0.9rem;">Choose from verified high-impact digital guides priced individually in INR.</p>
+          <div style="margin-top: 0.75rem; font-size: 0.8rem; font-weight: 600; color: var(--dk-orange);">Browse Catalog &rarr;</div>
         </div>
 
-        <div class="card" style="text-align: center;">
-          <div style="width: 52px; height: 52px; background: #EEF0F7; color: var(--dk-navy); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">2</div>
+        <div class="card step-card" onclick="window.location.href='/checkout/1'" title="Click to view Dynamic UPI QR in action">
+          <div class="step-badge" style="width: 52px; height: 52px; background: #EEF0F7; color: var(--dk-navy); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">2</div>
           <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Dynamic UPI QR</h3>
           <p class="text-muted" style="font-size: 0.9rem;">Server creates a unique order with exact amount and real-time reconciliation ID.</p>
+          <div style="margin-top: 0.75rem; font-size: 0.8rem; font-weight: 600; color: var(--dk-navy);">Experience Checkout &rarr;</div>
         </div>
 
-        <div class="card" style="text-align: center;">
-          <div style="width: 52px; height: 52px; background: #D1FAE5; color: #065F46; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">3</div>
+        <div class="card step-card" onclick="window.location.href='/checkout/1'" title="Click to test payment verification">
+          <div class="step-badge" style="width: 52px; height: 52px; background: #D1FAE5; color: #065F46; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">3</div>
           <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Instant Verification</h3>
           <p class="text-muted" style="font-size: 0.9rem;">Cryptographic webhook authenticates payment status in real-time.</p>
+          <div style="margin-top: 0.75rem; font-size: 0.8rem; font-weight: 600; color: #065F46;">Learn Verification &rarr;</div>
         </div>
 
-        <div class="card" style="text-align: center;">
-          <div style="width: 52px; height: 52px; background: #FEF3C7; color: #92400E; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">4</div>
+        <div class="card step-card" onclick="window.location.href='/my-downloads'" title="Click to access digital library">
+          <div class="step-badge" style="width: 52px; height: 52px; background: #FEF3C7; color: #92400E; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; margin: 0 auto 1.25rem;">4</div>
           <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">Secure PDF Unlock</h3>
           <p class="text-muted" style="font-size: 0.9rem;">One-click PDF download entitlement generated with email confirmation.</p>
+          <div style="margin-top: 0.75rem; font-size: 0.8rem; font-weight: 600; color: #92400E;">Open Library &rarr;</div>
         </div>
       </div>
     </div>

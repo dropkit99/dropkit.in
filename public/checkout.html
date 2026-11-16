@@ -84,7 +84,7 @@
       </a>
     </div>
 
-    <div class="checkout-layout">
+    <div class="checkout-layout animate-fade-up">
       <!-- Left Column: Product Summary & Customer Info -->
       <div>
         <div class="card" style="margin-bottom: 1.5rem;">
@@ -94,14 +94,15 @@
           </div>
 
           <div id="product-summary" style="display: none;">
-            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem;">
-              <div style="width: 58px; height: 58px; background: var(--dk-navy); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 1.75rem;">
-                📄
+            <div style="display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1.25rem;">
+              <div style="width: 72px; height: 96px; border-radius: 8px; overflow: hidden; background: var(--dk-navy); box-shadow: var(--dk-shadow-sm); flex-shrink: 0;">
+                <img id="prod-cover-img" src="" alt="Cover" style="width: 100%; height: 100%; object-fit: cover;">
               </div>
               <div style="flex: 1;">
-                <h4 id="prod-title" style="font-size: 1.05rem; margin-bottom: 0.2rem;"></h4>
+                <span id="prod-badge-cat" class="badge badge-navy" style="font-size: 0.7rem; margin-bottom: 0.35rem;">Digital Publication</span>
+                <h4 id="prod-title" style="font-size: 1.1rem; margin-bottom: 0.35rem; line-height: 1.3;"></h4>
                 <div style="font-size: 0.8rem; color: var(--dk-muted);">
-                  <span id="prod-pages"></span> Pages • Direct PDF Delivery
+                  <span id="prod-pages"></span> Pages • 256-Bit Encrypted PDF Delivery
                 </div>
               </div>
             </div>
@@ -284,6 +285,12 @@
         document.getElementById('prod-pages').textContent = currentProduct.pdf_pages;
         document.getElementById('prod-price').textContent = DropKit.formatINR(currentProduct.price_inr);
         document.getElementById('prod-total').textContent = DropKit.formatINR(currentProduct.price_inr);
+        if (currentProduct.cover_image) {
+          document.getElementById('prod-cover-img').src = `/covers/${currentProduct.cover_image}`;
+        }
+        if (currentProduct.category_name) {
+          document.getElementById('prod-badge-cat').textContent = currentProduct.category_name;
+        }
       } catch (err) {
         document.getElementById('product-loading').innerHTML = '<div class="text-danger">Failed to load product. Please check the URL.</div>';
       }

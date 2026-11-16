@@ -214,6 +214,7 @@ a {
   opacity: 1;
 }
 
+/* Navigation Links */
 .dk-nav-menu {
   display: flex;
   align-items: center;
@@ -225,11 +226,20 @@ a {
   font-weight: 500;
   font-size: 0.95rem;
   color: var(--dk-muted);
-  transition: color 0.15s ease;
+  transition: all 0.2s ease;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--dk-radius-sm);
+  position: relative;
 }
 
-.dk-nav-item a:hover, .dk-nav-item a.active {
+.dk-nav-item a:hover {
   color: var(--dk-orange);
+  background: var(--dk-orange-light);
+}
+
+.dk-nav-item a.active {
+  color: var(--dk-orange);
+  font-weight: 700;
 }
 
 .dk-nav-actions {
@@ -238,7 +248,7 @@ a {
   gap: 0.75rem;
 }
 
-/* Buttons */
+/* Professional Interactive Buttons with Shimmer & Micro-Interactions */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -250,8 +260,15 @@ a {
   border-radius: var(--dk-radius);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: center;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn-primary {
@@ -262,18 +279,33 @@ a {
 
 .btn-primary:hover {
   background-color: var(--dk-orange-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(255, 101, 61, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(255, 101, 61, 0.45);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-20deg);
+  transition: 0.6s;
+}
+
+.btn-primary:hover::after {
+  left: 150%;
 }
 
 .btn-navy {
   background-color: var(--dk-navy);
   color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(27, 29, 59, 0.2);
 }
 
 .btn-navy:hover {
   background-color: var(--dk-navy-light);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(27, 29, 59, 0.3);
 }
 
 .btn-outline {
@@ -284,11 +316,14 @@ a {
 
 .btn-outline:hover {
   background-color: #FFFFFF;
-  border-color: var(--dk-muted);
+  border-color: var(--dk-orange);
+  color: var(--dk-orange);
+  transform: translateY(-2px);
+  box-shadow: var(--dk-shadow-sm);
 }
 
 .btn-sm {
-  padding: 0.4rem 0.85rem;
+  padding: 0.45rem 0.95rem;
   font-size: 0.85rem;
   border-radius: var(--dk-radius-sm);
 }
@@ -299,26 +334,89 @@ a {
   border-radius: var(--dk-radius);
 }
 
-/* Cards & Layout */
-.dk-container {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
-}
-
+/* Professional Cards & Smooth Hover Lift */
 .card {
   background: var(--dk-card-bg);
   border: 1px solid var(--dk-border);
   border-radius: var(--dk-radius);
   box-shadow: var(--dk-shadow-sm);
   padding: 1.5rem;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover {
+  position: relative;
 }
 
 .card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--dk-shadow);
-  border-color: #D1D5DB;
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px -4px rgba(27, 29, 59, 0.14), 0 0 0 1px rgba(255, 101, 61, 0.25);
+  border-color: rgba(255, 101, 61, 0.4);
+}
+
+/* Interactive Explainer Step Cards with hover glow */
+.step-card {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  position: relative;
+}
+
+.step-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(27, 29, 59, 0.12), 0 0 0 1px rgba(255, 101, 61, 0.3);
+  border-color: var(--dk-orange);
+}
+
+.step-card:hover .step-badge {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.step-badge {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Staggered Fade Up Animations */
+.animate-fade-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal Overlay & Animation */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(27, 29, 59, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1.5rem;
+  animation: fadeIn 0.25s ease;
+}
+
+.modal-overlay .card {
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /* Typography */
