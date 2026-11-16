@@ -221,6 +221,21 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 code, res = handle_admin_payment_readiness(query)
                 return self.send_json(code, res)
 
+            if path == "/api/admin/upi-accounts":
+                from backend.api_handlers import handle_admin_list_merchant_accounts
+                code, res = handle_admin_list_merchant_accounts(admin_user['user_id'])
+                return self.send_json(code, res)
+
+            if path == "/api/admin/upi-accounts/history":
+                from backend.api_handlers import handle_admin_get_switching_history
+                code, res = handle_admin_get_switching_history(admin_user['user_id'])
+                return self.send_json(code, res)
+
+            if path == "/api/admin/notifications":
+                from backend.api_handlers import handle_admin_get_notification_logs
+                code, res = handle_admin_get_notification_logs(admin_user['user_id'])
+                return self.send_json(code, res)
+
         # 2. Static Assets & Pages
         self.serve_static_or_page(path)
 
@@ -343,6 +358,21 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 code, res = handle_admin_clear_sales_data()
                 return self.send_json(code, res)
 
+            if path == "/api/admin/upi-accounts":
+                from backend.api_handlers import handle_admin_add_merchant_account
+                code, res = handle_admin_add_merchant_account(body_json, admin_user['user_id'])
+                return self.send_json(code, res)
+
+            if path == "/api/admin/upi-accounts/switch":
+                from backend.api_handlers import handle_admin_set_active_merchant_account
+                code, res = handle_admin_set_active_merchant_account(body_json, admin_user['user_id'])
+                return self.send_json(code, res)
+
+            if path == "/api/admin/notifications/test":
+                from backend.api_handlers import handle_admin_test_notification_alert
+                code, res = handle_admin_test_notification_alert(admin_user['user_id'])
+                return self.send_json(code, res)
+
         return self.send_json(404, {"error": "Endpoint not found"})
 
     def do_PUT(self):
@@ -362,6 +392,12 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         if path.startswith("/api/admin/products/"):
             prod_id = int(path.split("/")[-1])
             code, res = handle_admin_update_product(prod_id, body_json)
+            return self.send_json(code, res)
+
+        if path.startswith("/api/admin/upi-accounts/"):
+            account_id = path.split("/")[-1].upper()
+            from backend.api_handlers import handle_admin_update_merchant_account
+            code, res = handle_admin_update_merchant_account(account_id, body_json, admin_user['user_id'])
             return self.send_json(code, res)
 
         return self.send_json(404, {"error": "Endpoint not found"})

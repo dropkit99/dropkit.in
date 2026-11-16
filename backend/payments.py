@@ -59,10 +59,23 @@ def get_effective_payment_config() -> dict:
     is_live = (mode == "LIVE")
     active_provider = "direct_upi"
 
-    # UPI VPA & Merchant Name
-    vpa = settings.get("upi_vpa") or os.environ.get("DROPKIT_UPI_VPA") or DEFAULT_UPI_VPA
-    name = settings.get("merchant_name") or os.environ.get("DROPKIT_MERCHANT_NAME") or DEFAULT_MERCHANT_NAME
-    direct_enabled = settings.get("direct_upi_enabled", "1") not in ("0", "false", "False")
+    # Dynamic Global Active Merchant Account
+    from .merchant_manager import get_active_merchant_account
+    active_acc = get_active_merchant_account()
+
+    if active_acc:
+        vpa = active_acc.get("upi_vpa", "").strip()
+        name = active_acc.get("merchant_name", "").strip()
+        acc_id = active_acc.get("account_id", "").strip()
+        direct_enabled = True
+        is_available = True
+    else:
+        vpa = ""
+        name = ""
+        acc_id = ""
+        direct_enabled = False
+        is_available = False
+
     base_url = settings.get("base_url") or os.environ.get("BASE_URL") or "http://localhost:8080"
 
     return {
@@ -75,9 +88,11 @@ def get_effective_payment_config() -> dict:
         "cashfree_app_id": "",
         "cashfree_secret_key": "",
         "cashfree_env": "sandbox",
-        "upi_vpa": vpa.strip(),
-        "merchant_name": name.strip(),
+        "upi_vpa": vpa,
+        "merchant_name": name,
+        "merchant_account_id": acc_id,
         "direct_upi_enabled": direct_enabled,
+        "is_available": is_available,
         "gateway_enabled": False,
         "webhook_secret": "",
         "base_url": base_url.rstrip("/"),
@@ -95,7 +110,9 @@ def get_effective_upi_config() -> dict:
     return {
         "upi_vpa": cfg["upi_vpa"],
         "merchant_name": cfg["merchant_name"],
+        "merchant_account_id": cfg.get("merchant_account_id", ""),
         "direct_upi_enabled": cfg["direct_upi_enabled"],
+        "is_available": cfg.get("is_available", True),
         "gateway_enabled": False,
         "gateway_configured": False,
         "mode": cfg["mode"],
@@ -321,11 +338,21 @@ def create_order(
     """
     Creates an order with server-enforced product pricing and dynamic UPI QR:
     1. Looks up authoritative product price from DB (never trusts client amount).
-    2. Retrieves admin-configured UPI ID and Payee Name from system_settings.
+    2. Retrieves active merchant account from Dynamic Global UPI Engine.
     3. Issues unique internal Order ID (ORD-YYYYMMDD-XXXXXX).
     4. Issues cryptographically secure customer order_access_token.
     5. Exclusively generates Direct UPI QR with exact product amount.
     """
+    # 1. First, check active merchant payment method availability
+    upi_cfg = get_effective_upi_config()
+    if not upi_cfg.get("is_available") or not upi_cfg.get("upi_vpa"):
+        raise ValueError("Payments are temporarily undergoing scheduled maintenance. Please check back shortly.")
+
+    effective_vpa = upi_cfg["upi_vpa"]
+    effective_name = upi_cfg["merchant_name"]
+    effective_acc_id = upi_cfg.get("merchant_account_id", "")
+
+    # 2. Database operations for product lookup and customer upsert
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -362,11 +389,6 @@ def create_order(
     order_number = f"ORD-{timestamp_prefix}-{random_suffix}"
     order_access_token = secrets.token_urlsafe(32)
 
-    # Read effective UPI settings entered in Admin Settings
-    upi_cfg = get_effective_upi_config()
-    effective_vpa = upi_cfg["upi_vpa"]
-    effective_name = upi_cfg["merchant_name"]
-
     # DropKit operates exclusively on DIRECT_UPI
     method_normalized = "DIRECT_UPI"
     payment_gateway = "DIRECT_UPI"
@@ -385,14 +407,14 @@ def create_order(
         INSERT INTO orders (
             order_number, customer_id, product_id, amount_inr, status,
             payment_method, payment_gateway, gateway_order_id, order_access_token,
-            upi_vpa, upi_txn_ref, is_demo, created_at, updated_at
+            upi_vpa, upi_txn_ref, is_demo, merchant_account_id, created_at, updated_at
         )
-        VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         order_number, customer_id, product['id'], product_price,
         method_normalized, payment_gateway, gateway_order_id, order_access_token,
         effective_vpa, order_number,
-        1 if is_demo else 0, now_iso(), now_iso()
+        1 if is_demo else 0, effective_acc_id, now_iso(), now_iso()
     ))
     order_id = cursor.lastrowid
 
@@ -420,6 +442,7 @@ def create_order(
         "customer_email": clean_email,
         "upi_vpa": effective_vpa,
         "merchant_name": effective_name,
+        "merchant_account_id": effective_acc_id,
         "upi_uri": upi_uri,
         "qr_svg": qr_svg,
         "status": "PENDING",
@@ -808,6 +831,13 @@ def process_payment_verification(
 
     conn.commit()
     conn.close()
+
+    # Dynamic Global UPI Auto-Switching Engine: Record collection & evaluate threshold
+    try:
+        from .merchant_manager import record_confirmed_collection
+        record_confirmed_collection(order_number, received_amount)
+    except Exception as coll_err:
+        pass
 
     return True, "Payment verified successfully", {
         "order_number": order_number,

@@ -113,7 +113,9 @@ def handle_get_payment_config():
             "active_provider": "direct_upi",
             "upi_vpa": cfg["upi_vpa"],
             "merchant_name": cfg["merchant_name"],
+            "merchant_account_id": cfg.get("merchant_account_id", ""),
             "direct_upi_enabled": cfg["direct_upi_enabled"],
+            "is_available": cfg.get("is_available", True),
             "gateway_enabled": False,
             "gateway_configured": False,
             "payment_methods": ["DIRECT_UPI"],
@@ -1086,5 +1088,110 @@ def handle_admin_update_profile(user_id: int, data: dict):
     conn.commit()
     conn.close()
     return 200, {"status": "success", "message": "Admin profile and avatar updated successfully!"}
+
+# -----------------------------------------------------------------------------
+# Dynamic Global UPI Merchant Account Management Handlers
+# -----------------------------------------------------------------------------
+def handle_admin_list_merchant_accounts(admin_id: int):
+    """Returns all merchant accounts, current active account, and switching metrics."""
+    from .merchant_manager import list_merchant_accounts, get_active_merchant_account, get_switching_history
+    accounts = list_merchant_accounts()
+    active_acc = get_active_merchant_account()
+    history = get_switching_history(limit=10)
+
+    total_confirmed = sum(float(a.get("confirmed_collection_total", 0.0)) for a in accounts)
+    total_threshold = sum(float(a.get("collection_threshold_inr", 0.0)) for a in accounts)
+    active_count = sum(1 for a in accounts if a.get("is_active"))
+
+    stats = {
+        "total_accounts": len(accounts),
+        "active_account_id": active_acc.get("account_id") if active_acc else None,
+        "active_upi_vpa": active_acc.get("upi_vpa") if active_acc else None,
+        "active_merchant_name": active_acc.get("merchant_name") if active_acc else None,
+        "total_confirmed_collections": round(total_confirmed, 2),
+        "total_threshold_capacity": round(total_threshold, 2),
+        "total_switches": len(history)
+    }
+
+    return 200, {
+        "status": "success",
+        "accounts": accounts,
+        "active_account": active_acc,
+        "stats": stats
+    }
+
+def handle_admin_add_merchant_account(data: dict, admin_id: int):
+    """Adds a new verified merchant payment account."""
+    from .merchant_manager import add_merchant_account
+    ok, msg, res = add_merchant_account(data, created_by=f"Admin#{admin_id}")
+    return (201 if ok else 400), {
+        "status": "success" if ok else "error",
+        "message": msg,
+        "account": res if ok else None
+    }
+
+def handle_admin_update_merchant_account(account_id: str, data: dict, admin_id: int):
+    """Updates an existing merchant payment account."""
+    from .merchant_manager import update_merchant_account
+    ok, msg, res = update_merchant_account(account_id, data, updated_by=f"Admin#{admin_id}")
+    return (200 if ok else 400), {
+        "status": "success" if ok else "error",
+        "message": msg,
+        "account": res if ok else None
+    }
+
+def handle_admin_set_active_merchant_account(data: dict, admin_id: int):
+    """Manually switches the active global merchant payment account."""
+    from .merchant_manager import set_active_merchant_account
+    acc_id = data.get("account_id", "").strip().upper()
+    reason = data.get("reason", "MANUAL_ADMIN_SWITCH")
+    if not acc_id:
+        return 400, {"status": "error", "message": "Target account_id is required."}
+
+    ok, msg, res = set_active_merchant_account(acc_id, switched_by=f"Admin#{admin_id}", reason=reason)
+    return (200 if ok else 400), {
+        "status": "success" if ok else "error",
+        "message": msg,
+        "active_account": res if ok else None
+    }
+
+def handle_admin_get_switching_history(admin_id: int, limit: int = 50):
+    """Returns audit history of all account switches."""
+    from .merchant_manager import get_switching_history
+    history = get_switching_history(limit)
+    return 200, {
+        "status": "success",
+        "history": history
+    }
+
+def handle_admin_get_notification_logs(admin_id: int, limit: int = 50):
+    """Returns system notification logs and delivery status."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT id, event_type, recipient_email, subject, body_text, delivery_status, created_at
+        FROM notification_logs
+        ORDER BY id DESC
+        LIMIT ?
+    """, (limit,))
+    rows = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+    return 200, {
+        "status": "success",
+        "notifications": rows
+    }
+
+def handle_admin_test_notification_alert(admin_id: int):
+    """Triggers a test alert notification to verify mailer and audit logging."""
+    from .notifications import send_system_alert_email
+    subject = "[DropKit Test Alert] Notification Dispatch Test"
+    plain_text = f"DropKit Test Alert generated by Admin #{admin_id} at {now_iso()}. Email delivery and audit logging are functional."
+    html_body = f"<div style='font-family:sans-serif;padding:20px;background:#f0fdf4;'><h3 style='color:#166534;'>DropKit System Alert Test</h3><p>{plain_text}</p></div>"
+    ok, msg = send_system_alert_email(subject, html_body, plain_text, "TEST_ALERT")
+    return 200, {
+        "status": "success" if ok else "warning",
+        "message": msg
+    }
+
 
 

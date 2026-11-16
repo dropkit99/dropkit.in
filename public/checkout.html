@@ -126,6 +126,11 @@
               <input type="tel" id="cust-phone" class="form-control" placeholder="+91 98765 43210">
             </div>
 
+            <!-- Maintenance Notice Alert -->
+            <div id="checkout-maintenance-alert" style="display: none; background: #FFFBEB; border: 1px solid #FCD34D; border-radius: 8px; padding: 0.85rem 1rem; color: #92400E; margin-bottom: 1rem; font-size: 0.85rem; line-height: 1.45;">
+              ⚠️ <strong>Notice:</strong> Payments are temporarily undergoing scheduled maintenance. Please check back shortly.
+            </div>
+
             <button type="submit" id="btn-generate-qr" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
               Proceed to UPI Payment &rarr;
             </button>
@@ -413,22 +418,12 @@
         currentProduct = data.product;
 
         // Load merchant payment config (UPI VPA)
-        try {
-          const cfgRes = await DropKit.api('/api/config/payment-methods');
-          paymentConfig = cfgRes.config;
-
-          if (paymentConfig?.is_live) {
-            const badge = document.getElementById('checkout-mode-badge');
-            if (badge) {
-              badge.style.background = 'rgba(16,185,129,0.12)';
-              badge.style.color = '#047857';
-              badge.style.borderColor = 'rgba(16,185,129,0.25)';
-              badge.innerHTML = '<span>⚡</span> Direct UPI Active';
-            }
+        await refreshPaymentConfig();
+        setInterval(() => {
+          if (!currentOrder) {
+            refreshPaymentConfig();
           }
-        } catch (e) {
-          console.warn('Could not load payment methods config', e);
-        }
+        }, 15000);
 
         document.getElementById('product-loading').style.display = 'none';
         document.getElementById('product-summary').style.display = 'block';
@@ -449,6 +444,49 @@
         initScreenshotDropzone();
       } catch (err) {
         document.getElementById('product-loading').innerHTML = '<div class="text-danger">Failed to load product. Please check the URL.</div>';
+      }
+    }
+
+    async function refreshPaymentConfig() {
+      try {
+        const cfgRes = await DropKit.api('/api/config/payment-methods');
+        paymentConfig = cfgRes.config;
+
+        const mAlert = document.getElementById('checkout-maintenance-alert');
+        const submitBtn = document.getElementById('btn-generate-qr');
+
+        if (!paymentConfig || paymentConfig.is_available === false || !paymentConfig.upi_vpa) {
+          if (mAlert) {
+            mAlert.style.display = 'block';
+            mAlert.innerHTML = '⚠️ <strong>Scheduled Maintenance:</strong> Online payment acceptance is temporarily undergoing routine maintenance. Please check back shortly.';
+          }
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Payments Temporarily Paused';
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'not-allowed';
+          }
+        } else {
+          if (mAlert) mAlert.style.display = 'none';
+          if (submitBtn && submitBtn.disabled && submitBtn.textContent === 'Payments Temporarily Paused') {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Proceed to UPI Payment &rarr;';
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+          }
+        }
+
+        if (paymentConfig?.is_live) {
+          const badge = document.getElementById('checkout-mode-badge');
+          if (badge) {
+            badge.style.background = 'rgba(16,185,129,0.12)';
+            badge.style.color = '#047857';
+            badge.style.borderColor = 'rgba(16,185,129,0.25)';
+            badge.innerHTML = '<span>⚡</span> Direct UPI Active';
+          }
+        }
+      } catch (e) {
+        console.warn('Could not refresh payment methods config', e);
       }
     }
 

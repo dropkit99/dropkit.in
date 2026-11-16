@@ -62,7 +62,26 @@ from backend.api_handlers import (
     handle_admin_select_provider,
     handle_get_payment_config,
     handle_admin_update_settings,
-    handle_payment_webhook
+    handle_payment_webhook,
+    handle_admin_list_merchant_accounts,
+    handle_admin_add_merchant_account,
+    handle_admin_update_merchant_account,
+    handle_admin_set_active_merchant_account,
+    handle_admin_get_switching_history
+)
+from backend.merchant_manager import (
+    list_merchant_accounts,
+    get_active_merchant_account,
+    add_merchant_account,
+    update_merchant_account,
+    set_active_merchant_account,
+    check_and_trigger_auto_switch,
+    record_confirmed_collection,
+    get_switching_history
+)
+from backend.notifications import (
+    get_admin_notification_email,
+    send_system_alert_email
 )
 from backend.config import WEBHOOK_SECRET, validate_production_config
 import backend.config as cfg
@@ -77,9 +96,16 @@ def run_tests():
     print("DROPKIT — COMPLETE UPI-ONLY & SCREENSHOT VERIFICATION AUDIT TEST SUITE")
     print("=" * 75)
     
-    # Reset test environment login attempts
+    # Reset test environment login attempts and merchant account baseline
     conn = get_connection()
     conn.execute("DELETE FROM login_attempts WHERE ip_address IN ('127.0.0.1', '192.168.100.99')")
+    conn.execute("""
+        UPDATE merchant_upi_accounts
+        SET is_active = 1, is_enabled = 1, availability_status = 'AVAILABLE',
+            collection_threshold_inr = 200000.0
+        WHERE account_id = 'MCH-001'
+    """)
+    conn.execute("UPDATE merchant_upi_accounts SET is_active = 0 WHERE account_id != 'MCH-001'")
     conn.commit()
     conn.close()
 
@@ -473,8 +499,224 @@ def run_tests():
     assert orders_cnt >= 1
     print(f" PASS: Database intact: {products_cnt} products, {customers_cnt} customers, {orders_cnt} historical orders")
 
+    # =========================================================================
+    # REQUIREMENT 14: Multiple Merchant UPI Account Management (CRUD, Priority & Validation)
+    # =========================================================================
+    print("\n[TEST 14] Multiple Merchant UPI Account Management (CRUD & Security Validation):")
+    # Security test: reject sensitive credential keys (PIN, password, OTP)
+    bad_sec_code, bad_sec_res = handle_admin_add_merchant_account({
+        "account_id": "MCH-BAD",
+        "merchant_name": "Insecure Merchant",
+        "upi_vpa": "bad@upi",
+        "upi_pin": "123456"
+    }, admin_id=admin_id)
+    assert bad_sec_code == 400
+    assert "Security violation" in bad_sec_res["message"]
+    print(" PASS: Successfully blocked attempt to submit sensitive banking PIN/credentials")
+
+    # Security test: reject invalid VPA format
+    bad_vpa_code, bad_vpa_res = handle_admin_add_merchant_account({
+        "account_id": "MCH-BAD2",
+        "merchant_name": "Bad VPA Merchant",
+        "upi_vpa": "invalid-no-at-sign"
+    }, admin_id=admin_id)
+    assert bad_vpa_code == 400
+    print(" PASS: Successfully validated UPI VPA format")
+
+    # Clear any previous test accounts
+    conn = get_connection()
+    conn.execute("DELETE FROM merchant_upi_accounts WHERE account_id IN ('MCH-002', 'MCH-003', 'MCH-BAD', 'MCH-BAD2')")
+    conn.commit()
+    conn.close()
+
+    # Add Account 2 (Priority 2)
+    add2_code, add2_res = handle_admin_add_merchant_account({
+        "account_id": "MCH-002",
+        "merchant_name": "DropKit Secondary Treasury",
+        "upi_vpa": "dropkit.treasury@icici",
+        "provider_ref": "ICICI-MCH-02",
+        "collection_threshold_inr": 15000.0,
+        "priority": 2,
+        "is_enabled": 1,
+        "availability_status": "AVAILABLE",
+        "notes": "Secondary treasury account for failover"
+    }, admin_id=admin_id)
+    assert add2_code == 201, f"Failed to add MCH-002: {add2_res}"
+
+    # Add Account 3 (Priority 3)
+    add3_code, add3_res = handle_admin_add_merchant_account({
+        "account_id": "MCH-003",
+        "merchant_name": "DropKit Contingency Reserve",
+        "upi_vpa": "dropkit.backup@hdfcbank",
+        "provider_ref": "HDFC-MCH-03",
+        "collection_threshold_inr": 50000.0,
+        "priority": 3,
+        "is_enabled": 1,
+        "availability_status": "AVAILABLE",
+        "notes": "Contingency account"
+    }, admin_id=admin_id)
+    assert add3_code == 201, f"Failed to add MCH-003: {add3_res}"
+
+    list_code, list_res = handle_admin_list_merchant_accounts(admin_id=admin_id)
+    assert list_code == 200
+    acc_list = list_res["accounts"]
+    assert len(acc_list) >= 3, "Expected at least 3 configured merchant accounts"
+    # Verify sorted by priority ASC
+    priorities = [a["priority"] for a in acc_list]
+    assert priorities == sorted(priorities), "Accounts must be strictly ordered by priority"
+    print(f" PASS: Configured {len(acc_list)} verified merchant accounts ordered by priority sequence")
+
+    # =========================================================================
+    # REQUIREMENT 15: Global Active UPI Single-Account Enforcement
+    # =========================================================================
+    print("\n[TEST 15] Global Active UPI Single-Account Enforcement:")
+    active_acc = get_active_merchant_account()
+    assert active_acc is not None
+    assert active_acc["account_id"] == "MCH-001"
+    assert active_acc["upi_vpa"] == "store.founder@upi"
+
+    # Both customers visiting checkout see the same global active merchant UPI
+    ord_cust_a = create_order(
+        customer_name="Customer Alpha",
+        customer_email="alpha@test.dropkit.io",
+        product_id=prod["id"]
+    )
+    ord_cust_b = create_order(
+        customer_name="Customer Beta",
+        customer_email="beta@test.dropkit.io",
+        product_id=prod["id"]
+    )
+    assert ord_cust_a["merchant_account_id"] == "MCH-001"
+    assert ord_cust_b["merchant_account_id"] == "MCH-001"
+    assert ord_cust_a["upi_vpa"] == active_acc["upi_vpa"]
+    assert ord_cust_b["upi_vpa"] == active_acc["upi_vpa"]
+    print(f" PASS: Single global active account ({active_acc['account_id']} - {active_acc['upi_vpa']}) strictly enforced across all checkouts")
+
+    # =========================================================================
+    # REQUIREMENT 16: Automatic Threshold-Based Account Switching
+    # =========================================================================
+    print("\n[TEST 16] Automatic Threshold-Based Account Switching:")
+    # Set MCH-001 threshold to exactly current confirmed total + authoritative_price
+    current_confirmed_mch1 = float(active_acc["confirmed_collection_total"])
+    test_threshold_mch1 = current_confirmed_mch1 + authoritative_price
+
+    up_code, up_res = handle_admin_update_merchant_account("MCH-001", {
+        "collection_threshold_inr": test_threshold_mch1
+    }, admin_id=admin_id)
+    assert up_code == 200
+
+    # Create and approve order that hits/exceeds threshold
+    threshold_order = create_order(
+        customer_name="Threshold Trigger Customer",
+        customer_email="trigger@test.dropkit.io",
+        product_id=prod["id"]
+    )
+    assert threshold_order["merchant_account_id"] == "MCH-001"
+
+    # Admin verifies payment against bank credit
+    ver_ok, ver_msg, ver_data = admin_verify_payment(
+        order_number=threshold_order["order_number"],
+        admin_user_id=admin_id,
+        utr_ref=f"UTR-TRIGGER-{uuid.uuid4().hex[:8].upper()}"
+    )
+    assert ver_ok is True
+    assert ver_data["status"] == "PAID"
+
+    # Threshold is now reached! Auto-switch engine must have transitioned to MCH-002 (Priority 2)
+    new_active = get_active_merchant_account()
+    assert new_active is not None, "A new active account must be selected"
+    assert new_active["account_id"] == "MCH-002", f"Expected MCH-002, got {new_active['account_id']}"
+    assert new_active["is_active"] == 1
+    assert new_active["upi_vpa"] == "dropkit.treasury@icici"
+
+    # Verify switch history audit ledger
+    sw_code, sw_res = handle_admin_get_switching_history(admin_id=admin_id)
+    assert sw_code == 200
+    latest_switch = sw_res["history"][0]
+    assert latest_switch["prev_account_id"] == "MCH-001"
+    assert latest_switch["new_account_id"] == "MCH-002"
+    assert "THRESHOLD" in latest_switch["switch_reason"]
+    assert latest_switch["switched_by"] == "SYSTEM_AUTO"
+    print(f" PASS: Auto-Switching Engine triggered! Switched from MCH-001 to MCH-002 atomically:")
+    print(f"       Reason: {latest_switch['switch_reason']}")
+    print(f"       Audit Ref: {latest_switch['provider_event_ref']}")
+
+    # =========================================================================
+    # REQUIREMENT 17: Order Freezing & New Checkouts Isolation
+    # =========================================================================
+    print("\n[TEST 17] Order Freezing & New Checkouts Isolation:")
+    # New checkout created after the switch receives MCH-002
+    new_order = create_order(
+        customer_name="Customer Post-Switch",
+        customer_email="postswitch@test.dropkit.io",
+        product_id=prod["id"]
+    )
+    assert new_order["merchant_account_id"] == "MCH-002"
+    assert new_order["upi_vpa"] == "dropkit.treasury@icici"
+    assert "dropkit.treasury@icici" in new_order["upi_uri"]
+
+    # Verify earlier orders created under MCH-001 remain completely frozen!
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("SELECT order_number, upi_vpa, merchant_account_id FROM orders WHERE order_number = ?", (threshold_order["order_number"],))
+    frozen_row = dict(c.fetchone())
+    conn.close()
+    assert frozen_row["merchant_account_id"] == "MCH-001"
+    assert frozen_row["upi_vpa"] == "store.founder@upi"
+    print(f" PASS: New checkout routed to {new_order['merchant_account_id']} ({new_order['upi_vpa']})")
+    print(f" PASS: Frozen order #{frozen_row['order_number']} safely retained {frozen_row['merchant_account_id']} ({frozen_row['upi_vpa']})")
+
+    # =========================================================================
+    # REQUIREMENT 18: Fallback When All Accounts Unavailable / Threshold Reached
+    # =========================================================================
+    print("\n[TEST 18] Fallback When All Accounts Unavailable / Threshold Reached:")
+    # Mark MCH-002 and MCH-003 as UNAVAILABLE
+    handle_admin_update_merchant_account("MCH-002", {"availability_status": "UNAVAILABLE"}, admin_id=admin_id)
+    handle_admin_update_merchant_account("MCH-003", {"availability_status": "UNAVAILABLE"}, admin_id=admin_id)
+
+    # Now MCH-001 is threshold-exceeded, MCH-002 is UNAVAILABLE, MCH-003 is UNAVAILABLE
+    exhausted_active = get_active_merchant_account()
+    assert exhausted_active is None, "When all accounts are exhausted/unavailable, active must be None"
+
+    cfg_code, cfg_res = handle_get_payment_config()
+    assert cfg_code == 200
+    assert cfg_res["config"]["is_available"] is False
+
+    # Attempting to create an order should fail safely with clear maintenance message
+    try:
+        create_order(
+            customer_name="Late Customer",
+            customer_email="late@test.dropkit.io",
+            product_id=prod["id"]
+        )
+        assert False, "create_order must fail when no active merchant account is available"
+    except ValueError as ve:
+        assert "scheduled maintenance" in str(ve).lower()
+        print(f" PASS: Graceful maintenance protection verified: '{str(ve)}'")
+
+    # Restore MCH-001 threshold to allow ongoing development and checkouts
+    handle_admin_update_merchant_account("MCH-001", {
+        "collection_threshold_inr": 200000.0,
+        "availability_status": "AVAILABLE",
+        "is_enabled": 1
+    }, admin_id=admin_id)
+    handle_admin_update_merchant_account("MCH-002", {
+        "availability_status": "AVAILABLE",
+        "is_enabled": 1
+    }, admin_id=admin_id)
+    handle_admin_update_merchant_account("MCH-003", {
+        "availability_status": "AVAILABLE",
+        "is_enabled": 1
+    }, admin_id=admin_id)
+
+    # Set MCH-001 back to active primary
+    set_active_merchant_account("MCH-001", switched_by="ADMIN_RESTORE", reason="TEST_RESTORATION")
+    restored_acc = get_active_merchant_account()
+    assert restored_acc["account_id"] == "MCH-001"
+    print(f" PASS: Normal checkout flow restored to primary verified account {restored_acc['account_id']}")
+
     print("\n" + "=" * 75)
-    print("ALL 12 COMPREHENSIVE SECURITY & AUDIT SUITE TESTS PASSED (100% SUCCESS)!")
+    print("ALL 18 COMPREHENSIVE SECURITY, PAYMENT & AUTO-SWITCHING AUDIT TESTS PASSED (100% SUCCESS)!")
     print("=" * 75)
 
 if __name__ == "__main__":

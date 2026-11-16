@@ -233,6 +233,9 @@
         <button class="nav-link-btn" onclick="switchSection('finances')">
           <span>💳</span> Financial Settlements
         </button>
+        <button class="nav-link-btn" onclick="switchSection('upi-accounts')">
+          <span>🏦</span> UPI Account Management
+        </button>
         <button class="nav-link-btn" onclick="switchSection('instagram')">
           <span>🤖</span> Instagram Automation
         </button>
@@ -746,6 +749,154 @@
       </section>
 
       <!-- ==============================================
+           SECTION 6B: DYNAMIC GLOBAL UPI MANAGEMENT & AUTO-SWITCHING
+           ============================================== -->
+      <section id="section-upi-accounts" style="display: none;">
+        <!-- Top Banner / Summary -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1.35rem; color: var(--dk-navy); margin-bottom: 0.25rem;">Dynamic Global UPI Account Management</h3>
+            <p class="text-muted" style="font-size: 0.85rem;">
+              Manage verified merchant UPI accounts. The system enforces <strong>ONE global active payment method</strong> for all customer checkouts, automatically auto-switching to the next verified account when collection thresholds are reached.
+            </p>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button class="btn btn-primary" onclick="openAddUpiAccountModal()">
+              <span>➕</span> Add Merchant Account
+            </button>
+            <button class="btn btn-outline" onclick="loadUpiAccounts()">
+              <span>🔄</span> Refresh Accounts
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards -->
+        <div class="stat-card-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 1.75rem;">
+          <div class="stat-card" style="border-top: 3px solid #10B981;">
+            <div class="stat-label">CURRENT ACTIVE GLOBAL UPI</div>
+            <div class="stat-val" id="stat-active-vpa" style="font-size: 1.2rem; color: #10B981; word-break: break-all;">--</div>
+            <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.35rem;" id="stat-active-name">Serving 100% of Checkouts</div>
+          </div>
+          <div class="stat-card" style="border-top: 3px solid #3B82F6;">
+            <div class="stat-label">TOTAL CONFIRMED COLLECTIONS</div>
+            <div class="stat-val" id="stat-total-confirmed" style="font-size: 1.35rem; color: var(--dk-navy);">₹0.00</div>
+            <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.35rem;">Across all merchant accounts</div>
+          </div>
+          <div class="stat-card" style="border-top: 3px solid #F59E0B;">
+            <div class="stat-label">TOTAL THRESHOLD CAPACITY</div>
+            <div class="stat-val" id="stat-total-capacity" style="font-size: 1.35rem; color: var(--dk-navy);">₹0.00</div>
+            <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.35rem;">Combined collection ceiling</div>
+          </div>
+          <div class="stat-card" style="border-top: 3px solid var(--dk-orange);">
+            <div class="stat-label">AUTO-SWITCHING EVENTS</div>
+            <div class="stat-val" id="stat-total-switches" style="font-size: 1.35rem; color: var(--dk-orange);">0</div>
+            <div style="font-size: 0.75rem; color: #64748B; margin-top: 0.35rem;">Audit log transitions</div>
+          </div>
+        </div>
+
+        <!-- Active Merchant Account Highlight Card -->
+        <div id="active-account-hero-container" style="margin-bottom: 2rem;">
+          <!-- Injected via loadUpiAccounts() -->
+        </div>
+
+        <!-- All Merchant Accounts Registry Table -->
+        <div class="card" style="margin-bottom: 2rem; overflow: hidden;">
+          <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <h4 style="font-size: 1.05rem; color: var(--dk-navy); margin-bottom: 0.2rem;">Configured Merchant UPI Accounts</h4>
+              <p class="text-muted" style="font-size: 0.8rem;">Priority-ordered list of payment collection accounts. When the active account threshold is reached, the system auto-selects the next eligible account.</p>
+            </div>
+            <span class="badge badge-success" style="font-size: 0.75rem;">🛡️ Tamper-Proof & Isolated</span>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; margin-bottom: 0;">
+              <thead>
+                <tr>
+                  <th style="width: 70px;">Priority</th>
+                  <th>Account ID</th>
+                  <th>Merchant Name &amp; UPI ID</th>
+                  <th>Provider Ref</th>
+                  <th>Confirmed Total</th>
+                  <th>Threshold (Limit)</th>
+                  <th style="width: 140px;">Capacity Used</th>
+                  <th>Status</th>
+                  <th style="text-align: right; width: 170px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="upi-accounts-table-body">
+                <tr><td colspan="9" style="text-align: center; padding: 2rem; color: #64748B;">Loading merchant accounts...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Switching History Audit Trail Card -->
+        <div class="card" style="margin-bottom: 2rem; overflow: hidden;">
+          <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <h4 style="font-size: 1.05rem; color: var(--dk-navy); margin-bottom: 0.2rem;">Account Switching Audit History</h4>
+              <p class="text-muted" style="font-size: 0.8rem;">Immutable log of all global active UPI transitions triggered by threshold limits or administrator actions.</p>
+            </div>
+            <span class="badge" style="background: rgba(27,29,59,0.06); color: var(--dk-navy); font-size: 0.75rem;">📜 Audit Ledger</span>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; margin-bottom: 0;">
+              <thead>
+                <tr>
+                  <th>Timestamp (IST)</th>
+                  <th>Previous Account</th>
+                  <th>New Active Account</th>
+                  <th>Switch Reason</th>
+                  <th>Triggered By</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="upi-history-table-body">
+                <tr><td colspan="6" style="text-align: center; padding: 2rem; color: #64748B;">Loading switching history...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Email Notifications & Rules Configuration -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+          <!-- Notification Dispatch Card -->
+          <div class="card" style="padding: 1.5rem;">
+            <h4 style="font-size: 1rem; color: var(--dk-navy); margin-bottom: 0.5rem;">📧 Admin Email Alerts</h4>
+            <p class="text-muted" style="font-size: 0.82rem; margin-bottom: 1rem;">
+              Critical alerts are automatically emailed when an account reaches its threshold, a switch occurs, or when all accounts are exhausted.
+            </p>
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 0.85rem; margin-bottom: 1rem; font-size: 0.85rem;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+                <span style="color: #64748B;">Target Admin Email:</span>
+                <strong id="disp-admin-notify-email" style="color: var(--dk-navy);">admin@dropkit.io</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #64748B;">Alert Engine:</span>
+                <span class="badge badge-success" style="font-size: 0.7rem;">Active (TLS / Audit Log)</span>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="sendTestAlertEmail()" id="btn-test-alert">
+              <span>🔔</span> Send Test Alert Email
+            </button>
+          </div>
+
+          <!-- Rules Summary Card -->
+          <div class="card" style="padding: 1.5rem;">
+            <h4 style="font-size: 1rem; color: var(--dk-navy); margin-bottom: 0.5rem;">⚙️ Auto-Switching Architecture Rules</h4>
+            <ul style="font-size: 0.82rem; color: #475569; padding-left: 1.2rem; line-height: 1.6; margin: 0;">
+              <li><strong>One Global Active Account:</strong> Every customer visiting permanent URLs sees the same single active merchant method.</li>
+              <li><strong>Threshold Auto-Switch:</strong> When confirmed collections reach the configured limit, the engine switches atomically to the next verified account by priority.</li>
+              <li><strong>Order Immutability:</strong> Once an order is created, its assigned merchant account and UPI ID are frozen forever. Future switches never alter existing orders.</li>
+              <li><strong>Safe Fallback:</strong> If all accounts reach their limit, new checkouts are paused with a clear maintenance notice rather than generating broken QR codes.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================
            SECTION 7: PLATFORM & SYSTEM SETTINGS
            ============================================== -->
       <section id="section-settings" style="display: none;">
@@ -1167,6 +1318,88 @@
     </div>
   </div>
 
+  <!-- Add/Edit Merchant Account Modal -->
+  <div id="modal-upi-account" class="modal" style="display: none;">
+    <div class="modal-content" style="max-width: 560px; padding: 2rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <h3 id="modal-upi-title" style="font-size: 1.2rem; color: var(--dk-navy); margin: 0;">Add Merchant UPI Account</h3>
+        <button onclick="closeModal('modal-upi-account')" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #64748B;">✕</button>
+      </div>
+
+      <form id="upi-account-form">
+        <input type="hidden" id="upi-edit-mode" value="add">
+        
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">Account ID (Internal Code)</label>
+          <input type="text" id="upi-account-id" class="form-control" placeholder="e.g. MCH-002 (leave blank to auto-generate)">
+          <small class="text-muted" style="font-size: 0.75rem;">Unique internal identifier for transaction tracing &amp; reconciliation.</small>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">Merchant Payee Name *</label>
+          <input type="text" id="upi-merchant-name" class="form-control" placeholder="e.g. DropKit Primary Treasury" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">Merchant UPI ID (VPA) *</label>
+          <input type="text" id="upi-vpa-input" class="form-control" placeholder="e.g. dropkit.treasury@icici" required>
+          <small class="text-muted" style="font-size: 0.75rem;">Must be a valid VPA (name@bank format). Customer payments will route here.</small>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Collection Threshold (INR) *</label>
+            <input type="number" id="upi-threshold-input" class="form-control" placeholder="100000" min="100" step="100" required>
+            <small class="text-muted" style="font-size: 0.75rem;">Limit before auto-switching.</small>
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Priority (1 = Highest) *</label>
+            <input type="number" id="upi-priority-input" class="form-control" placeholder="1" min="1" step="1" required>
+            <small class="text-muted" style="font-size: 0.75rem;">Order in switching queue.</small>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Provider Reference</label>
+            <input type="text" id="upi-provider-ref" class="form-control" placeholder="e.g. HDFC-MID-98214">
+          </div>
+
+          <div class="form-group">
+            <label style="font-size: 0.85rem; font-weight: 600;">Availability Status</label>
+            <select id="upi-status-select" class="form-control">
+              <option value="AVAILABLE">AVAILABLE (Eligible)</option>
+              <option value="UNAVAILABLE">UNAVAILABLE (Paused)</option>
+              <option value="SUSPENDED">SUSPENDED</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="checkbox" id="upi-enabled-check" checked style="width: 16px; height: 16px;">
+            <span style="font-weight: 600; font-size: 0.88rem;">Enable this Account for Auto-Switching</span>
+          </label>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label style="font-size: 0.85rem; font-weight: 600;">Internal Notes (Optional)</label>
+          <textarea id="upi-notes-input" class="form-control" rows="2" placeholder="e.g. Secondary backup account linked to ICICI current account..."></textarea>
+        </div>
+
+        <div style="background: #F1F5F9; border-left: 3px solid #3B82F6; padding: 0.75rem; border-radius: 4px; font-size: 0.78rem; color: #334155; margin-bottom: 1.25rem;">
+          🔒 <strong>Security Policy:</strong> Never supply banking passwords, UPI PINs, or OTPs. DropKit operates exclusively with public Merchant VPAs and verified bank settlement records.
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-upi-account')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-upi-acc">Save Merchant Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Chart.js & App Scripts -->
   <script src="/js/chart.min.js"></script>
   <script src="/js/app.js"></script>
@@ -1215,6 +1448,7 @@
         'customers': 'Customers & Buyers Directory',
         'orders': 'Orders & Payment Reconciliation Ledger',
         'finances': 'Financial Accounting & Bank Settlements',
+        'upi-accounts': 'UPI Merchant Account Management & Auto-Switching',
         'instagram': 'Instagram Reel & Comment Automation',
         'settings': 'Platform & Profile Settings'
       };
@@ -1226,6 +1460,7 @@
       else if (sectionId === 'customers') loadCustomers();
       else if (sectionId === 'orders') loadOrders();
       else if (sectionId === 'finances') loadFinances();
+      else if (sectionId === 'upi-accounts') loadUpiAccounts();
       else if (sectionId === 'instagram') loadInstagram();
       else if (sectionId === 'settings') {
         loadSettings();
@@ -2209,6 +2444,344 @@
         `).join('');
       } catch (err) {
         console.error(err);
+      }
+    }
+
+    // =========================================================================
+    // SECTION 6B: DYNAMIC GLOBAL UPI MANAGEMENT & AUTO-SWITCHING
+    // =========================================================================
+    let cachedUpiAccounts = [];
+
+    async function loadUpiAccounts() {
+      try {
+        const res = await DropKit.api('/api/admin/upi-accounts');
+        cachedUpiAccounts = res.accounts || [];
+        const active = res.active_account;
+        const stats = res.stats || {};
+
+        // 1. Update Metrics Cards
+        document.getElementById('stat-active-vpa').textContent = active ? active.upi_vpa : 'NO ACTIVE ACCOUNT';
+        document.getElementById('stat-active-name').textContent = active ? `${active.account_id} • ${active.merchant_name}` : 'Checkouts Paused (Maintenance)';
+        document.getElementById('stat-total-confirmed').textContent = DropKit.formatINR(stats.total_confirmed_collections || 0);
+        document.getElementById('stat-total-capacity').textContent = DropKit.formatINR(stats.total_threshold_capacity || 0);
+        document.getElementById('stat-total-switches').textContent = stats.total_switches || 0;
+
+        // 2. Render Active Account Hero Card
+        const heroMount = document.getElementById('active-account-hero-container');
+        if (active) {
+          const thresh = parseFloat(active.collection_threshold_inr || 100000);
+          const conf = parseFloat(active.confirmed_collection_total || 0);
+          const pct = Math.min(100, Math.round((conf / thresh) * 100));
+          const rem = Math.max(0, thresh - conf);
+          const barColor = pct >= 90 ? '#EF4444' : (pct >= 75 ? '#F59E0B' : '#10B981');
+
+          heroMount.innerHTML = `
+            <div class="card" style="padding: 1.5rem 1.75rem; border: 2px solid #10B981; background: linear-gradient(135deg, rgba(16,185,129,0.04) 0%, rgba(27,29,59,0.02) 100%);">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.5rem;">
+                    <span class="badge badge-success" style="font-size: 0.75rem; padding: 0.35rem 0.65rem;">
+                      ⚡ CURRENT GLOBAL ACTIVE PAYMENT METHOD
+                    </span>
+                    <span class="badge" style="background: rgba(27,29,59,0.08); color: var(--dk-navy); font-size: 0.75rem;">
+                      Priority #${active.priority}
+                    </span>
+                    <span class="badge" style="background: #E0E7FF; color: #3730A3; font-size: 0.75rem;">
+                      ${active.account_id}
+                    </span>
+                  </div>
+                  <h3 style="font-size: 1.4rem; color: var(--dk-navy); margin: 0 0 0.25rem;">${active.merchant_name}</h3>
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <code style="font-size: 1.05rem; background: #FFFFFF; border: 1px solid #CBD5E1; padding: 0.25rem 0.65rem; border-radius: 4px; color: var(--dk-navy); font-weight: 700;">
+                      ${active.upi_vpa}
+                    </code>
+                    <button class="btn btn-outline btn-sm" onclick="DropKit.copy('${active.upi_vpa}', 'Active UPI ID copied')" title="Copy UPI ID" style="padding: 0.25rem 0.6rem;">
+                      📋 Copy
+                    </button>
+                    ${active.provider_ref ? `<span style="font-size: 0.8rem; color: #64748B;">Ref: <strong>${active.provider_ref}</strong></span>` : ''}
+                  </div>
+                </div>
+
+                <!-- Manual Fast Switcher -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; background: #FFFFFF; padding: 0.5rem 0.75rem; border-radius: 8px; border: 1px solid #E2E8F0;">
+                  <span style="font-size: 0.8rem; color: #64748B; font-weight: 600;">Manual Switch:</span>
+                  <select id="quick-switch-select" class="form-control" style="font-size: 0.82rem; padding: 0.3rem 0.5rem; width: 170px;">
+                    ${cachedUpiAccounts.filter(a => a.account_id !== active.account_id && a.is_enabled && a.availability_status === 'AVAILABLE').map(a => `
+                      <option value="${a.account_id}">${a.account_id} - ${a.merchant_name}</option>
+                    `).join('')}
+                  </select>
+                  <button class="btn btn-primary btn-sm" onclick="handleQuickSwitch()" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                    Switch Now
+                  </button>
+                </div>
+              </div>
+
+              <!-- Collection Threshold Progress Bar -->
+              <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(16,185,129,0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.85rem;">
+                  <div>
+                    <span style="color: #64748B;">Confirmed Collections: </span>
+                    <strong style="color: var(--dk-navy);">${DropKit.formatINR(conf)}</strong>
+                    <span style="color: #94A3B8;"> / ${DropKit.formatINR(thresh)}</span>
+                  </div>
+                  <div>
+                    <strong style="color: ${barColor};">${pct}% Used</strong>
+                    <span style="color: #64748B; margin-left: 0.5rem;">(${DropKit.formatINR(rem)} remaining before auto-switch)</span>
+                  </div>
+                </div>
+                <div style="width: 100%; height: 10px; background: #E2E8F0; border-radius: 999px; overflow: hidden;">
+                  <div style="width: ${pct}%; height: 100%; background: ${barColor}; transition: width 0.4s ease;"></div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          heroMount.innerHTML = `
+            <div class="card" style="padding: 1.5rem; border: 2px solid #EF4444; background: #FEF2F2;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <h4 style="color: #991B1B; margin: 0 0 0.35rem;">⚠️ No Active Merchant Account Available</h4>
+                  <p style="color: #7F1D1D; font-size: 0.85rem; margin: 0;">
+                    All configured merchant accounts have reached their collection thresholds or are disabled. Customer checkouts are currently showing a friendly maintenance notice.
+                  </p>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="openAddUpiAccountModal()">
+                  Add / Enable Account Now
+                </button>
+              </div>
+            </div>
+          `;
+        }
+
+        // 3. Render Accounts Table
+        const tbody = document.getElementById('upi-accounts-table-body');
+        if (cachedUpiAccounts.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 2rem; color: #64748B;">No merchant accounts configured.</td></tr>`;
+        } else {
+          tbody.innerHTML = cachedUpiAccounts.map(a => {
+            const thresh = parseFloat(a.collection_threshold_inr || 100000);
+            const conf = parseFloat(a.confirmed_collection_total || 0);
+            const pct = Math.min(100, Math.round((conf / thresh) * 100));
+            const barColor = pct >= 90 ? '#EF4444' : (pct >= 75 ? '#F59E0B' : '#10B981');
+
+            let statusBadge = '';
+            if (a.is_active) {
+              statusBadge = `<span class="badge badge-success" style="font-weight:700;">ACTIVE (SERVING)</span>`;
+            } else if (!a.is_enabled) {
+              statusBadge = `<span class="badge" style="background:#E2E8F0; color:#475569;">DISABLED</span>`;
+            } else if (a.availability_status !== 'AVAILABLE') {
+              statusBadge = `<span class="badge badge-danger">${a.availability_status}</span>`;
+            } else if (conf >= thresh) {
+              statusBadge = `<span class="badge" style="background:#FEF3C7; color:#92400E; border:1px solid #FCD34D;">THRESHOLD REACHED</span>`;
+            } else {
+              statusBadge = `<span class="badge" style="background:#DBEAFE; color:#1E40AF;">ELIGIBLE (STANDBY)</span>`;
+            }
+
+            return `
+              <tr style="${a.is_active ? 'background: rgba(16,185,129,0.04);' : ''}">
+                <td><span class="badge" style="background: rgba(27,29,59,0.06); color: var(--dk-navy); font-weight:700;">#${a.priority}</span></td>
+                <td><strong>${a.account_id}</strong></td>
+                <td>
+                  <div style="font-weight: 600; color: var(--dk-navy);">${a.merchant_name}</div>
+                  <div style="font-size: 0.8rem; font-family: monospace; color: #64748B;">${a.upi_vpa}</div>
+                </td>
+                <td><span style="font-size: 0.8rem; color: #475569;">${a.provider_ref || '—'}</span></td>
+                <td><strong style="color: var(--dk-navy);">${DropKit.formatINR(conf)}</strong></td>
+                <td><span style="color: #475569;">${DropKit.formatINR(thresh)}</span></td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 0.4rem;">
+                    <div style="flex: 1; height: 6px; background: #E2E8F0; border-radius: 999px; overflow: hidden;">
+                      <div style="width: ${pct}%; height: 100%; background: ${barColor};"></div>
+                    </div>
+                    <span style="font-size: 0.75rem; font-weight: 600; color: ${barColor};">${pct}%</span>
+                  </div>
+                </td>
+                <td>${statusBadge}</td>
+                <td style="text-align: right;">
+                  <div style="display: flex; gap: 0.35rem; justify-content: flex-end; align-items: center;">
+                    ${!a.is_active && a.is_enabled && a.availability_status === 'AVAILABLE' ? `
+                      <button class="btn btn-outline btn-sm" onclick="setActiveUpiAccount('${a.account_id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Make this account the globally active method now">
+                        ⚡ Make Active
+                      </button>
+                    ` : ''}
+                    <button class="btn btn-outline btn-sm" onclick="openEditUpiAccountModal('${a.account_id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Edit Account">
+                      ✏️
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="toggleUpiAccountEnabled('${a.account_id}', ${a.is_enabled ? 0 : 1})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: ${a.is_enabled ? '#EF4444' : '#10B981'};" title="${a.is_enabled ? 'Disable Account' : 'Enable Account'}">
+                      ${a.is_enabled ? '⏸' : '▶'}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        // 4. Load Switch History
+        loadUpiSwitchHistory();
+      } catch (err) {
+        console.error('Failed to load UPI accounts:', err);
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    async function loadUpiSwitchHistory() {
+      try {
+        const res = await DropKit.api('/api/admin/upi-accounts/history');
+        const history = res.history || [];
+        const tbody = document.getElementById('upi-history-table-body');
+        if (history.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 1.5rem; color: #64748B;">No switching history recorded yet.</td></tr>`;
+        } else {
+          tbody.innerHTML = history.map(h => {
+            const dt = new Date(h.created_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'short', timeStyle: 'medium' });
+            return `
+              <tr>
+                <td style="font-size: 0.8rem; color: #64748B;">${dt}</td>
+                <td><span style="font-family: monospace; font-size: 0.85rem;">${h.prev_account_id || 'NONE'}</span></td>
+                <td><strong style="color: #10B981; font-family: monospace; font-size: 0.85rem;">${h.new_account_id}</strong></td>
+                <td><span class="badge" style="background: rgba(255,101,61,0.1); color: var(--dk-orange); font-size: 0.75rem;">${h.switch_reason}</span></td>
+                <td><span style="font-size: 0.8rem; color: #475569;">${h.switched_by}</span></td>
+                <td style="font-size: 0.8rem; color: #64748B;">${h.details || '—'}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    function openAddUpiAccountModal() {
+      document.getElementById('modal-upi-title').textContent = 'Add Merchant UPI Account';
+      document.getElementById('upi-edit-mode').value = 'add';
+      document.getElementById('upi-account-id').value = '';
+      document.getElementById('upi-account-id').disabled = false;
+      document.getElementById('upi-merchant-name').value = '';
+      document.getElementById('upi-vpa-input').value = '';
+      document.getElementById('upi-threshold-input').value = '100000';
+      document.getElementById('upi-priority-input').value = (cachedUpiAccounts.length + 1).toString();
+      document.getElementById('upi-provider-ref').value = '';
+      document.getElementById('upi-status-select').value = 'AVAILABLE';
+      document.getElementById('upi-enabled-check').checked = true;
+      document.getElementById('upi-notes-input').value = '';
+      openModal('modal-upi-account');
+    }
+
+    function openEditUpiAccountModal(accountId) {
+      const acc = cachedUpiAccounts.find(a => a.account_id === accountId);
+      if (!acc) return;
+      document.getElementById('modal-upi-title').textContent = `Edit Account (${acc.account_id})`;
+      document.getElementById('upi-edit-mode').value = 'edit';
+      document.getElementById('upi-account-id').value = acc.account_id;
+      document.getElementById('upi-account-id').disabled = true;
+      document.getElementById('upi-merchant-name').value = acc.merchant_name;
+      document.getElementById('upi-vpa-input').value = acc.upi_vpa;
+      document.getElementById('upi-threshold-input').value = acc.collection_threshold_inr;
+      document.getElementById('upi-priority-input').value = acc.priority;
+      document.getElementById('upi-provider-ref').value = acc.provider_ref || '';
+      document.getElementById('upi-status-select').value = acc.availability_status || 'AVAILABLE';
+      document.getElementById('upi-enabled-check').checked = Boolean(acc.is_enabled);
+      document.getElementById('upi-notes-input').value = acc.notes || '';
+      openModal('modal-upi-account');
+    }
+
+    document.getElementById('upi-account-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-upi-acc');
+      btn.disabled = true;
+      btn.textContent = 'Saving Account...';
+
+      const mode = document.getElementById('upi-edit-mode').value;
+      const account_id = document.getElementById('upi-account-id').value.trim();
+      const payload = {
+        account_id,
+        merchant_name: document.getElementById('upi-merchant-name').value.trim(),
+        upi_vpa: document.getElementById('upi-vpa-input').value.trim(),
+        collection_threshold_inr: parseFloat(document.getElementById('upi-threshold-input').value) || 100000.0,
+        priority: parseInt(document.getElementById('upi-priority-input').value) || 1,
+        provider_ref: document.getElementById('upi-provider-ref').value.trim(),
+        availability_status: document.getElementById('upi-status-select').value,
+        is_enabled: document.getElementById('upi-enabled-check').checked ? 1 : 0,
+        notes: document.getElementById('upi-notes-input').value.trim()
+      };
+
+      try {
+        if (mode === 'add') {
+          const res = await DropKit.api('/api/admin/upi-accounts', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          });
+          DropKit.toast(res.message, 'success');
+        } else {
+          const res = await DropKit.api(`/api/admin/upi-accounts/${account_id}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload)
+          });
+          DropKit.toast(res.message, 'success');
+        }
+        closeModal('modal-upi-account');
+        loadUpiAccounts();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Merchant Account';
+      }
+    });
+
+    async function setActiveUpiAccount(accountId) {
+      if (!confirm(`Are you sure you want to switch the global active payment method to ${accountId}? All new customer checkouts will immediately receive this account.`)) {
+        return;
+      }
+      try {
+        const res = await DropKit.api('/api/admin/upi-accounts/switch', {
+          method: 'POST',
+          body: JSON.stringify({ account_id: accountId, reason: 'MANUAL_ADMIN_SWITCH' })
+        });
+        DropKit.toast(res.message, 'success');
+        loadUpiAccounts();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    async function handleQuickSwitch() {
+      const sel = document.getElementById('quick-switch-select');
+      if (sel && sel.value) {
+        await setActiveUpiAccount(sel.value);
+      }
+    }
+
+    async function toggleUpiAccountEnabled(accountId, targetState) {
+      try {
+        const res = await DropKit.api(`/api/admin/upi-accounts/${accountId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ is_enabled: targetState })
+        });
+        DropKit.toast(`Account ${accountId} ${targetState ? 'enabled' : 'disabled'}.`, 'success');
+        loadUpiAccounts();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    async function sendTestAlertEmail() {
+      const btn = document.getElementById('btn-test-alert');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Sending Alert...';
+      }
+      try {
+        const res = await DropKit.api('/api/admin/notifications/test', { method: 'POST' });
+        DropKit.toast(res.message, 'success');
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>🔔</span> Send Test Alert Email';
+        }
       }
     }
 

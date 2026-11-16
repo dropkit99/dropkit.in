@@ -256,6 +256,49 @@ def init_db():
         updated_at TEXT NOT NULL
     );
 
+    -- Merchant UPI Accounts (Global Dynamic Auto-Switching System)
+    CREATE TABLE IF NOT EXISTS merchant_upi_accounts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        account_id TEXT UNIQUE NOT NULL,            -- e.g. 'MCH-001'
+        merchant_name TEXT NOT NULL,                -- e.g. 'DropKit Official Creator'
+        upi_vpa TEXT NOT NULL,                      -- e.g. 'store.founder@upi'
+        provider_ref TEXT DEFAULT '',               -- e.g. 'HDFC-MCH-01' or bank account ref
+        is_enabled INTEGER NOT NULL DEFAULT 1,      -- 1 = enabled, 0 = disabled
+        availability_status TEXT NOT NULL DEFAULT 'AVAILABLE', -- 'AVAILABLE', 'UNAVAILABLE', 'SUSPENDED'
+        collection_threshold_inr REAL NOT NULL DEFAULT 100000.0, -- Configurable threshold
+        confirmed_collection_total REAL NOT NULL DEFAULT 0.0,    -- Sum of confirmed PAID orders
+        priority INTEGER NOT NULL DEFAULT 1,        -- Lower number = higher priority (1, 2, 3...)
+        is_active INTEGER NOT NULL DEFAULT 0,       -- Exactly ONE active account globally (1 or 0)
+        notes TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+    );
+
+    -- UPI Switching History & Audit Log
+    CREATE TABLE IF NOT EXISTS upi_switch_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        prev_account_id TEXT,
+        prev_upi_vpa TEXT,
+        new_account_id TEXT,
+        new_upi_vpa TEXT,
+        switch_reason TEXT NOT NULL,                -- 'THRESHOLD_EXCEEDED', 'MANUAL_ADMIN_SWITCH', 'ACCOUNT_UNAVAILABLE', 'FAILOVER'
+        provider_event_ref TEXT DEFAULT '',
+        switched_by TEXT NOT NULL DEFAULT 'SYSTEM_AUTO', -- 'SYSTEM_AUTO' or admin username
+        details TEXT,
+        created_at TEXT NOT NULL
+    );
+
+    -- System Notifications Log (Email Alerts & System Events)
+    CREATE TABLE IF NOT EXISTS notification_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_type TEXT NOT NULL,                   -- 'ACCOUNT_SWITCH', 'THRESHOLD_REACHED', 'NO_ELIGIBLE_ACCOUNTS', 'ACCOUNT_UNAVAILABLE'
+        recipient_email TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        body_text TEXT,
+        delivery_status TEXT NOT NULL DEFAULT 'LOGGED', -- 'SENT', 'FAILED', 'LOGGED'
+        created_at TEXT NOT NULL
+    );
+
     -- Indexes for high-performance sales queries and security lookups
     CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
     CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
@@ -266,6 +309,8 @@ def init_db():
     CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
     CREATE INDEX IF NOT EXISTS idx_admin_sessions_token ON admin_sessions(token);
     CREATE INDEX IF NOT EXISTS idx_login_attempts_ip ON login_attempts(ip_address, attempted_at);
+    CREATE INDEX IF NOT EXISTS idx_merchant_accounts_active ON merchant_upi_accounts(is_active);
+    CREATE INDEX IF NOT EXISTS idx_merchant_accounts_priority ON merchant_upi_accounts(priority);
     """);
 
     # Safe Schema Migrations for existing databases
@@ -309,6 +354,45 @@ def init_db():
         cursor.execute("ALTER TABLE orders ADD COLUMN is_duplicate_receipt INTEGER DEFAULT 0;")
     if 'duplicate_of_order' not in existing_cols:
         cursor.execute("ALTER TABLE orders ADD COLUMN duplicate_of_order TEXT;")
+    if 'merchant_account_id' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN merchant_account_id TEXT;")
+
+    # Seed Default Verified Merchant UPI Account if none exist
+    cursor.execute("SELECT COUNT(*) FROM merchant_upi_accounts;")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("SELECT value FROM system_settings WHERE key = 'upi_vpa';")
+        vpa_row = cursor.fetchone()
+        seed_vpa = vpa_row[0] if vpa_row else "store.founder@upi"
+
+        cursor.execute("SELECT value FROM system_settings WHERE key = 'merchant_name';")
+        name_row = cursor.fetchone()
+        seed_name = name_row[0] if name_row else "DropKit Official Creator"
+
+        # Calculate confirmed collection total from existing PAID orders
+        cursor.execute("SELECT COALESCE(SUM(amount_inr), 0) FROM orders WHERE status = 'PAID';")
+        initial_collections = float(cursor.fetchone()[0])
+
+        now = now_iso()
+        cursor.execute("""
+            INSERT INTO merchant_upi_accounts (
+                account_id, merchant_name, upi_vpa, provider_ref, is_enabled,
+                availability_status, collection_threshold_inr, confirmed_collection_total,
+                priority, is_active, notes, created_at, updated_at
+            )
+            VALUES (?, ?, ?, ?, 1, 'AVAILABLE', 100000.0, ?, 1, 1, 'Default primary merchant account', ?, ?)
+        """, ('MCH-001', seed_name, seed_vpa, 'DROPKIT-CORE-01', initial_collections, now, now))
+
+        # Backfill existing orders with MCH-001
+        cursor.execute("UPDATE orders SET merchant_account_id = 'MCH-001' WHERE merchant_account_id IS NULL;")
+
+        # Log initial configuration
+        cursor.execute("""
+            INSERT INTO upi_switch_history (
+                prev_account_id, prev_upi_vpa, new_account_id, new_upi_vpa,
+                switch_reason, provider_event_ref, switched_by, details, created_at
+            )
+            VALUES ('NONE', '', 'MCH-001', ?, 'INITIAL_SEEDING', 'SYSTEM', 'SYSTEM_AUTO', 'Initial active merchant account configured', ?)
+        """, (seed_vpa, now))
 
     conn.commit()
     conn.close()
