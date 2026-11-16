@@ -10,7 +10,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
-from backend.config import PUBLIC_DIR, PUBLIC_COVER_DIR, SECURE_PDF_DIR
+from backend.config import PUBLIC_DIR, PUBLIC_COVER_DIR, SECURE_PDF_DIR, MAX_SCREENSHOT_SIZE_MB
 from backend.storage import verify_and_claim_download, save_uploaded_pdf, save_uploaded_cover
 from backend.api_handlers import (
     extract_admin,
@@ -21,7 +21,6 @@ from backend.api_handlers import (
     handle_get_order_status,
     handle_customer_downloads,
     handle_payment_webhook,
-    handle_simulate_payment,
     handle_admin_login,
     handle_admin_overview,
     handle_admin_analytics,
@@ -55,7 +54,7 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Razorpay-Signature, X-DropKit-Signature")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Order-Token, X-DropKit-Signature")
         if headers:
             for k, v in headers.items():
                 self.send_header(k, v)
@@ -66,7 +65,7 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         self.send_response(204)
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Razorpay-Signature, X-DropKit-Signature")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Order-Token, X-DropKit-Signature")
         self.end_headers()
 
     def do_GET(self):
@@ -91,9 +90,16 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
             code, res = handle_get_categories()
             return self.send_json(code, res)
 
+        if path in ("/api/config/payment-methods", "/api/checkout/config"):
+            from backend.api_handlers import handle_get_payment_config
+            code, res = handle_get_payment_config()
+            return self.send_json(code, res)
+
         if path.startswith("/api/orders/"):
             order_num = path.split("/")[-1]
-            code, res = handle_get_order_status(order_num)
+            token = self.headers.get("X-Order-Token") or query.get("token", [None])[0]
+            admin_user = extract_admin(self.headers)
+            code, res = handle_get_order_status(order_num, client_access_token=token, is_admin=bool(admin_user))
             return self.send_json(code, res)
 
         if path == "/api/customer/downloads":
@@ -178,6 +184,26 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 code, res = handle_admin_orders(query)
                 return self.send_json(code, res)
 
+            if path.startswith("/api/admin/orders/") and path.endswith("/screenshot"):
+                order_num = path.split("/")[-2]
+                from backend.api_handlers import handle_admin_view_screenshot
+                code, msg, file_path, mime_type = handle_admin_view_screenshot(order_num)
+                if code != 200 or not file_path:
+                    return self.send_json(code, {"error": msg})
+                try:
+                    file_size = file_path.stat().st_size
+                    self.send_response(200)
+                    self.send_header("Content-Type", mime_type)
+                    self.send_header("Content-Length", str(file_size))
+                    self.send_header("Cache-Control", "private, no-cache, no-store, must-revalidate")
+                    self.end_headers()
+                    with open(file_path, "rb") as f:
+                        while chunk := f.read(65536):
+                            self.wfile.write(chunk)
+                    return
+                except Exception as e:
+                    return self.send_json(500, {"error": f"Failed to stream screenshot: {str(e)}"})
+
             if path == "/api/admin/finances":
                 code, res = handle_admin_finances()
                 return self.send_json(code, res)
@@ -190,6 +216,11 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 code, res = handle_admin_settings()
                 return self.send_json(code, res)
 
+            if path == "/api/admin/payment-readiness":
+                from backend.api_handlers import handle_admin_payment_readiness
+                code, res = handle_admin_payment_readiness(query)
+                return self.send_json(code, res)
+
         # 2. Static Assets & Pages
         self.serve_static_or_page(path)
 
@@ -199,6 +230,11 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
 
         content_length = int(self.headers.get("Content-Length", 0))
         content_type = self.headers.get("Content-Type", "")
+
+        # Guard against excessive memory exhaustion while supporting up to configured receipt size (plus base64 overhead)
+        max_allowed_body_bytes = max(45, (MAX_SCREENSHOT_SIZE_MB * 2)) * 1024 * 1024
+        if content_length > max_allowed_body_bytes:
+            return self.send_json(413, {"error": f"Request body too large. Maximum allowed size is {max_allowed_body_bytes // (1024*1024)} MB."})
 
         # Multipart form data upload (for product files)
         if "multipart/form-data" in content_type:
@@ -214,13 +250,18 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
             code, res = handle_create_order(body_json)
             return self.send_json(code, res)
 
-        if path == "/api/webhooks/payment":
-            sig = self.headers.get("X-Razorpay-Signature", "") or self.headers.get("X-DropKit-Signature", "")
-            code, res = handle_payment_webhook(raw_body, sig)
+        if path == "/api/checkout/submit-utr":
+            from backend.api_handlers import handle_customer_submit_utr
+            code, res = handle_customer_submit_utr(body_json)
             return self.send_json(code, res)
 
-        if path == "/api/payment/simulate":
-            code, res = handle_simulate_payment(body_json)
+        if path in ("/api/checkout/upload-screenshot", "/api/checkout/submit-screenshot"):
+            from backend.api_handlers import handle_customer_submit_screenshot
+            code, res = handle_customer_submit_screenshot(body_json)
+            return self.send_json(code, res)
+
+        if path in ["/api/webhooks/payment", "/api/webhook/payment"]:
+            code, res = handle_payment_webhook(raw_body, dict(self.headers))
             return self.send_json(code, res)
 
         if path == "/api/admin/login":
@@ -259,12 +300,34 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 code, res = handle_admin_issue_refund(order_num, body_json)
                 return self.send_json(code, res)
 
+            if path.startswith("/api/admin/orders/") and path.endswith("/verify"):
+                order_num = path.split("/")[-2]
+                from backend.api_handlers import handle_admin_verify_payment
+                code, res = handle_admin_verify_payment(order_num, body_json, admin_user['user_id'])
+                return self.send_json(code, res)
+
+            if path.startswith("/api/admin/orders/") and path.endswith("/reject"):
+                order_num = path.split("/")[-2]
+                from backend.api_handlers import handle_admin_reject_payment
+                code, res = handle_admin_reject_payment(order_num, body_json, admin_user['user_id'])
+                return self.send_json(code, res)
+
             if path == "/api/admin/instagram/test":
                 code, res = handle_admin_test_instagram_flow(body_json)
                 return self.send_json(code, res)
 
             if path == "/api/admin/settings":
                 code, res = handle_admin_update_settings(body_json)
+                return self.send_json(code, res)
+
+            if path == "/api/admin/payment-mode":
+                from backend.api_handlers import handle_admin_set_payment_mode
+                code, res = handle_admin_set_payment_mode(body_json, admin_user['user_id'])
+                return self.send_json(code, res)
+
+            if path == "/api/admin/select-provider":
+                from backend.api_handlers import handle_admin_select_provider
+                code, res = handle_admin_select_provider(body_json, admin_user['user_id'])
                 return self.send_json(code, res)
 
             if path == "/api/admin/change-credentials":
@@ -318,6 +381,56 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         return self.send_json(404, {"error": "Endpoint not found"})
 
     def handle_multipart_upload(self, path: str, length: int, c_type: str):
+        # Customer Screenshot Upload (No admin auth required)
+        if path in ("/api/checkout/upload-screenshot", "/api/checkout/submit-screenshot"):
+            try:
+                boundary = c_type.split("boundary=")[1].encode()
+                raw_data = self.rfile.read(length)
+                parts = raw_data.split(b"--" + boundary)
+                uploaded_files = {}
+                form_fields = {}
+                for part in parts:
+                    if not part or part == b"--\r\n":
+                        continue
+                    header_data, sep, body_data = part.partition(b"\r\n\r\n")
+                    if not sep:
+                        continue
+                    headers_text = header_data.decode('latin1', errors='ignore')
+                    if body_data.endswith(b"\r\n"):
+                        body_data = body_data[:-2]
+                    if 'filename="' in headers_text:
+                        fn = headers_text.split('filename="')[1].split('"')[0]
+                        field_name = headers_text.split('name="')[1].split('"')[0]
+                        if fn:
+                            uploaded_files[field_name] = (fn, body_data)
+                    elif 'name="' in headers_text:
+                        field_name = headers_text.split('name="')[1].split('"')[0]
+                        form_fields[field_name] = body_data.decode('utf-8', errors='ignore')
+
+                order_num = form_fields.get("order_number", "").strip()
+                token = form_fields.get("order_access_token", "").strip()
+                # Find the screenshot file
+                screenshot_tuple = uploaded_files.get("screenshot") or uploaded_files.get("screenshot_file") or uploaded_files.get("file")
+                if not screenshot_tuple:
+                    for k, v in uploaded_files.items():
+                        screenshot_tuple = v
+                        break
+                if not screenshot_tuple:
+                    return self.send_json(400, {"status": "error", "error": "No screenshot file uploaded"})
+
+                orig_fn, file_bytes = screenshot_tuple
+                from backend.payments import customer_submit_screenshot
+                ok, msg, res = customer_submit_screenshot(order_num, token, file_bytes, orig_fn)
+                return self.send_json(200 if ok else 400, {
+                    "status": "success" if ok else "error",
+                    "order_status": res.get("status") if isinstance(res, dict) else None,
+                    "message": msg,
+                    "error": msg if not ok else None,
+                    "data": res
+                })
+            except Exception as e:
+                return self.send_json(400, {"status": "error", "error": f"Upload processing error: {str(e)}"})
+
         admin_user = extract_admin(self.headers)
         if not admin_user:
             return self.send_json(401, {"error": "Unauthorized."})
@@ -437,8 +550,15 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(b"<h1>404 - DropKit Page Not Found</h1><p><a href='/'>Return to Storefront</a></p>")
 
 def run_server(port: int = 8080):
+    from backend.config import validate_production_config, get_configured_provider, DROPKIT_ENV
+    validate_production_config()
+    provider = get_configured_provider()
+    print("=" * 65)
+    print(f"DropKit Server Initializing [ENV: {DROPKIT_ENV.upper()}]")
+    print(f"Payment Gateway Mode: {provider.upper()}")
+    print("=" * 65)
     server = ThreadedHTTPServer(('0.0.0.0', port), DropKitRequestHandler)
-    print(f"DropKit Full-Stack Production Server online at http://localhost:{port}")
+    print(f"DropKit Full-Stack Server online at http://localhost:{port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

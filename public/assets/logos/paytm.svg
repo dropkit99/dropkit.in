@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <title>Paytm</title>
+  <rect width="48" height="48" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+  <g transform="translate(3, 14)">
+    <!-- Pay in dark navy -->
+    <text x="2" y="16" font-family="'Outfit', 'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="14.5" fill="#002970" letter-spacing="-0.5">Pay</text>
+    <!-- tm in bright cyan -->
+    <text x="27.5" y="16" font-family="'Outfit', 'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="14.5" fill="#00BAF2" letter-spacing="-0.5">tm</text>
+  </g>
+</svg>

@@ -32,8 +32,8 @@
       <img src="/assets/dropkit-icon.png" alt="" class="watermark-icon">
     </div>
 
-    <!-- Loading Card -->
-    <div id="status-loading-card" class="card" style="text-align: center; padding: 4rem 2rem; position: relative; overflow: hidden;">
+    <!-- Loading Card (Verifying Payment) -->
+    <div id="status-loading-card" class="card" style="text-align: center; padding: 3.5rem 2rem; position: relative; overflow: hidden;">
       <div class="hero-emblem-wrap" style="transform: scale(0.85); margin-bottom: 1.25rem;">
         <div class="hero-emblem-orbital-outer"></div>
         <div class="hero-emblem-orbital-inner"></div>
@@ -43,8 +43,15 @@
           <img src="/assets/dropkit-icon.png" alt="DropKit Icon" class="hero-emblem-icon">
         </div>
       </div>
-      <h3 style="font-size: 1.35rem;">Verifying Transaction Status...</h3>
-      <p class="text-muted" style="margin-top: 0.5rem;">Querying payment gateway and authenticating cryptographic receipt.</p>
+      <h3 id="loading-title" style="font-size: 1.35rem; color: var(--dk-navy); margin-bottom: 0.4rem;">Checking Payment Status...</h3>
+      <p id="loading-desc" class="text-muted" style="font-size: 0.95rem; margin-bottom: 1rem;">
+        Checking order records and bank settlement status...
+      </p>
+      <div id="loading-badge">
+        <span class="badge badge-warning" style="font-weight: 600;">
+          ⏳ Checking status with store...
+        </span>
+      </div>
     </div>
 
     <!-- Verified Success Card -->
@@ -53,10 +60,10 @@
         <div style="width: 68px; height: 68px; background: #D1FAE5; color: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
           ✓
         </div>
-        <span class="badge badge-success" style="font-size: 0.8rem; margin-bottom: 0.5rem;">Payment Verified</span>
+        <span class="badge badge-success" style="font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 700;">● PAYMENT VERIFIED</span>
         <h2 style="font-size: 1.85rem; margin-bottom: 0.5rem;">Digital Product Unlocked!</h2>
         <p class="text-muted" style="font-size: 0.95rem;">
-          Thank you for your purchase. Your payment was authenticated and your secure download entitlement has been generated.
+          Thank you for your purchase. Your payment was authenticated and your secure download entitlement has been unlocked.
         </p>
       </div>
 
@@ -76,7 +83,7 @@
             <span id="rec-order" style="font-family: monospace; font-weight: 600;"></span>
           </div>
           <div style="display: flex; justify-content: space-between;">
-            <span class="text-muted">UPI Transaction Ref:</span>
+            <span class="text-muted">Transaction ID:</span>
             <span id="rec-txn" style="font-family: monospace; font-weight: 600; color: var(--dk-orange);"></span>
           </div>
           <div style="display: flex; justify-content: space-between;">
@@ -101,7 +108,7 @@
           Download PDF Now
         </a>
         <div style="font-size: 0.8rem; color: var(--dk-muted); margin-top: 0.75rem;">
-          Single-click secure token authorization • Maximum 5 downloads permitted
+          Cryptographically signed token • Maximum 5 downloads permitted
         </div>
       </div>
 
@@ -111,17 +118,77 @@
       </div>
     </div>
 
+    <!-- Verification Pending Card (Original Receipt Submitted, awaiting Admin verification) -->
+    <div id="status-verification-card" class="card animate-fade-up" style="display: none; padding: 2.5rem; text-align: center;">
+      <div style="width: 68px; height: 68px; background: #FEF3C7; color: #D97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
+        ⏳
+      </div>
+      <span class="badge badge-warning" style="font-weight: 700; margin-bottom: 0.5rem;">● VERIFICATION PENDING</span>
+      <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Original Payment Receipt Uploaded Successfully!</h2>
+      <p class="malayalam-note" style="font-size: 0.95rem; color: #047857; margin-bottom: 0.75rem; font-weight: 600; line-height: 1.5;">
+        നിങ്ങളുടെ payment receipt ലഭിച്ചു. Admin verify ചെയ്ത ശേഷം PDF download ചെയ്യാം.
+      </p>
+      <p class="text-muted" style="margin-bottom: 1.5rem; line-height: 1.6; font-size: 0.9rem;">
+        The store administrator independently verifies your original payment receipt against bank account records before unlocking your PDF download. This page will update automatically once verified.
+      </p>
+      <div style="background: var(--dk-bg); border: 1px solid var(--dk-border); border-radius: var(--dk-radius-sm); padding: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span class="text-muted">Order ID:</span>
+          <span id="vp-order-num" style="font-family: monospace; font-weight: 600;"></span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span class="text-muted">Verification Status:</span>
+          <span style="font-weight: 700; color: #D97706;">Awaiting Administrator Approval</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span class="text-muted">Payment Receipt:</span>
+          <span id="vp-screenshot-status" style="font-weight: 600; color: #059669;">✓ Received &amp; Stored Securely</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="restartVerification()">
+          ↻ Refresh Status
+        </button>
+        <a href="/my-downloads" class="btn btn-outline">Check My Downloads</a>
+      </div>
+    </div>
+
+    <!-- Payment Pending Card (when customer has not uploaded screenshot yet) -->
+    <div id="status-pending-card" class="card animate-fade-up" style="display: none; padding: 2.5rem; text-align: center;">
+      <div style="width: 68px; height: 68px; background: #FEF3C7; color: #D97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
+        ⏳
+      </div>
+      <span class="badge badge-warning" style="font-weight: 700; margin-bottom: 0.5rem;">● PAYMENT PENDING</span>
+      <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Awaiting Payment & Screenshot</h2>
+      <p class="text-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">
+        Payment screenshot has not been uploaded yet. Please return to the checkout page, complete the payment in your UPI app, and upload your payment screenshot.
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <button id="btn-recheck" class="btn btn-primary" onclick="restartVerification()">
+          ↻ Check Status Again
+        </button>
+        <a id="btn-pending-retry" href="/products" class="btn btn-outline">
+          Return to Checkout
+        </a>
+      </div>
+    </div>
+
     <!-- Failed Card -->
-    <div id="status-failed-card" class="card" style="display: none; padding: 2.5rem; text-align: center;">
+    <div id="status-failed-card" class="card animate-fade-up" style="display: none; padding: 2.5rem; text-align: center;">
       <div style="width: 68px; height: 68px; background: #FEE2E2; color: #DC2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem;">
         ✕
       </div>
-      <span class="badge badge-danger" style="margin-bottom: 0.5rem;">Payment Not Completed</span>
-      <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Transaction Unsuccessful</h2>
-      <p class="text-muted" style="margin-bottom: 2rem;">
-        We could not verify a successful UPI payment for this order. Digital products remain locked until full payment verification.
+      <span class="badge badge-danger" style="margin-bottom: 0.5rem; font-weight: 700;">● PAYMENT FAILED</span>
+      <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">Payment Not Completed</h2>
+      <p class="text-muted" style="margin-bottom: 2rem; line-height: 1.6;">
+        We could not verify a successful payment for this order. Either the payment was declined, timed out, or cancelled in your UPI app. Products remain securely locked until payment is verified.
       </p>
-      <a href="/products" class="btn btn-primary">Try Another Product</a>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a id="btn-fail-retry" href="/products" class="btn btn-primary">
+          ↻ Retry Payment
+        </a>
+        <a href="/products" class="btn btn-outline">Browse Products</a>
+      </div>
     </div>
   </div>
 
@@ -129,40 +196,102 @@
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const orderNumber = urlParams.get('order_id');
+    const orderToken = urlParams.get('token') || (orderNumber ? sessionStorage.getItem('dk_order_token_' + orderNumber) : '') || '';
+    let pollInterval = null;
+    let pollAttempts = 0;
+    const MAX_POLL_ATTEMPTS = 15; // 30 seconds total (15 x 2s)
+    let currentOrder = null;
+
+    function showCard(cardId) {
+      ['status-loading-card', 'status-success-card', 'status-verification-card', 'status-pending-card', 'status-failed-card'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = (id === cardId ? 'block' : 'none');
+      });
+    }
 
     async function checkStatus() {
       if (!orderNumber) {
-        document.getElementById('status-loading-card').innerHTML = '<div class="text-danger">No order ID specified in URL.</div>';
+        showCard('status-loading-card');
+        document.getElementById('status-loading-card').innerHTML = '<div class="text-danger" style="padding: 2rem; font-weight: 700;">No order ID specified in URL.</div>';
         return;
       }
 
+      pollAttempts++;
+      const badge = document.getElementById('loading-badge');
+      if (badge) {
+        badge.innerHTML = `<span class="badge badge-warning" style="font-weight: 600;">⏳ Checking bank settlement (Check ${pollAttempts}/${MAX_POLL_ATTEMPTS})...</span>`;
+      }
+
       try {
-        const res = await DropKit.api(`/api/orders/${orderNumber}`);
-        const order = res.order;
+        const url = `/api/orders/${orderNumber}` + (orderToken ? `?token=${encodeURIComponent(orderToken)}` : '');
+        const res = await DropKit.api(url);
+        currentOrder = res.order;
 
-        document.getElementById('status-loading-card').style.display = 'none';
+        if (currentOrder.product_id) {
+          const retryBtn = document.getElementById('btn-pending-retry');
+          if (retryBtn) retryBtn.href = `/checkout/${currentOrder.product_id}`;
+          const failRetryBtn = document.getElementById('btn-fail-retry');
+          if (failRetryBtn) failRetryBtn.href = `/checkout/${currentOrder.product_id}`;
+        }
 
-        if (order.status === 'PAID') {
-          document.getElementById('status-success-card').style.display = 'block';
-          document.getElementById('rec-product').textContent = order.product_title;
-          document.getElementById('rec-order').textContent = order.order_number;
-          document.getElementById('rec-txn').textContent = order.upi_txn_ref || 'Verified UPI Gateway';
-          document.getElementById('rec-customer').textContent = `${order.customer_name} (${order.customer_email})`;
-          document.getElementById('rec-date').textContent = order.created_at_ist;
-          document.getElementById('rec-amount').textContent = DropKit.formatINR(order.amount_inr);
+        if (currentOrder.status === 'PAID') {
+          if (pollInterval) clearInterval(pollInterval);
+          showCard('status-success-card');
+          document.getElementById('rec-product').textContent = currentOrder.product_title;
+          document.getElementById('rec-order').textContent = currentOrder.order_number;
+          document.getElementById('rec-txn').textContent = currentOrder.upi_txn_ref || 'Verified Direct UPI';
+          document.getElementById('rec-customer').textContent = `${currentOrder.customer_name} (${currentOrder.customer_email})`;
+          document.getElementById('rec-date').textContent = currentOrder.created_at_ist;
+          document.getElementById('rec-amount').textContent = DropKit.formatINR(currentOrder.amount_inr);
 
-          if (order.download_token) {
-            document.getElementById('btn-download-pdf').href = `/api/download/${order.download_token}`;
+          if (currentOrder.download_token) {
+            document.getElementById('btn-download-pdf').href = `/api/download/${currentOrder.download_token}`;
+          }
+        } else if (currentOrder.status === 'VERIFICATION_PENDING') {
+          showCard('status-verification-card');
+          document.getElementById('vp-order-num').textContent = currentOrder.order_number;
+          const scStatus = document.getElementById('vp-screenshot-status');
+          if (scStatus) {
+            scStatus.textContent = currentOrder.has_screenshot ? '✓ Received & Stored Securely' : 'Awaiting Upload';
+          }
+        } else if (currentOrder.status === 'PAYMENT_REJECTED' || currentOrder.status === 'FAILED') {
+          if (pollInterval) clearInterval(pollInterval);
+          showCard('status-failed-card');
+          const reason = currentOrder.rejection_reason || 'Could not verify payment credit on official bank records.';
+          const failCard = document.getElementById('status-failed-card');
+          if (failCard) {
+            const heading = failCard.querySelector('h2');
+            if (heading) heading.textContent = currentOrder.status === 'PAYMENT_REJECTED' ? 'Payment Rejected by Administrator' : 'Payment Not Completed';
+            const desc = failCard.querySelector('p.text-muted');
+            if (desc) desc.textContent = `Reason: ${reason}. Please retry your payment with a valid UPI screenshot.`;
           }
         } else {
-          document.getElementById('status-failed-card').style.display = 'block';
+          // Status is PENDING
+          if (pollAttempts >= MAX_POLL_ATTEMPTS) {
+            if (pollInterval) clearInterval(pollInterval);
+            showCard('status-pending-card');
+          }
         }
       } catch (err) {
-        document.getElementById('status-loading-card').innerHTML = `<div class="text-danger">${err.message}</div>`;
+        if (pollInterval) clearInterval(pollInterval);
+        showCard('status-loading-card');
+        document.getElementById('status-loading-card').innerHTML = `<div class="text-danger" style="padding: 2rem;">${err.message}</div>`;
       }
     }
 
-    document.addEventListener('DOMContentLoaded', checkStatus);
+    function restartVerification() {
+      pollAttempts = 0;
+      showCard('status-loading-card');
+      checkStatus();
+      if (pollInterval) clearInterval(pollInterval);
+      pollInterval = setInterval(checkStatus, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      showCard('status-loading-card');
+      checkStatus();
+      pollInterval = setInterval(checkStatus, 2000);
+    });
   </script>
 </body>
 </html>

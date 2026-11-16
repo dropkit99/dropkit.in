@@ -1,10 +1,19 @@
 import json
 import urllib.parse
+import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 from .db import get_connection, now_iso
 from .auth import authenticate_admin, create_admin_session, validate_admin_session, delete_admin_session
-from .payments import create_order, process_payment_verification, verify_webhook_signature, generate_upi_uri, generate_svg_qr
+from .payments import (
+    create_order,
+    process_payment_verification,
+    verify_webhook_signature,
+    verify_razorpay_webhook_signature,
+    verify_cashfree_webhook_signature,
+    generate_upi_uri,
+    generate_svg_qr
+)
 from .storage import save_uploaded_pdf, save_uploaded_cover, verify_and_claim_download
 from .analytics import (
     get_top_stat_cards,
@@ -93,6 +102,27 @@ def handle_get_categories():
     conn.close()
     return 200, {"categories": cats}
 
+def handle_get_payment_config():
+    """Returns active merchant UPI settings and available payment methods (Direct UPI exclusive)."""
+    from .payments import get_effective_payment_config
+    cfg = get_effective_payment_config()
+    return 200, {
+        "config": {
+            "mode": cfg["mode"],
+            "is_live": cfg["is_live"],
+            "active_provider": "direct_upi",
+            "upi_vpa": cfg["upi_vpa"],
+            "merchant_name": cfg["merchant_name"],
+            "direct_upi_enabled": cfg["direct_upi_enabled"],
+            "gateway_enabled": False,
+            "gateway_configured": False,
+            "payment_methods": ["DIRECT_UPI"],
+            "razorpay_configured": False,
+            "cashfree_configured": False,
+            "razorpay_key_id": ""
+        }
+    }
+
 def handle_create_order(data: dict):
     cust_name = data.get("customer_name", "").strip()
     cust_email = data.get("customer_email", "").strip()
@@ -104,20 +134,135 @@ def handle_create_order(data: dict):
 
     try:
         product_id = int(product_id)
-        order_info = create_order(cust_name, cust_email, product_id, cust_phone, is_demo=False)
-        # Generate inline SVG QR
+        # Always enforce DIRECT_UPI as payment method
+        order_info = create_order(
+            customer_name=cust_name,
+            customer_email=cust_email,
+            product_id=product_id,
+            customer_phone=cust_phone,
+            payment_method="DIRECT_UPI",
+            is_demo=False
+        )
+        # Generate inline SVG QR from the computed UPI payment URI
         qr_svg = generate_svg_qr(order_info['upi_uri'], size=260)
         order_info['qr_svg'] = qr_svg
         return 201, {"order": order_info}
     except Exception as e:
         return 400, {"error": str(e)}
 
-def handle_get_order_status(order_number: str):
+def handle_customer_submit_screenshot(data: dict):
+    """
+    Accepts customer payment screenshot.
+    Supports base64 payload:
+      - order_number: str
+      - order_access_token: str
+      - screenshot_base64: str (or screenshot_data / file_data)
+      - filename: str (e.g. "payment_proof.jpg")
+      - mime_type: str (optional)
+    """
+    import base64
+    order_num = data.get("order_number", "").strip()
+    token = data.get("order_access_token", "").strip()
+    filename = data.get("filename", "payment_screenshot.jpg").strip() or "payment_screenshot.jpg"
+    raw_b64 = data.get("screenshot_base64") or data.get("screenshot_data") or data.get("file_data") or ""
+    client_mime = data.get("mime_type")
+
+    if not raw_b64:
+        return 400, {"status": "error", "error": "No screenshot data received. Please select an image to upload."}
+
+    # Clean data URL prefix if present: "data:image/jpeg;base64,..."
+    if "," in raw_b64:
+        header_part, raw_b64 = raw_b64.split(",", 1)
+        if not client_mime and "image/" in header_part:
+            try:
+                client_mime = header_part.split(";")[0].split(":")[1]
+            except Exception:
+                pass
+
+    try:
+        file_bytes = base64.b64decode(raw_b64)
+    except Exception as e:
+        return 400, {"status": "error", "error": f"Failed to decode base64 screenshot data: {str(e)}"}
+
+    from .payments import customer_submit_screenshot
+    ok, msg, res = customer_submit_screenshot(order_num, token, file_bytes, filename, client_mime)
+    return (200 if ok else 400), {
+        "status": "success" if ok else "error",
+        "order_status": res.get("status") if isinstance(res, dict) else None,
+        "is_duplicate_receipt": res.get("is_duplicate_receipt") if isinstance(res, dict) else False,
+        "duplicate_of_order": res.get("duplicate_of_order") if isinstance(res, dict) else None,
+        "message": msg,
+        "error": msg if not ok else None,
+        "data": res
+    }
+
+def handle_admin_view_screenshot(order_number: str, admin_id: int = None):
+    """
+    Retrieves screenshot file path and MIME type for authenticated admins.
+    """
+    if admin_id is not None and not admin_id:
+        return 401, {"error": "Unauthorized: Admin session required to view payment screenshots"}, None, None
+
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT o.order_number, o.amount_inr, o.status, o.created_at, o.upi_txn_ref,
-               p.title as product_title, p.pdf_filename,
+        SELECT screenshot_path, screenshot_mime_type, screenshot_filename
+        FROM orders WHERE order_number = ?
+    """, (order_number,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row or not row['screenshot_path']:
+        return 404, {"error": "No screenshot found for this order"}, None, None
+
+    from .storage import get_payment_screenshot_path
+    path = get_payment_screenshot_path(row['screenshot_path'])
+    if not path:
+        return 404, {"error": "Screenshot file missing on disk"}, None, None
+
+    mime = row['screenshot_mime_type'] or "image/jpeg"
+    return 200, {"message": "OK", "file_path": path, "mime_type": mime}, path, mime
+
+def handle_customer_submit_utr(data: dict):
+    """Allows customer to log their 12-digit UPI UTR reference for store admin bank verification."""
+    order_num = data.get("order_number", "").strip()
+    token = data.get("order_access_token", "").strip()
+    utr = (data.get("utr_ref") or data.get("utr_number") or "").strip()
+    from .payments import customer_submit_utr
+    ok, msg, res = customer_submit_utr(order_num, token, utr)
+    return (200 if ok else 400), {
+        "status": "success" if ok else "error",
+        "order_status": res.get("status") if isinstance(res, dict) else None,
+        "message": msg,
+        "data": res
+    }
+
+def mask_email(email: str) -> str:
+    if not email or "@" not in email:
+        return "***"
+    user, domain = email.split("@", 1)
+    if len(user) <= 2:
+        masked_user = user[0] + "***"
+    else:
+        masked_user = user[:2] + "***" + user[-1]
+    return f"{masked_user}@{domain}"
+
+def mask_name(name: str) -> str:
+    if not name:
+        return "***"
+    parts = name.split()
+    masked_parts = [p[0] + "***" if len(p) > 1 else p for p in parts]
+    return " ".join(masked_parts)
+
+def handle_get_order_status(order_number: str, client_access_token: str = None, is_admin: bool = False):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT o.id, o.order_number, o.amount_inr, o.status, o.created_at, o.upi_txn_ref, o.is_demo,
+               o.order_access_token, o.payment_gateway, o.gateway_order_id,
+               o.screenshot_path, o.screenshot_filename, o.screenshot_uploaded_at,
+               o.payment_verification_status, o.rejection_reason,
+               p.id as product_id, p.title as product_title, p.pdf_filename,
                c.name as customer_name, c.email as customer_email,
                e.token as download_token, e.download_count, e.max_downloads, e.expires_at
         FROM orders o
@@ -134,6 +279,31 @@ def handle_get_order_status(order_number: str):
 
     order_dict = dict(order)
     order_dict['created_at_ist'] = to_ist(order_dict['created_at']).strftime("%Y-%m-%d %H:%M:%S IST")
+    order_dict['has_screenshot'] = bool(order_dict.get('screenshot_path'))
+    if 'screenshot_path' in order_dict:
+        del order_dict['screenshot_path']
+
+    # Authorize Token & PII Access
+    has_valid_access = False
+    if is_admin:
+        has_valid_access = True
+    elif client_access_token and order_dict.get('order_access_token'):
+        has_valid_access = secrets.compare_digest(str(client_access_token).strip(), str(order_dict['order_access_token']).strip())
+
+    # Do not expose internal order_access_token in public response
+    if 'order_access_token' in order_dict:
+        del order_dict['order_access_token']
+
+    # Shield download token and mask customer PII for unauthorized requests
+    if not has_valid_access or order_dict['status'] != 'PAID':
+        order_dict['download_token'] = None
+
+    if not has_valid_access:
+        order_dict['customer_name'] = mask_name(order_dict.get('customer_name', ''))
+        order_dict['customer_email'] = mask_email(order_dict.get('customer_email', ''))
+
+    return 200, {"order": order_dict}
+
     return 200, {"order": order_dict}
 
 def handle_customer_downloads(email_or_order: str):
@@ -163,71 +333,14 @@ def handle_customer_downloads(email_or_order: str):
 
     return 200, {"downloads": downloads}
 
-def handle_payment_webhook(body_bytes: bytes, signature_header: str):
-    """Webhook verification for gateway callbacks."""
-    if not verify_webhook_signature(body_bytes, signature_header):
-        return 401, {"error": "Invalid webhook cryptographic signature"}
-
-    try:
-        data = json.loads(body_bytes.decode('utf-8'))
-        order_number = data.get("order_number")
-        amount = float(data.get("amount", 0.0))
-        txn_id = data.get("txn_id", f"UPI-{now_iso()}")
-        gateway = data.get("gateway", "WEBHOOK_UPI")
-
-        ok, msg, res = process_payment_verification(
-            order_number=order_number,
-            gateway_txn_id=txn_id,
-            paid_amount=amount,
-            gateway_name=gateway,
-            raw_payload=body_bytes.decode('utf-8'),
-            signature_verified=True
-        )
-        if ok:
-            return 200, {"status": "success", "message": msg, "data": res}
-        else:
-            return 400, {"status": "error", "message": msg}
-    except Exception as e:
-        return 400, {"error": str(e)}
-
-def handle_simulate_payment(data: dict):
-    """Sandbox payment simulator for end-to-end testing."""
-    order_number = data.get("order_number")
-    simulate_status = data.get("simulate_status", "SUCCESS") # SUCCESS or FAILED
-
-    if not order_number:
-        return 400, {"error": "order_number is required"}
-
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, amount_inr, status FROM orders WHERE order_number = ?", (order_number,))
-    order = cursor.fetchone()
-    conn.close()
-
-    if not order:
-        return 404, {"error": "Order not found"}
-
-    if simulate_status == "TAMPERED":
-        return 401, {"error": "Security Alert: HMAC-SHA256 signature verification failed. The payment webhook payload has been tampered with or contains an invalid secret key. Transaction rejected."}
-
-    if simulate_status == "FAILED":
-        conn = get_connection()
-        c2 = conn.cursor()
-        c2.execute("UPDATE orders SET status = 'FAILED', updated_at = ? WHERE id = ?", (now_iso(), order['id']))
-        conn.commit()
-        conn.close()
-        return 200, {"status": "FAILED", "message": "Simulated payment failure"}
-
-    # Simulate success
-    fake_txn_id = f"UPI/SIM/{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    ok, msg, res = process_payment_verification(
-        order_number=order_number,
-        gateway_txn_id=fake_txn_id,
-        paid_amount=float(order['amount_inr']),
-        gateway_name="SIMULATED_UPI_SANDBOX",
-        signature_verified=True
-    )
-    return 200, {"status": "SUCCESS", "message": msg, "data": res}
+def handle_payment_webhook(body_bytes: bytes, headers: dict | str):
+    """
+    Gateway webhooks are permanently disabled. DropKit operates exclusively on Direct UPI.
+    """
+    return 400, {
+        "status": "error",
+        "error": "Payment gateway webhooks are permanently disabled. DropKit operates exclusively on Direct UPI QR checkout."
+    }
 
 # ----------------- Admin Handlers -----------------
 
@@ -259,7 +372,7 @@ def handle_admin_overview():
 
     # Recent transactions
     cursor.execute("""
-        SELECT o.order_number, o.amount_inr, o.status, o.payment_method, o.created_at,
+        SELECT o.order_number, o.amount_inr, o.status, o.payment_method, o.upi_txn_ref, o.created_at,
                c.name as customer_name, c.email as customer_email,
                p.title as product_title
         FROM orders o
@@ -469,7 +582,12 @@ def handle_admin_orders(query_params: dict):
     cursor = conn.cursor()
 
     sql = """
-        SELECT o.id, o.order_number, o.amount_inr, o.status, o.payment_method, o.upi_txn_ref, o.created_at,
+        SELECT o.id, o.order_number, o.amount_inr, o.status, o.payment_method, o.payment_gateway,
+               o.upi_vpa, o.upi_txn_ref, o.notes, o.created_at,
+               o.screenshot_path, o.screenshot_filename, o.screenshot_mime_type, o.screenshot_file_size,
+               o.screenshot_uploaded_at, o.payment_verification_status, o.rejection_reason, o.admin_verification_notes,
+               o.verified_at, o.rejected_at,
+               o.receipt_file_hash, o.receipt_ocr_data, o.receipt_mismatch_flags, o.is_duplicate_receipt, o.duplicate_of_order,
                c.name as customer_name, c.email as customer_email,
                p.title as product_title,
                e.download_count, e.max_downloads, e.is_revoked, e.token as download_token
@@ -480,13 +598,13 @@ def handle_admin_orders(query_params: dict):
         WHERE 1=1
     """
     params = []
-    if status:
+    if status and status.upper() != "ALL":
         sql += " AND o.status = ?"
-        params.append(status)
+        params.append(status.upper())
     if search:
-        sql += " AND (o.order_number LIKE ? OR c.name LIKE ? OR c.email LIKE ? OR p.title LIKE ?)"
+        sql += " AND (o.order_number LIKE ? OR c.name LIKE ? OR c.email LIKE ? OR p.title LIKE ? OR o.upi_txn_ref LIKE ? OR o.screenshot_filename LIKE ?)"
         s = f"%{search}%"
-        params.extend([s, s, s, s])
+        params.extend([s, s, s, s, s, s])
 
     sql += " ORDER BY o.created_at DESC LIMIT 100"
     cursor.execute(sql, params)
@@ -495,8 +613,46 @@ def handle_admin_orders(query_params: dict):
 
     for o in orders:
         o['created_at_ist'] = to_ist(o['created_at']).strftime("%d %b %Y, %H:%M IST")
+        o['has_screenshot'] = bool(o.get('screenshot_path'))
+        o['screenshot_url'] = f"/api/admin/orders/{o['order_number']}/screenshot" if o['has_screenshot'] else None
+        try:
+            o['receipt_ocr_data'] = json.loads(o['receipt_ocr_data']) if o.get('receipt_ocr_data') else None
+        except Exception:
+            o['receipt_ocr_data'] = None
+        try:
+            o['receipt_mismatch_flags'] = json.loads(o['receipt_mismatch_flags']) if o.get('receipt_mismatch_flags') else []
+        except Exception:
+            o['receipt_mismatch_flags'] = []
+        o['is_duplicate_receipt'] = bool(o.get('is_duplicate_receipt'))
 
     return 200, {"orders": orders}
+
+def handle_admin_verify_payment(order_number: str, data: dict, admin_id: int):
+    """Admin verifies direct UPI payment against authorized bank records and unlocks product."""
+    utr = (data.get("utr_ref") or data.get("upi_txn_ref") or data.get("utr_number") or "").strip() or None
+    notes = data.get("notes")
+    from .payments import admin_verify_payment
+    ok, msg, res = admin_verify_payment(order_number, admin_id, utr, notes)
+    return (200 if ok else 400), {
+        "status": "success" if ok else "error",
+        "order_status": res.get("status") if isinstance(res, dict) else None,
+        "download_token": res.get("download_token") if isinstance(res, dict) else None,
+        "message": msg,
+        "error": msg if not ok else None,
+        "data": res
+    }
+
+def handle_admin_reject_payment(order_number: str, data: dict, admin_id: int):
+    """Admin rejects unverified order after bank statement check."""
+    reason = data.get("reason", "Payment verification declined by store admin")
+    from .payments import admin_reject_payment
+    ok, msg, res = admin_reject_payment(order_number, admin_id, reason)
+    return (200 if ok else 400), {
+        "status": "success" if ok else "error",
+        "order_status": res.get("status") if isinstance(res, dict) else None,
+        "message": msg,
+        "data": res
+    }
 
 def handle_admin_issue_refund(order_number: str, data: dict):
     reason = data.get("reason", "Customer requested cancellation")
@@ -626,20 +782,181 @@ def handle_admin_settings():
     cursor.execute("SELECT key, value FROM system_settings")
     settings = dict(cursor.fetchall())
     conn.close()
-    return 200, {"settings": settings}
+
+    from .payments import get_effective_payment_config
+    cfg = get_effective_payment_config()
+
+    settings.setdefault("upi_vpa", cfg["upi_vpa"])
+    settings.setdefault("merchant_name", cfg["merchant_name"])
+    settings.setdefault("direct_upi_enabled", "1" if cfg["direct_upi_enabled"] else "0")
+    settings["gateway_enabled"] = "0"
+    settings["active_provider"] = "direct_upi"
+    settings.setdefault("mode", cfg["mode"])
+    settings.setdefault("base_url", cfg["base_url"])
+
+    # Provider statuses
+    settings["is_live"] = cfg["is_live"]
+    settings["gateway_provider_mode"] = "direct_upi"
+    settings["razorpay_configured"] = False
+    settings["cashfree_configured"] = False
+
+    return 200, {
+        "settings": settings,
+        "effective_config": {
+            "mode": cfg["mode"],
+            "is_live": cfg["is_live"],
+            "active_provider": "direct_upi",
+            "upi_vpa": cfg["upi_vpa"],
+            "merchant_name": cfg["merchant_name"],
+            "direct_upi_enabled": cfg["direct_upi_enabled"],
+            "has_razorpay": False,
+            "has_cashfree": False
+        }
+    }
 
 def handle_admin_update_settings(data: dict):
     conn = get_connection()
     cursor = conn.cursor()
     now = now_iso()
+
+    # Disallowed / decommissioned gateway settings
+    disallowed_keys = {
+        "razorpay_key_id",
+        "razorpay_key_secret",
+        "razorpay_webhook_secret",
+        "cashfree_app_id",
+        "cashfree_secret_key",
+        "cashfree_env"
+    }
+
     for k, v in data.items():
+        if k in disallowed_keys:
+            continue
+        v_str = str(v).strip()
         cursor.execute("""
             INSERT OR REPLACE INTO system_settings (key, value, updated_at)
             VALUES (?, ?, ?)
-        """, (k, str(v), now))
+        """, (k, v_str, now))
     conn.commit()
     conn.close()
-    return 200, {"status": "success", "message": "Settings updated"}
+    return 200, {"status": "success", "message": "Settings updated successfully"}
+
+def handle_admin_payment_readiness(query_params: dict = None):
+    """
+    Audits payment configuration and readiness for Direct UPI operations.
+    """
+    from .payments import audit_live_payment_readiness, probe_provider_connectivity
+    readiness = audit_live_payment_readiness()
+
+    query_params = query_params or {}
+    probe_flag = query_params.get("probe", [""])[0] if isinstance(query_params.get("probe"), list) else query_params.get("probe", "")
+    if str(probe_flag).lower() in ("1", "true", "yes"):
+        readiness["connectivity_probe"] = probe_provider_connectivity(readiness["selected_provider"])
+
+    return 200, readiness
+
+def handle_admin_set_payment_mode(data: dict, admin_id: int):
+    """
+    Sets payment mode ('LIVE' or 'DEMO').
+    Strict safety check: LIVE activation is REFUSED with 400 Bad Request
+    if mandatory Direct UPI requirements are not satisfied.
+    """
+    mode = data.get("mode", "").strip().upper()
+    if mode not in ("LIVE", "DEMO", "SANDBOX", "PRODUCTION"):
+        return 400, {"error": "Invalid mode. Mode must be 'LIVE' or 'DEMO'."}
+
+    normalized_mode = "LIVE" if mode in ("LIVE", "PRODUCTION") else "DEMO"
+
+    from .payments import audit_live_payment_readiness
+    readiness = audit_live_payment_readiness()
+
+    if normalized_mode == "LIVE":
+        if not readiness["can_activate_live"]:
+            return 400, {
+                "status": "error",
+                "error": "Live Payment Activation Blocked: Mandatory production requirements are not satisfied.",
+                "current_mode": readiness["current_mode"],
+                "missing_requirements": readiness["missing_requirements"],
+                "security_checklist": readiness["security_checklist"],
+                "action_guidance": "Please satisfy the missing requirements (valid UPI VPA, Merchant Name, and 32-char server secret key) before activating live payments."
+            }
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = now_iso()
+    cursor.execute("""
+        INSERT OR REPLACE INTO system_settings (key, value, updated_at)
+        VALUES ('mode', ?, ?)
+    """, (normalized_mode, now))
+
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (?, 'SET_PAYMENT_MODE', 'system_settings', 'mode', ?, ?)
+    """, (admin_id, f"Switched payment mode to {normalized_mode}", now))
+
+    conn.commit()
+    conn.close()
+
+    return 200, {
+        "status": "success",
+        "mode": normalized_mode,
+        "is_live": (normalized_mode == "LIVE"),
+        "message": f"Payment mode successfully set to {normalized_mode}."
+    }
+
+def handle_admin_select_provider(data: dict, admin_id: int):
+    """
+    Selects active provider.
+    Payment gateways (Razorpay, Cashfree) cannot be activated and are strictly rejected.
+    """
+    provider = data.get("provider", "").strip().lower()
+    if provider in ("razorpay", "cashfree", "both"):
+        return 400, {
+            "status": "error",
+            "error": f"Payment gateway '{provider}' cannot be activated. External gateways have been permanently decommissioned. DropKit operates exclusively on Direct UPI."
+        }
+
+    if provider != "direct_upi":
+        return 400, {"error": "Invalid provider. DropKit operates exclusively on 'direct_upi'."}
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = now_iso()
+    cursor.execute("""
+        INSERT OR REPLACE INTO system_settings (key, value, updated_at)
+        VALUES ('active_provider', 'direct_upi', ?)
+    """, (now,))
+
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (?, 'SELECT_PAYMENT_PROVIDER', 'system_settings', 'active_provider', 'Direct UPI set as active provider', ?)
+    """, (admin_id, now))
+
+    conn.commit()
+    conn.close()
+
+    from .payments import audit_live_payment_readiness
+    readiness = audit_live_payment_readiness()
+
+    return 200, {
+        "status": "success",
+        "active_provider": "direct_upi",
+        "message": "Direct UPI is the active payment provider.",
+        "readiness": readiness
+    }
+
+    conn.commit()
+    conn.close()
+
+    from .payments import audit_live_payment_readiness
+    readiness = audit_live_payment_readiness()
+
+    return 200, {
+        "status": "success",
+        "active_provider": provider,
+        "message": f"Active payment provider set to '{provider}'.",
+        "readiness": readiness
+    }
 
 def handle_admin_change_credentials(user_id: int, data: dict):
     current_password = data.get("current_password", "")

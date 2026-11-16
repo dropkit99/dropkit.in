@@ -1,9 +1,88 @@
 import os
 import shutil
+import uuid
 from pathlib import Path
 from datetime import datetime, timezone
-from .config import SECURE_PDF_DIR, PUBLIC_COVER_DIR
+from .config import SECURE_PDF_DIR, PUBLIC_COVER_DIR, PAYMENT_SCREENSHOT_DIR, MAX_SCREENSHOT_SIZE_BYTES, MAX_SCREENSHOT_SIZE_MB
 from .db import get_connection, now_iso
+
+ALLOWED_SCREENSHOT_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
+ALLOWED_SCREENSHOT_MIMES = {"image/jpeg", "image/png", "image/webp"}
+
+def validate_screenshot(file_bytes: bytes, original_filename: str, client_mime: str = None) -> tuple[bool, str, str]:
+    """
+    Validates uploaded payment screenshot:
+    - Maximum file size: Configurable via MAX_SCREENSHOT_SIZE_MB (default 25 MB)
+    - Extension must be .jpg, .jpeg, .png, or .webp
+    - Validates image magic bytes to verify actual image content and prevent forged uploads
+    """
+    if not file_bytes or len(file_bytes) == 0:
+        return False, "Empty file received. Please select your payment screenshot.", ""
+
+    from .config import MAX_SCREENSHOT_SIZE_BYTES as current_max_bytes, MAX_SCREENSHOT_SIZE_MB as current_max_mb
+    if len(file_bytes) > current_max_bytes:
+        size_mb = len(file_bytes) / (1024 * 1024)
+        return False, f"Screenshot file size ({size_mb:.1f} MB) exceeds maximum allowed limit of {current_max_mb} MB.", ""
+
+    ext = Path(original_filename).suffix.lower()
+    if ext not in ALLOWED_SCREENSHOT_EXTENSIONS:
+        return False, f"Unsupported file format '{ext}'. Only JPG, JPEG, PNG, and WEBP image files are accepted.", ""
+
+    # Verify actual image content via signature magic bytes
+    detected_mime = None
+    if file_bytes.startswith(b"\xff\xd8\xff"):
+        detected_mime = "image/jpeg"
+    elif file_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+        detected_mime = "image/png"
+    elif file_bytes.startswith(b"RIFF") and len(file_bytes) >= 12 and file_bytes[8:12] == b"WEBP":
+        detected_mime = "image/webp"
+
+    if not detected_mime:
+        return False, "File content is not a valid image. Please upload an original screenshot from your UPI app.", ""
+
+    return True, "Valid screenshot", detected_mime
+
+def save_payment_screenshot(file_bytes: bytes, original_filename: str, order_number: str, client_mime: str = None) -> tuple[bool, str, dict]:
+    """
+    Saves validated screenshot in private non-public storage directory.
+    Never exposes file to public web server paths.
+    """
+    ok, msg, detected_mime = validate_screenshot(file_bytes, original_filename, client_mime)
+    if not ok:
+        return False, msg, {}
+
+    clean_ext = Path(original_filename).suffix.lower()
+    if clean_ext == ".jpg":
+        clean_ext = ".jpeg"
+    safe_filename = f"screenshot_{order_number}_{uuid.uuid4().hex[:8]}{clean_ext}"
+    target_path = PAYMENT_SCREENSHOT_DIR / safe_filename
+
+    try:
+        with open(target_path, "wb") as f:
+            f.write(file_bytes)
+    except Exception as e:
+        return False, f"Failed to store screenshot: {str(e)}", {}
+
+    return True, "Screenshot saved securely", {
+        "filename": safe_filename,
+        "path": str(target_path),
+        "size": len(file_bytes),
+        "mime": detected_mime
+    }
+
+def get_payment_screenshot_path(filename: str) -> Path | None:
+    """Safely retrieves path to private screenshot preventing path traversal."""
+    if not filename:
+        return None
+    safe_name = Path(filename).name
+    path = (PAYMENT_SCREENSHOT_DIR / safe_name).resolve()
+    base = PAYMENT_SCREENSHOT_DIR.resolve()
+    try:
+        if path.is_relative_to(base) and path.exists() and path.is_file():
+            return path
+    except Exception:
+        pass
+    return None
 
 def save_uploaded_pdf(file_bytes: bytes, original_filename: str) -> str:
     """Saves PDF in private non-public storage directory with sanitized filename."""

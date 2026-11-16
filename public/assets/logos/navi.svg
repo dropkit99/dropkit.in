@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <title>Navi UPI</title>
+  <rect width="48" height="48" rx="10" fill="#00D09C"/>
+  <g transform="translate(6, 8)">
+    <!-- Geometric rising arch / smile mark of Navi -->
+    <path fill="#FFFFFF" d="M18 3c-8.3 0-15 6.7-15 15 0 2.5.6 4.8 1.7 6.9l4.5-2.6c-.8-1.3-1.2-2.7-1.2-4.3 0-5.5 4.5-10 10-10s10 4.5 10 10c0 1.6-.4 3-1.2 4.3l4.5 2.6c1.1-2.1 1.7-4.4 1.7-6.9 0-8.3-6.7-15-15-15z"/>
+    <!-- Distinctive Navi check / center indicator -->
+    <circle cx="18" cy="18" r="4.2" fill="#FFFFFF"/>
+    <!-- navi lowercase wordmark -->
+    <text x="18" y="32" text-anchor="middle" font-family="'Outfit', 'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="9" fill="#FFFFFF" letter-spacing="0.5">navi</text>
+  </g>
+</svg>

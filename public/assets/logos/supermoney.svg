@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <title>Super.money</title>
+  <rect width="48" height="48" rx="10" fill="#4D43FE"/>
+  <g transform="translate(4, 9)">
+    <text x="20" y="17" text-anchor="middle" font-family="'Outfit', 'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="13" fill="#FFFFFF" letter-spacing="-0.2">super<tspan fill="#00D09C">.</tspan></text>
+    <text x="20" y="27" text-anchor="middle" font-family="'Outfit', 'Space Grotesk', -apple-system, sans-serif" font-weight="700" font-size="8.5" fill="#E0E7FF" letter-spacing="1.2">MONEY</text>
+  </g>
+</svg>

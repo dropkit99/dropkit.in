@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment and sensitive secrets
+.env
+.env*.local
+
+# Database and SQLite files
+dropkit.db
+dropkit.db-journal
+*.sqlite3
+
+# Private customer payment screenshots
+storage/payment_screenshots/
+
+# Temporary generated test PDFs
+storage/secure_pdfs/*_test.pdf
+
+# Archives and build artifacts
+*.zip
+DropKit-Audit.zip
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -924,3 +924,130 @@ h1, h2, h3, h4, h5 {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==============================================================
+   DropKit 6-App UPI Grid & Screenshot Upload Styles
+   ============================================================== */
+.upi-app-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 580px) {
+  .upi-app-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.upi-app-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--dk-radius-sm);
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  text-decoration: none;
+  color: var(--dk-navy);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.upi-app-card:hover {
+  border-color: var(--dk-orange);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 101, 61, 0.15);
+}
+
+.upi-app-card.active {
+  border-color: var(--dk-orange);
+  background: #FFF7F5;
+  box-shadow: 0 0 0 2px rgba(255, 101, 61, 0.25), 0 4px 12px rgba(255, 101, 61, 0.1);
+}
+
+.upi-app-card .app-logo-wrap,
+.upi-app-card .app-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+}
+
+.upi-app-card .upi-app-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.upi-app-card .app-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  text-align: left;
+}
+
+.upi-app-card .app-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--dk-navy);
+  line-height: 1.2;
+}
+
+.upi-app-card .app-sub {
+  font-size: 0.68rem;
+  color: var(--dk-muted);
+}
+
+/* Screenshot Upload Area */
+.screenshot-upload-box {
+  background: #FFFFFF;
+  border: 2px dashed #CBD5E1;
+  border-radius: var(--dk-radius-sm);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.screenshot-upload-box:hover, .screenshot-upload-box.dragover {
+  border-color: var(--dk-orange);
+  background: #FFFBF9;
+}
+
+.screenshot-preview-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--dk-radius-sm);
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.screenshot-thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+}
+
+.malayalam-note {
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  color: var(--dk-muted);
+}

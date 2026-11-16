@@ -1,0 +1,2 @@
+# DropKit Python Serverless Requirements
+# DropKit utilizes zero external dependencies (Python 3.12+ standard library)

@@ -171,6 +171,32 @@
       z-index: 1000;
       padding: 1rem;
     }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #CBD5E1;
+      transition: .3s;
+      border-radius: 26px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    input:checked + .toggle-slider {
+      background-color: #10B981;
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(22px);
+    }
   </style>
 </head>
 <body>
@@ -183,7 +209,7 @@
           <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit Logo" style="height: 38px; filter: brightness(0) invert(1);">
         </a>
         <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.75rem;">
-          <span id="env-badge" class="badge badge-warning" style="font-size: 0.65rem;">DEMO MODE</span>
+          <span id="env-badge" class="badge badge-success" style="font-size: 0.65rem;">⚡ DIRECT UPI ACTIVE</span>
           <span style="font-size: 0.7rem; color: #A0A3BD;">v2.6 Enterprise</span>
         </div>
       </div>
@@ -256,9 +282,9 @@
         <a href="/" target="_blank" class="btn btn-outline btn-sm">
           <span>🌐</span> View Public Store
         </a>
-        <button onclick="toggleDemoMode()" id="btn-toggle-mode" class="btn btn-outline btn-sm" style="border-color: var(--dk-warning); color: #92400E;">
-          Switch to Live Mode
-        </button>
+        <span class="badge badge-success" style="font-size: 0.75rem; padding: 0.4rem 0.75rem;">
+          ⚡ DIRECT UPI ACTIVE
+        </span>
       </div>
     </header>
 
@@ -294,21 +320,21 @@
           </div>
         </div>
 
-        <!-- Sandbox Testing Station Card -->
+        <!-- Direct UPI Verification & Workflow Station -->
         <div class="card" style="margin-bottom: 2rem; border-color: var(--dk-orange); background: #FFFFFF; box-shadow: 0 8px 24px rgba(255, 101, 61, 0.08);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
             <div>
               <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <span class="badge badge-orange" style="font-size: 0.75rem;">Interactive Simulator</span>
-                <h3 style="font-size: 1.25rem; color: var(--dk-navy); margin: 0;">Dynamic UPI QR Sandbox Testing Station</h3>
+                <span class="badge badge-orange" style="font-size: 0.75rem;">Direct UPI Flow</span>
+                <h3 style="font-size: 1.25rem; color: var(--dk-navy); margin: 0;">Direct UPI QR &amp; Bank Reconciliation Station</h3>
               </div>
               <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.25rem;">
-                Test how the automated payment verification, cryptographic webhooks, and PDF unlocking work in real-time.
+                Demonstrates the complete Direct UPI checkout cycle: dynamic QR creation, customer screenshot upload, and Admin verification.
               </p>
             </div>
             <div style="display: flex; gap: 0.5rem;">
-              <span class="badge badge-success">Idempotency Guard Active</span>
-              <span class="badge badge-navy">HMAC-SHA256 Signed</span>
+              <span class="badge badge-success">Zero Gateway Fee</span>
+              <span class="badge badge-navy">Direct Bank Settlement</span>
             </div>
           </div>
 
@@ -316,19 +342,19 @@
           <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; background: var(--dk-bg); padding: 1rem; border-radius: var(--dk-radius-sm); font-size: 0.8rem;">
             <div>
               <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">1. Dynamic QR Gen</div>
-              <div class="text-muted">Calculates ₹199 price, locks order, renders NPCI standard UPI URI.</div>
+              <div class="text-muted">Calculates exact product price from database, generates valid UPI URI for merchant VPA.</div>
             </div>
             <div>
-              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">2. Customer UPI Scan</div>
-              <div class="text-muted">Customer pays via GPay, PhonePe, Paytm, or BHIM.</div>
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">2. Customer UPI Transfer</div>
+              <div class="text-muted">Customer pays via 6 supported UPI apps or scans dynamic QR.</div>
             </div>
             <div>
-              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">3. Webhook Auth</div>
-              <div class="text-muted">Gateway POSTs signed callback. DropKit verifies signature & exact paise.</div>
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">3. Customer Screenshot</div>
+              <div class="text-muted">Customer uploads payment screenshot. Order moves to VERIFICATION_PENDING.</div>
             </div>
             <div>
-              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">4. Instant Unlock</div>
-              <div class="text-muted">Issues secure time-limited token (dkt_...) and streams PDF.</div>
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">4. Admin Statement Check</div>
+              <div class="text-muted">Store Admin reconciles against bank statement and unlocks download entitlement.</div>
             </div>
           </div>
 
@@ -352,21 +378,21 @@
                 <button class="btn btn-primary btn-sm" onclick="runSandboxOrderCreate()">
                   1. Generate Test Dynamic QR
                 </button>
-                <button class="btn btn-navy btn-sm" id="btn-sbx-pay" onclick="runSandboxPaymentSimulate('SUCCESS')" disabled>
-                  2. Simulate UPI Payment (Verified)
+                <button class="btn btn-navy btn-sm" id="btn-sbx-screenshot" onclick="runSandboxSubmitScreenshot()" disabled>
+                  2. Upload Test Payment Screenshot
                 </button>
-                <button class="btn btn-outline btn-sm" id="btn-sbx-tamper" onclick="runSandboxPaymentSimulate('TAMPERED')" disabled style="color: var(--dk-danger); border-color: var(--dk-danger);">
-                  3. Test Fake/Tampered Webhook
+                <button class="btn btn-outline btn-sm" id="btn-sbx-verify" onclick="runSandboxAdminVerify()" disabled style="color: #047857; border-color: #10B981;">
+                  3. Verify Credit &amp; Unlock PDF
                 </button>
               </div>
 
               <!-- Unlocked Download Link Box (appears on success) -->
               <div id="sbx-success-result" style="display: none; margin-top: 1rem; padding: 1rem; background: #D1FAE5; border-radius: var(--dk-radius-sm); border: 1px solid #10B981;">
                 <div style="font-weight: 700; color: #065F46; font-size: 0.9rem; margin-bottom: 0.25rem;">
-                  🎉 Payment Authenticated & PDF Unlocked!
+                  🎉 Bank Credit Verified &amp; PDF Unlocked!
                 </div>
                 <div style="font-size: 0.8rem; color: #047857; margin-bottom: 0.75rem;">
-                  A genuine download entitlement was generated. You can download the verified PDF below:
+                  A genuine download entitlement was issued after bank statement verification:
                 </div>
                 <a id="sbx-download-link" href="#" target="_blank" class="btn btn-navy btn-sm">
                   📄 Test Single-Click PDF Download
@@ -377,7 +403,7 @@
             <!-- Terminal / Audit Output -->
             <div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                <span style="font-size: 0.75rem; font-weight: 700; color: var(--dk-navy); text-transform: uppercase;">Real-Time Gateway & Webhook Log</span>
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--dk-navy); text-transform: uppercase;">Direct UPI Audit Log</span>
                 <button onclick="clearSandboxTerminal()" style="background: none; border: none; font-size: 0.7rem; color: var(--dk-muted); cursor: pointer;">Clear Log</button>
               </div>
               <div id="sbx-terminal" style="background: #121327; color: #10B981; font-family: monospace; font-size: 0.75rem; padding: 0.85rem; border-radius: var(--dk-radius-sm); height: 170px; overflow-y: auto; line-height: 1.5; border: 1px solid #1B1D3B;">
@@ -532,17 +558,37 @@
       <section id="section-orders" style="display: none;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
           <div>
-            <h3 style="font-size: 1.25rem;">Orders Ledger</h3>
-            <p class="text-muted" style="font-size: 0.85rem;">Comprehensive transaction history, UPI reconciliation, and refund processing.</p>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <h3 style="font-size: 1.25rem; margin: 0;">Orders &amp; Payment Reconciliation Ledger</h3>
+              <span id="pending-orders-badge" class="badge badge-warning" style="display: none; font-size: 0.75rem;">0 Pending Verification</span>
+            </div>
+            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.25rem;">
+              Reconcile direct UPI payments against your authorized bank statement records before unlocking PDF downloads.
+            </p>
           </div>
 
-          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="tab-pill active" onclick="filterOrders('')">All</button>
-            <button class="tab-pill" onclick="filterOrders('PAID')">Paid</button>
-            <button class="tab-pill" onclick="filterOrders('PENDING')">Pending</button>
-            <button class="tab-pill" onclick="filterOrders('FAILED')">Failed</button>
-            <button class="tab-pill" onclick="filterOrders('REFUNDED')">Refunded</button>
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="order-search" class="form-control" placeholder="Search order #, customer, or product..." style="width: 250px; font-size: 0.85rem;" oninput="searchOrders(this.value)">
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              <button class="tab-pill active" onclick="filterOrders('')">All Orders</button>
+              <button class="tab-pill" onclick="filterOrders('VERIFICATION_PENDING')" id="tab-orders-vp">⏳ Verification Pending</button>
+              <button class="tab-pill" onclick="filterOrders('PENDING')" id="tab-orders-pending">⌛ Awaiting Screenshot</button>
+              <button class="tab-pill" onclick="filterOrders('PAID')">✓ Verified Paid</button>
+              <button class="tab-pill" onclick="filterOrders('PAYMENT_REJECTED')">✕ Rejected</button>
+              <button class="tab-pill" onclick="filterOrders('REFUNDED')">↩ Refunded</button>
+            </div>
           </div>
+        </div>
+
+        <!-- Bank Reconciliation Instructions Box -->
+        <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--dk-radius-sm); padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; font-size: 0.825rem; color: #1E40AF; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <strong>🛡️ Direct UPI Payment Screenshot Verification Rule:</strong>
+            Customers upload original payment screenshots from their UPI app. Verify that the exact amount has credited to your merchant bank account before clicking <strong>Approve Payment</strong>.
+          </div>
+          <button class="btn btn-navy btn-sm" onclick="loadOrders()" style="flex-shrink: 0; margin-left: 1rem; font-size: 0.75rem;">
+            🔄 Refresh Ledger
+          </button>
         </div>
 
         <div class="table-container">
@@ -553,11 +599,11 @@
                 <th>Customer</th>
                 <th>Product</th>
                 <th>Amount</th>
-                <th>Status</th>
-                <th>Payment Ref</th>
+                <th>Payment Screenshot</th>
+                <th>Verification Status</th>
                 <th>Date (IST)</th>
-                <th>Download Status</th>
-                <th>Action</th>
+                <th>Entitlement</th>
+                <th style="min-width: 180px;">Admin Action</th>
               </tr>
             </thead>
             <tbody id="admin-orders-table">
@@ -699,14 +745,13 @@
         </div>
       </section>
 
-
       <!-- ==============================================
-           SECTION 8: SYSTEM SETTINGS
+           SECTION 7: PLATFORM & SYSTEM SETTINGS
            ============================================== -->
       <section id="section-settings" style="display: none;">
         <div style="margin-bottom: 1.5rem;">
           <h3 style="font-size: 1.25rem;">Platform & Profile Settings</h3>
-          <p class="text-muted" style="font-size: 0.85rem;">Manage admin profile & avatar, merchant gateway credentials, UPI VPAs, and owner security.</p>
+          <p class="text-muted" style="font-size: 0.85rem;">Manage admin profile & avatar, direct merchant UPI configuration, and owner security.</p>
         </div>
 
         <!-- Administrator Profile & Gallery Avatar Card -->
@@ -772,41 +817,62 @@
           </form>
         </div>
 
-        <div class="card" style="max-width: 720px; padding: 2rem;">
+        <div class="card" style="max-width: 760px; padding: 2rem; margin-bottom: 2rem;">
           <form id="settings-form">
-            <h4 style="font-size: 1rem; margin-bottom: 1rem; color: var(--dk-orange);">Payment Gateway Configuration</h4>
-            
-            <div class="form-group">
-              <label class="form-label">Merchant UPI VPA (Virtual Payment Address)</label>
-              <input type="text" id="cfg-upi-vpa" class="form-control" value="dropkit.pay@icici" required>
-              <small class="text-muted">Dynamic QR codes will request payment to this verified business VPA.</small>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; border-bottom: 1px solid var(--dk-border); padding-bottom: 0.75rem;">
+              <div>
+                <h4 style="font-size: 1.1rem; color: var(--dk-navy); margin: 0 0 0.25rem 0;">Direct UPI QR Configuration</h4>
+                <p class="text-muted" style="font-size: 0.85rem; margin: 0;">Configure your personal or business UPI ID once. DropKit automatically generates a valid UPI QR for each checkout with the exact product price.</p>
+              </div>
+              <span class="badge badge-orange" style="font-size: 0.75rem;">NPCI Standard URI</span>
+            </div>
+
+            <!-- Direct UPI Enable Toggle -->
+            <div style="background: #FFF7ED; border: 1px solid #FED7AA; border-radius: var(--dk-radius-sm); padding: 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <div style="font-weight: 700; color: #9A3412; font-size: 0.9rem;">Enable Direct UPI QR Payments</div>
+                <div style="font-size: 0.8rem; color: #C2410C;">Allow customers to scan a locally generated UPI QR code and pay directly to your UPI ID without gateway fees.</div>
+              </div>
+              <label style="position: relative; display: inline-block; width: 48px; height: 26px; margin: 0;">
+                <input type="checkbox" id="cfg-direct-upi-enabled" checked style="opacity: 0; width: 0; height: 0;">
+                <span class="toggle-slider" onclick="this.previousElementSibling.click()"></span>
+              </label>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Merchant Display Name</label>
-              <input type="text" id="cfg-merchant-name" class="form-control" value="DropKit Digital" required>
+              <label class="form-label" style="font-weight: 700;">Payee UPI ID (VPA) *</label>
+              <input type="text" id="cfg-upi-vpa" class="form-control" placeholder="yourname@okaxis or merchant@icici" required style="font-weight: 600; font-family: monospace; font-size: 1rem;">
+              <small class="text-muted" style="display: block; margin-top: 0.25rem;">
+                Enter your UPI ID ONCE here. DropKit dynamically embeds this payee address into every checkout QR along with the exact product price. No QR image upload needed.
+              </small>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Webhook HMAC Secret</label>
-              <input type="text" id="cfg-webhook-secret" class="form-control" value="whsec_dropkit_live_2026_98fa72cb4109" required>
-              <small class="text-muted">Used for cryptographic signature verification on incoming payment callbacks.</small>
+              <label class="form-label" style="font-weight: 700;">Payee Display Name *</label>
+              <input type="text" id="cfg-merchant-name" class="form-control" placeholder="Your Name or Business Name" required>
+              <small class="text-muted" style="display: block; margin-top: 0.25rem;">
+                The recipient display name shown to customers in their UPI apps (GPay, PhonePe, Paytm, BHIM).
+              </small>
             </div>
 
-            <h4 style="font-size: 1rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--dk-orange);">Support & Merchant Contacts</h4>
+            <div style="margin-top: 1.5rem; border-top: 1px solid var(--dk-border); padding-top: 1.25rem;">
+              <h4 style="font-size: 1rem; margin-bottom: 1rem; color: var(--dk-orange);">Support & Merchant Contacts</h4>
 
-            <div class="form-group">
-              <label class="form-label">Support Email</label>
-              <input type="email" id="cfg-support-email" class="form-control" value="support@dropkit.io">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                  <label class="form-label">Support Email</label>
+                  <input type="email" id="cfg-support-email" class="form-control" value="support@dropkit.io">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Support WhatsApp / Helpline</label>
+                  <input type="text" id="cfg-support-phone" class="form-control" value="+91 98765 43210">
+                </div>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">Support WhatsApp / Helpline</label>
-              <input type="text" id="cfg-support-phone" class="form-control" value="+91 98765 43210">
-            </div>
-
-            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
-              Save System Settings
+            <button type="submit" id="btn-save-settings" class="btn btn-primary" style="margin-top: 1rem;">
+              Save Payment & System Settings
             </button>
           </form>
         </div>
@@ -1007,6 +1073,99 @@
     </div>
   </div>
 
+  <!-- Original Payment Receipt Preview & Mismatch Analysis Modal -->
+  <div id="screenshot-preview-modal" class="modal-overlay">
+    <div class="card" style="width: 100%; max-width: 880px; padding: 1.5rem; max-height: 94vh; display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; border-bottom: 1px solid var(--dk-border); padding-bottom: 0.75rem;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <h3 style="font-size: 1.15rem; margin: 0;" id="sc-modal-title">Original UPI Payment Receipt</h3>
+            <span id="sc-modal-badge" class="badge badge-warning" style="font-size: 0.7rem;">Verification Pending</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--dk-muted); margin-top: 0.15rem;" id="sc-modal-subtitle">Customer Receipt Review</div>
+        </div>
+        <button onclick="closeScreenshotModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--dk-muted);">✕</button>
+      </div>
+
+      <!-- Main Modal Content Grid -->
+      <div style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1.1fr 1fr; gap: 1.25rem; min-height: 350px;">
+        <!-- Left: Uploaded Receipt Image -->
+        <div style="background: #0B0F19; border-radius: 8px; padding: 0.85rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 320px;">
+          <img id="sc-modal-img" src="" alt="Customer Payment Receipt" style="max-width: 100%; max-height: 60vh; object-fit: contain; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+          <div style="font-size: 0.7rem; color: #94A3B8; margin-top: 0.6rem; text-align: center;">
+            Original Image Shared from Customer's UPI App
+          </div>
+        </div>
+
+        <!-- Right: Administrative Assistance & Mismatch Verification Panel -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; overflow-y: auto; padding-right: 0.25rem;">
+          
+          <!-- Reused Receipt / Mismatch Alert Box (if detected) -->
+          <div id="sc-modal-alert-box" style="display: none; background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; padding: 0.75rem; font-size: 0.8rem; color: #991B1B;">
+            <div style="font-weight: 700; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">
+              <span>🚨</span> Discrepancy / Risk Flags Detected
+            </div>
+            <div id="sc-modal-alert-list" style="font-size: 0.78rem; line-height: 1.4;"></div>
+          </div>
+
+          <!-- Comparison Table -->
+          <div style="background: var(--dk-bg); border: 1px solid var(--dk-border); border-radius: 8px; padding: 0.85rem; font-size: 0.8rem;">
+            <div style="font-weight: 700; font-size: 0.82rem; color: var(--dk-navy); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.04em;">
+              Order vs Receipt Comparison
+            </div>
+            <table style="width: 100%; font-size: 0.78rem;">
+              <tbody>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                  <td style="padding: 0.35rem 0; color: var(--dk-muted); width: 45%;">Order Reference</td>
+                  <td id="cmp-order-num" style="padding: 0.35rem 0; font-family: monospace; font-weight: 700; text-align: right;"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                  <td style="padding: 0.35rem 0; color: var(--dk-muted);">Expected Amount</td>
+                  <td id="cmp-exp-amount" style="padding: 0.35rem 0; font-weight: 700; text-align: right; color: var(--dk-navy);"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                  <td style="padding: 0.35rem 0; color: var(--dk-muted);">Extracted Amount</td>
+                  <td id="cmp-ext-amount" style="padding: 0.35rem 0; font-weight: 700; text-align: right;"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                  <td style="padding: 0.35rem 0; color: var(--dk-muted);">Expected Merchant VPA</td>
+                  <td id="cmp-exp-vpa" style="padding: 0.35rem 0; font-family: monospace; font-size: 0.75rem; text-align: right; color: var(--dk-orange);"></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #E2E8F0;">
+                  <td style="padding: 0.35rem 0; color: var(--dk-muted);">Extracted Recipient</td>
+                  <td id="cmp-ext-vpa" style="padding: 0.35rem 0; font-family: monospace; font-size: 0.75rem; text-align: right;"></td>
+                </tr>
+                <tr>
+                  <td style="padding: 0.35rem 0; color: var(--dk-muted);">Detected UPI UTR / Ref</td>
+                  <td id="cmp-ext-utr" style="padding: 0.35rem 0; font-family: monospace; font-weight: 700; text-align: right;"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mismatch & Advisory Checklist -->
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.85rem; font-size: 0.78rem;">
+            <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.4rem;">
+              Administrative Checks &amp; Fingerprint
+            </div>
+            <div id="cmp-flags-container" style="display: flex; flex-direction: column; gap: 0.35rem;"></div>
+          </div>
+
+          <!-- Advisory Security Notice (Mandated by Section 5) -->
+          <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 0.75rem; font-size: 0.75rem; color: #92400E; line-height: 1.45;">
+            <strong>🛡️ Bank Credit Verification Rule:</strong> An image shared from a UPI app is an image file and cannot prove that money reached your account. You must independently confirm incoming funds in your authorized bank records before approving.
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div id="sc-modal-actions" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; border-top: 1px solid var(--dk-border); padding-top: 0.85rem;">
+        <button type="button" class="btn btn-outline" onclick="closeScreenshotModal()">Close</button>
+        <button type="button" class="btn btn-outline" id="btn-modal-reject" style="color: #EF4444; border-color: #EF4444;" onclick="triggerModalReject()">✕ Reject Payment</button>
+        <button type="button" class="btn btn-primary" id="btn-modal-approve" style="background: #10B981; border-color: #10B981;" onclick="triggerModalApprove()">✓ Confirm Bank Credit &amp; Approve</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Chart.js & App Scripts -->
   <script src="/js/chart.min.js"></script>
@@ -1115,14 +1274,15 @@
       const prodId = document.getElementById('sbx-product-select').value;
       const email = document.getElementById('sbx-buyer-email').value.trim() || 'test.creator@dropkit.io';
       
-      appendSbxLog(`Creating test checkout order for product ID #${prodId}...`, '#FFFFFF');
+      appendSbxLog(`Creating test Direct UPI checkout order for product ID #${prodId}...`, '#FFFFFF');
       try {
         const res = await DropKit.api('/api/checkout/create-order', {
           method: 'POST',
           body: JSON.stringify({
             product_id: parseInt(prodId),
             customer_name: 'Sandbox Test Buyer',
-            customer_email: email
+            customer_email: email,
+            payment_method: 'DIRECT_UPI'
           })
         });
 
@@ -1130,10 +1290,12 @@
         appendSbxLog(`SUCCESS: Order created: ${currentSbxOrder.order_number}`, '#10B981');
         appendSbxLog(`Authoritative Price locked: ₹${currentSbxOrder.amount_inr.toFixed(2)}`, '#FF653D');
         appendSbxLog(`Dynamic UPI Payload: ${currentSbxOrder.upi_uri.substring(0, 50)}...`, '#A0A3BD');
-        appendSbxLog(`Status: PENDING. Listening for payment gateway webhook...`, '#F59E0B');
+        appendSbxLog(`Status: PENDING. Awaiting customer payment screenshot submission.`, '#F59E0B');
 
-        document.getElementById('btn-sbx-pay').disabled = false;
-        document.getElementById('btn-sbx-tamper').disabled = false;
+        const btnSc = document.getElementById('btn-sbx-screenshot');
+        if (btnSc) btnSc.disabled = false;
+        const btnVerify = document.getElementById('btn-sbx-verify');
+        if (btnVerify) btnVerify.disabled = true;
         document.getElementById('sbx-success-result').style.display = 'none';
         DropKit.toast(`Test Order ${currentSbxOrder.order_number} created!`, 'info');
       } catch (err) {
@@ -1142,54 +1304,63 @@
       }
     }
 
-    async function runSandboxPaymentSimulate(mode) {
+    async function runSandboxSubmitScreenshot() {
       if (!currentSbxOrder) {
         DropKit.toast('Please generate a test order first.', 'error');
         return;
       }
+      appendSbxLog(`[BUYER ACTION] Submitting original UPI payment receipt screenshot...`, '#FFFFFF');
+      
+      // Standard valid 1x1 test PNG base64
+      const mockScreenshot = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 
-      if (mode === 'TAMPERED') {
-        appendSbxLog(`[SIMULATION] Dispatching TAMPERED webhook with altered signature...`, '#EF4444');
-        try {
-          await DropKit.api('/api/payment/simulate', {
-            method: 'POST',
-            body: JSON.stringify({
-              order_number: currentSbxOrder.order_number,
-              simulate_status: 'TAMPERED'
-            })
-          });
-        } catch (err) {
-          appendSbxLog(`[SECURITY ALERT] ${err.message}`, '#EF4444');
-          appendSbxLog(`[DEFENSE CONFIRMED] Webhook rejected. Order remains securely locked.`, '#10B981');
-          DropKit.toast('Security Defense Confirmed: Forged webhook was successfully rejected!', 'success');
-        }
-        return;
-      }
-
-      // Valid payment simulation
-      appendSbxLog(`[SIMULATION] Customer scanned QR with UPI App. Initiating signed gateway callback...`, '#FFFFFF');
       try {
-        const res = await DropKit.api('/api/payment/simulate', {
+        const res = await DropKit.api('/api/checkout/upload-screenshot', {
           method: 'POST',
           body: JSON.stringify({
             order_number: currentSbxOrder.order_number,
-            simulate_status: 'SUCCESS'
+            order_access_token: currentSbxOrder.order_access_token,
+            screenshot_data: mockScreenshot,
+            filename: 'test_payment_screenshot.png'
           })
         });
+        currentSbxOrder.status = res.status || 'VERIFICATION_PENDING';
+        appendSbxLog(`[STATUS UPDATE] Order transitioned to VERIFICATION_PENDING`, '#F59E0B');
+        appendSbxLog(`[AUDIT] Original screenshot stored in secure private storage. Order queued for Admin Approval.`, '#10B981');
+        
+        const btnVerify = document.getElementById('btn-sbx-verify');
+        if (btnVerify) btnVerify.disabled = false;
+        DropKit.toast('Screenshot submitted! Status: VERIFICATION_PENDING', 'info');
+        loadOverview();
+        if (typeof loadOrders === 'function') loadOrders();
+      } catch (err) {
+        appendSbxLog(`[ERROR] ${err.message}`, '#EF4444');
+        DropKit.toast(err.message, 'error');
+      }
+    }
 
-        appendSbxLog(`[GATEWAY] Webhook POST received from UPI gateway.`, '#A0A3BD');
-        appendSbxLog(`[AUTH] HMAC-SHA256 signature verified against secret key ✅`, '#10B981');
-        appendSbxLog(`[AMOUNT] Exact paise verification: ₹${res.data.amount_inr.toFixed(2)} verified ✅`, '#10B981');
-        appendSbxLog(`[ORDER] Order ${res.data.order_number} transitioned to PAID ✅`, '#10B981');
-        appendSbxLog(`[ENTITLEMENT] Issued token: ${res.data.download_token} ✅`, '#FF653D');
-        appendSbxLog(`[FULFILLMENT] Secure PDF download unlocked!`, '#10B981');
-
-        document.getElementById('sbx-success-result').style.display = 'block';
-        document.getElementById('sbx-download-link').href = `/api/download/${res.data.download_token}`;
-        document.getElementById('btn-sbx-pay').disabled = true;
-
+    async function runSandboxAdminVerify() {
+      if (!currentSbxOrder) {
+        DropKit.toast('Please generate a test order first.', 'error');
+        return;
+      }
+      appendSbxLog(`[ADMIN ACTION] Inspecting screenshot & reconciling bank statement for ${currentSbxOrder.order_number}...`, '#FFFFFF');
+      try {
+        const res = await DropKit.api(`/api/admin/orders/${currentSbxOrder.order_number}/verify`, {
+          method: 'POST',
+          body: JSON.stringify({
+            notes: 'Verified via Direct UPI Bank Reconciliation Station'
+          })
+        });
+        appendSbxLog(`[BANK RECONCILED] Payment approved! Order marked PAID`, '#10B981');
+        if (res.download_token) {
+          appendSbxLog(`[ENTITLEMENT ISSUED] Secure download token: ${res.download_token}`, '#10B981');
+          document.getElementById('sbx-success-result').style.display = 'block';
+          document.getElementById('sbx-download-link').href = `/api/download/${res.download_token}`;
+        }
         DropKit.toast('Payment verified! Download unlocked.', 'success');
-        loadOverview(); // refresh stat cards and recent transactions
+        loadOverview();
+        if (typeof loadOrders === 'function') loadOrders();
       } catch (err) {
         appendSbxLog(`[ERROR] ${err.message}`, '#EF4444');
         DropKit.toast(err.message, 'error');
@@ -1222,20 +1393,35 @@
 
         // Render Recent Transactions
         const txnContainer = document.getElementById('recent-txns-container');
-        txnContainer.innerHTML = res.recent_transactions.map(t => `
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.75rem; background: #F8FAFC; border-radius: 8px; font-size: 0.85rem;">
+        txnContainer.innerHTML = res.recent_transactions.map(t => {
+          let badgeClass = 'badge-danger';
+          let statusText = '✕ FAILED';
+          if (t.status === 'PAID') {
+            badgeClass = 'badge-success';
+            statusText = '● PAID';
+          } else if (t.status === 'PENDING') {
+            badgeClass = 'badge-warning';
+            statusText = '⏳ PENDING';
+          } else if (t.status === 'REFUNDED') {
+            badgeClass = 'badge-navy';
+            statusText = '↩ REFUNDED';
+          }
+
+          return `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.75rem; background: #F8FAFC; border-radius: 8px; font-size: 0.85rem; border: 1px solid #E2E8F0;">
             <div>
-              <div style="font-weight: 600; color: var(--dk-navy);">${t.customer_name}</div>
-              <div style="font-size: 0.75rem; color: var(--dk-muted);">${t.product_title} • ${t.created_at_ist}</div>
+              <div style="font-weight: 600; color: var(--dk-navy);">${t.customer_name} <span style="font-family: monospace; font-size: 0.75rem; color: var(--dk-muted); margin-left: 0.35rem;">(${t.order_number})</span></div>
+              <div style="font-size: 0.75rem; color: var(--dk-muted); margin-top: 2px;">${t.product_title} • ${t.created_at_ist} ${t.upi_txn_ref ? `• <span style="font-family:monospace; color:var(--dk-orange); font-weight:600;">${t.upi_txn_ref}</span>` : '<span style="color:var(--dk-muted);">• No Txn Ref</span>'}</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-weight: 700; color: var(--dk-navy);">${DropKit.formatINR(t.amount_inr)}</div>
-              <span class="badge ${t.status === 'PAID' ? 'badge-success' : 'badge-danger'}" style="font-size: 0.65rem;">
-                ${t.status}
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 2px;">${DropKit.formatINR(t.amount_inr)}</div>
+              <span class="badge ${badgeClass}" style="font-size: 0.65rem; font-weight: 700;">
+                ${statusText}
               </span>
             </div>
           </div>
-        `).join('');
+        `;
+        }).join('');
 
         // Render Overview Chart (30-day daily trend)
         const dailyData = await DropKit.api('/api/admin/analytics?tab=daily');
@@ -1663,48 +1849,306 @@
       document.getElementById('customer-history-modal').style.display = 'none';
     }
 
-    // SECTION 5: ORDERS
+    // SECTION 5: ORDERS & BANK RECONCILIATION
     let currentOrderStatus = '';
+    let currentOrderSearch = '';
+
+    function searchOrders(val) {
+      currentOrderSearch = val;
+      loadOrders();
+    }
+
+    let loadedOrdersMap = {};
+
     async function loadOrders() {
       try {
-        const res = await DropKit.api(`/api/admin/orders?status=${currentOrderStatus}`);
+        let url = `/api/admin/orders?status=${encodeURIComponent(currentOrderStatus)}`;
+        if (currentOrderSearch) url += `&q=${encodeURIComponent(currentOrderSearch)}`;
+        const res = await DropKit.api(url);
+        const orders = res.orders || [];
+        loadedOrdersMap = {};
+
+        // Count pending
+        const pendingCount = orders.filter(o => o.status === 'PENDING' || o.status === 'VERIFICATION_PENDING').length;
+        const pendingBadge = document.getElementById('pending-orders-badge');
+        if (pendingBadge) {
+          if (pendingCount > 0) {
+            pendingBadge.textContent = `${pendingCount} Pending Verification`;
+            pendingBadge.style.display = 'inline-block';
+          } else {
+            pendingBadge.style.display = 'none';
+          }
+        }
+
         const tbody = document.getElementById('admin-orders-table');
-        tbody.innerHTML = res.orders.map(o => `
+        if (orders.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--dk-muted);">No orders found for current filter.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = orders.map(o => {
+          loadedOrdersMap[o.order_number] = o;
+
+          let badgeClass = 'badge-danger';
+          let statusText = '✕ FAILED';
+          if (o.status === 'PAID') {
+            badgeClass = 'badge-success';
+            statusText = '● PAID';
+          } else if (o.status === 'VERIFICATION_PENDING') {
+            badgeClass = 'badge-warning';
+            statusText = '⏳ VERIFICATION PENDING';
+          } else if (o.status === 'PAYMENT_REJECTED') {
+            badgeClass = 'badge-danger';
+            statusText = '✕ PAYMENT REJECTED';
+          } else if (o.status === 'PENDING') {
+            badgeClass = 'badge-navy';
+            statusText = '⌛ AWAITING PAYMENT';
+          } else if (o.status === 'EXPIRED') {
+            badgeClass = 'badge-navy';
+            statusText = '⏰ EXPIRED';
+          } else if (o.status === 'REFUNDED') {
+            badgeClass = 'badge-navy';
+            statusText = '↩ REFUNDED';
+          }
+
+          let screenshotDisplay = '<span class="text-muted" style="font-size:0.75rem;">No receipt</span>';
+          if (o.has_screenshot) {
+            const hasDup = o.is_duplicate_receipt;
+            const hasCrit = o.receipt_ocr_data && o.receipt_ocr_data.has_critical_warning;
+
+            screenshotDisplay = `
+              <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+                <img src="${o.screenshot_url}" class="screenshot-thumbnail" style="width:38px;height:38px;cursor:pointer;border-radius:4px;border:1px solid #CBD5E1;" onclick="openScreenshotModal('${o.order_number}')" title="Click to view full receipt">
+                <button class="btn btn-outline btn-sm" style="font-size:0.7rem;padding:2px 6px;" onclick="openScreenshotModal('${o.order_number}')">
+                  🔍 View Receipt
+                </button>
+                ${hasDup ? `<span class="badge badge-danger" style="font-size:0.65rem;" title="Duplicate image of order #${o.duplicate_of_order || ''}">🚨 REUSED</span>` : ''}
+                ${hasCrit ? `<span class="badge badge-warning" style="font-size:0.65rem;">⚠️ Flagged</span>` : ''}
+              </div>
+            `;
+          }
+
+          let actionCol = '—';
+          if (o.status === 'VERIFICATION_PENDING') {
+            actionCol = `
+              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+                <button class="btn btn-primary btn-sm" onclick="adminApprovePayment('${o.order_number}', ${o.amount_inr}, '${o.customer_name}')" style="padding:4px 8px;font-size:0.75rem;background:#10B981;border-color:#10B981;" title="Confirm bank credit & unlock PDF">
+                  ✓ Approve Payment
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="adminRejectPayment('${o.order_number}')" style="padding:4px 8px;font-size:0.75rem;color:#EF4444;border-color:#EF4444;" title="Reject payment receipt">
+                  ✕ Reject
+                </button>
+              </div>
+            `;
+          } else if (o.status === 'PAID') {
+            actionCol = `
+              <div style="display:flex;gap:0.4rem;align-items:center;">
+                <span class="badge badge-success" style="font-size:0.7rem;">✓ Approved</span>
+                ${o.download_token ? `
+                  <a href="/api/download/${o.download_token}" target="_blank" class="btn btn-navy btn-sm" style="padding:4px 8px;font-size:0.75rem;" title="Test Verified Download Link">
+                    📄 Stream
+                  </a>
+                ` : ''}
+                <button class="btn btn-outline btn-sm" onclick="refundOrder('${o.order_number}')" style="padding:4px 8px;font-size:0.75rem;color:var(--dk-danger);border-color:var(--dk-danger);">
+                  Refund
+                </button>
+              </div>
+            `;
+          } else if (o.status === 'PAYMENT_REJECTED') {
+            actionCol = `
+              <div>
+                <span class="badge badge-danger" style="font-size:0.7rem;">✕ Rejected</span>
+                ${o.rejection_reason ? `<div style="font-size:0.7rem;color:#DC2626;margin-top:2px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${o.rejection_reason}">${o.rejection_reason}</div>` : ''}
+              </div>
+            `;
+          } else if (o.status === 'PENDING') {
+            actionCol = `<span class="text-muted" style="font-size:0.75rem;font-style:italic;">Awaiting Customer Receipt</span>`;
+          }
+
+          let downloadStatus = '—';
+          if (o.status === 'PAID') {
+            downloadStatus = o.is_revoked ? '<span class="badge badge-danger">Revoked</span>' : `<span class="badge badge-success">${o.download_count}/${o.max_downloads} used</span>`;
+          } else {
+            downloadStatus = '<span class="badge" style="background:#F1F5F9;color:#64748B;">Locked 🔒</span>';
+          }
+
+          return `
           <tr>
-            <td><span style="font-family:monospace;font-weight:700;">${o.order_number}</span></td>
+            <td><span style="font-family:monospace;font-weight:700;color:var(--dk-navy);">${o.order_number}</span></td>
             <td>
               <div style="font-weight:600;">${o.customer_name}</div>
-              <div style="font-size:0.75rem;color:var(--dk-muted);">${o.customer_email}</div>
+              <div style="font-size:0.75rem;color:var(--dk-muted);">${o.customer_email}${o.customer_phone ? ' • ' + o.customer_phone : ''}</div>
             </td>
-            <td>${o.product_title}</td>
-            <td><strong>${DropKit.formatINR(o.amount_inr)}</strong></td>
             <td>
-              <span class="badge ${o.status === 'PAID' ? 'badge-success' : (o.status === 'PENDING' ? 'badge-warning' : 'badge-danger')}">
-                ${o.status}
+              <div style="font-weight:500;">${o.product_title}</div>
+            </td>
+            <td><strong style="color:var(--dk-navy);font-size:1rem;">${DropKit.formatINR(o.amount_inr)}</strong></td>
+            <td>${screenshotDisplay}</td>
+            <td>
+              <span class="badge ${badgeClass}" style="font-weight:700;">
+                ${statusText}
               </span>
             </td>
-            <td><span style="font-family:monospace;font-size:0.75rem;">${o.upi_txn_ref || 'Awaiting'}</span></td>
             <td><span style="font-size:0.8rem;">${o.created_at_ist}</span></td>
-            <td>
-              ${o.is_revoked ? '<span class="badge badge-danger">Revoked</span>' : `${o.download_count}/${o.max_downloads} used`}
-            </td>
-            <td>
-              ${o.status === 'PAID' ? `
-                <button class="btn btn-outline btn-sm" onclick="refundOrder('${o.order_number}')" style="color:var(--dk-danger);border-color:var(--dk-danger);">Refund</button>
-              ` : '—'}
-            </td>
+            <td>${downloadStatus}</td>
+            <td style="white-space:nowrap;">${actionCol}</td>
           </tr>
-        `).join('');
+        `;
+        }).join('');
       } catch (err) {
         console.error(err);
+      }
+    }
+
+    let currentModalOrder = null;
+
+    function openScreenshotModal(orderNum) {
+      const o = loadedOrdersMap[orderNum];
+      if (!o) return;
+      currentModalOrder = o;
+
+      const modal = document.getElementById('screenshot-preview-modal');
+      const img = document.getElementById('sc-modal-img');
+      const title = document.getElementById('sc-modal-title');
+      const subtitle = document.getElementById('sc-modal-subtitle');
+      const badge = document.getElementById('sc-modal-badge');
+      const approveBtn = document.getElementById('btn-modal-approve');
+      const rejectBtn = document.getElementById('btn-modal-reject');
+
+      if (img) img.src = o.screenshot_url || '';
+      if (title) title.textContent = `Receipt — Order #${o.order_number}`;
+      if (subtitle) subtitle.textContent = `Customer: ${o.customer_name} • Product: ${o.product_title}`;
+      if (badge) {
+        badge.textContent = o.status;
+        badge.className = 'badge ' + (o.status === 'PAID' ? 'badge-success' : (o.status === 'VERIFICATION_PENDING' ? 'badge-warning' : 'badge-danger'));
+      }
+
+      // Populate Order vs Receipt Comparison
+      document.getElementById('cmp-order-num').textContent = o.order_number;
+      document.getElementById('cmp-exp-amount').textContent = DropKit.formatINR(o.amount_inr);
+      document.getElementById('cmp-exp-vpa').textContent = o.upi_vpa || 'store.founder@upi';
+
+      const ocr = o.receipt_ocr_data || {};
+      const extAmountEl = document.getElementById('cmp-ext-amount');
+      if (ocr.extracted_amount) {
+        const isMatch = Math.abs(ocr.extracted_amount - o.amount_inr) < 0.01;
+        extAmountEl.innerHTML = `₹${ocr.extracted_amount.toFixed(2)} ${isMatch ? '<span style="color:#10B981;font-weight:700;">✓ Matched</span>' : '<span style="color:#EF4444;font-weight:700;">⚠️ Mismatch</span>'}`;
+      } else {
+        extAmountEl.innerHTML = '<span style="color:var(--dk-muted);font-weight:400;">Not detected in metadata</span>';
+      }
+
+      const extVpaEl = document.getElementById('cmp-ext-vpa');
+      extVpaEl.textContent = ocr.extracted_vpa || ocr.extracted_recipient || 'Not detected';
+
+      const extUtrEl = document.getElementById('cmp-ext-utr');
+      extUtrEl.textContent = ocr.extracted_txn_ref || o.upi_txn_ref || 'None';
+
+      // Discrepancy & Risk Flags Alert Box
+      const alertBox = document.getElementById('sc-modal-alert-box');
+      const alertList = document.getElementById('sc-modal-alert-list');
+      const flagsContainer = document.getElementById('cmp-flags-container');
+      
+      let warnings = [];
+      if (o.is_duplicate_receipt || ocr.is_duplicate_receipt) {
+        warnings.push(`🚨 Exact receipt image was already submitted for order #${o.duplicate_of_order || ocr.duplicate_of_order}!`);
+      }
+      if (ocr.mismatch_flags) {
+        ocr.mismatch_flags.forEach(f => {
+          if (f.includes('⚠️') || f.includes('🚨')) warnings.push(f);
+        });
+      }
+
+      if (warnings.length > 0 && alertBox && alertList) {
+        alertBox.style.display = 'block';
+        alertList.innerHTML = warnings.map(w => `<div style="margin-bottom:2px;">• ${w}</div>`).join('');
+      } else if (alertBox) {
+        alertBox.style.display = 'none';
+      }
+
+      if (flagsContainer) {
+        const allFlags = ocr.mismatch_flags || [];
+        if (allFlags.length === 0) {
+          flagsContainer.innerHTML = `<div style="color:var(--dk-muted);font-size:0.75rem;">SHA-256: <span style="font-family:monospace;">${(o.receipt_file_hash || 'N/A').substring(0, 20)}...</span></div>`;
+        } else {
+          flagsContainer.innerHTML = allFlags.map(f => `<div style="font-size:0.75rem;">${f}</div>`).join('') +
+            `<div style="font-size:0.7rem;color:var(--dk-muted);margin-top:0.25rem;">SHA-256 Fingerprint: <span style="font-family:monospace;">${(o.receipt_file_hash || ocr.file_hash || '').substring(0, 16)}...</span></div>`;
+        }
+      }
+
+      if (o.status === 'VERIFICATION_PENDING') {
+        if (approveBtn) approveBtn.style.display = 'inline-flex';
+        if (rejectBtn) rejectBtn.style.display = 'inline-flex';
+      } else {
+        if (approveBtn) approveBtn.style.display = 'none';
+        if (rejectBtn) rejectBtn.style.display = 'none';
+      }
+
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeScreenshotModal() {
+      const modal = document.getElementById('screenshot-preview-modal');
+      if (modal) modal.style.display = 'none';
+      currentModalOrder = null;
+    }
+
+    function triggerModalApprove() {
+      if (currentModalOrder) {
+        adminApprovePayment(currentModalOrder.order_number, currentModalOrder.amount_inr, currentModalOrder.customer_name);
+      }
+    }
+
+    function triggerModalReject() {
+      if (currentModalOrder) {
+        adminRejectPayment(currentModalOrder.order_number);
       }
     }
 
     function filterOrders(status) {
       currentOrderStatus = status;
       document.querySelectorAll('#section-orders .tab-pill').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      if (event && event.target && event.target.classList) {
+        event.target.classList.add('active');
+      }
       loadOrders();
+    }
+
+    async function adminApprovePayment(orderNum, amount, customerName) {
+      const confirmed = confirm(`APPROVE PAYMENT & UNLOCK PDF?\n\nOrder: ${orderNum}\nCustomer: ${customerName}\n\nPlease confirm you have checked your merchant bank account and received the credited payment.`);
+      if (!confirmed) return;
+
+      try {
+        const res = await DropKit.api(`/api/admin/orders/${orderNum}/verify`, {
+          method: 'POST',
+          body: JSON.stringify({
+            notes: `Bank credit confirmed for order ${orderNum}`
+          })
+        });
+        DropKit.toast(res.message || 'Payment successfully approved! Product unlocked.', 'success');
+        closeScreenshotModal();
+        loadOrders();
+        loadOverview();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    async function adminRejectPayment(orderNum) {
+      const reason = prompt(`REJECT PAYMENT FOR ORDER ${orderNum}:\n\nPlease enter the rejection reason (e.g. Screenshot unreadable, amount mismatch, or bank credit not found):`, 'Payment not received on bank statement');
+      if (!reason || !reason.trim()) return;
+
+      try {
+        const res = await DropKit.api(`/api/admin/orders/${orderNum}/reject`, {
+          method: 'POST',
+          body: JSON.stringify({ reason: reason.trim() })
+        });
+        DropKit.toast(res.message || 'Order marked rejected.', 'info');
+        closeScreenshotModal();
+        loadOrders();
+        loadOverview();
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
     }
 
     async function refundOrder(orderNum) {
@@ -1888,8 +2332,8 @@
           return;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-          DropKit.toast('Selected image is too large. Please select an image under 5MB.', 'error');
+        if (file.size > 25 * 1024 * 1024) {
+          DropKit.toast('Selected image is too large. Please select an image under 25MB.', 'error');
           return;
         }
 
@@ -1965,12 +2409,16 @@
     async function loadSettings() {
       try {
         const res = await DropKit.api('/api/admin/settings');
-        const s = res.settings;
+        const s = res.settings || {};
         document.getElementById('cfg-upi-vpa').value = s.upi_vpa || 'dropkit.pay@icici';
         document.getElementById('cfg-merchant-name').value = s.merchant_name || 'DropKit Digital';
-        document.getElementById('cfg-webhook-secret').value = s.webhook_secret || '';
         document.getElementById('cfg-support-email').value = s.support_email || 'support@dropkit.io';
         document.getElementById('cfg-support-phone').value = s.support_phone || '+91 98765 43210';
+
+        const directUpiToggle = document.getElementById('cfg-direct-upi-enabled');
+        if (directUpiToggle) {
+          directUpiToggle.checked = (s.direct_upi_enabled !== '0' && s.direct_upi_enabled !== false);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -1981,7 +2429,7 @@
       const payload = {
         upi_vpa: document.getElementById('cfg-upi-vpa').value.trim(),
         merchant_name: document.getElementById('cfg-merchant-name').value.trim(),
-        webhook_secret: document.getElementById('cfg-webhook-secret').value.trim(),
+        direct_upi_enabled: document.getElementById('cfg-direct-upi-enabled').checked ? '1' : '0',
         support_email: document.getElementById('cfg-support-email').value.trim(),
         support_phone: document.getElementById('cfg-support-phone').value.trim()
       };
@@ -1990,7 +2438,8 @@
           method: 'POST',
           body: JSON.stringify(payload)
         });
-        DropKit.toast('Platform settings updated successfully', 'success');
+        DropKit.toast('Direct UPI and system settings updated successfully!', 'success');
+        loadSettings();
       } catch (err) {
         DropKit.toast(err.message, 'error');
       }
@@ -2039,28 +2488,7 @@
       }
     }
 
-    function toggleDemoMode() {
-      isLiveMode = !isLiveMode;
-      const badge = document.getElementById('env-badge');
-      const btn = document.getElementById('btn-toggle-mode');
-      if (isLiveMode) {
-        badge.className = 'badge badge-success';
-        badge.textContent = 'LIVE PRODUCTION';
-        btn.textContent = 'Switch to Demo Mode';
-        btn.style.color = '#065F46';
-        btn.style.borderColor = '#10B981';
-        DropKit.toast('Switched to LIVE MODE: Using real merchant credentials and genuine gateway verification.', 'success');
-      } else {
-        badge.className = 'badge badge-warning';
-        badge.textContent = 'DEMO MODE';
-        btn.textContent = 'Switch to Live Mode';
-        btn.style.color = '#92400E';
-        btn.style.borderColor = 'var(--dk-warning)';
-        DropKit.toast('Switched to DEMO MODE: Test UPI simulator active.', 'info');
-      }
-    }
-
-    async function logoutAdmin() {
+        async function logoutAdmin() {
       try {
         await DropKit.api('/api/admin/logout', { method: 'POST' });
       } catch (e) {}

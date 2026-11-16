@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <title>BHIM UPI</title>
+  <rect width="48" height="48" rx="10" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+  <g transform="translate(2, 6)">
+    <!-- Saffron top chevron -->
+    <path fill="#F37021" d="M16 6 L26 12 L16 18 L19 12 Z"/>
+    <path fill="#F37021" d="M22 6 L32 12 L22 18 L25 12 Z"/>
+    <!-- Green bottom chevron -->
+    <path fill="#00796B" d="M16 15 L26 21 L16 27 L19 21 Z"/>
+    <path fill="#00796B" d="M22 15 L32 21 L22 27 L25 21 Z"/>
+    <!-- BHIM wordmark -->
+    <text x="22" y="36" text-anchor="middle" font-family="'Outfit', 'Space Grotesk', sans-serif" font-weight="900" font-style="italic" font-size="11" fill="#004353" letter-spacing="0.5">BHIM</text>
+  </g>
+</svg>

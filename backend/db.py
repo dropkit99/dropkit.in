@@ -116,10 +116,24 @@ def init_db():
         amount_inr REAL NOT NULL,
         status TEXT NOT NULL DEFAULT 'PENDING', -- PENDING, PAID, FAILED, CANCELLED, REFUNDED
         payment_method TEXT DEFAULT 'UPI_DYNAMIC_QR',
+        payment_gateway TEXT DEFAULT 'NONE',
+        gateway_order_id TEXT,
+        order_access_token TEXT,
         upi_vpa TEXT,
         upi_txn_ref TEXT,
         is_demo INTEGER NOT NULL DEFAULT 0,
         notes TEXT,
+        screenshot_path TEXT,
+        screenshot_filename TEXT,
+        screenshot_mime_type TEXT,
+        screenshot_file_size INTEGER DEFAULT 0,
+        screenshot_uploaded_at TEXT,
+        payment_verification_status TEXT DEFAULT 'PENDING',
+        admin_verification_notes TEXT,
+        verified_by_admin_id INTEGER,
+        verified_at TEXT,
+        rejected_at TEXT,
+        rejection_reason TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         FOREIGN KEY (customer_id) REFERENCES customers(id),
@@ -253,6 +267,48 @@ def init_db():
     CREATE INDEX IF NOT EXISTS idx_admin_sessions_token ON admin_sessions(token);
     CREATE INDEX IF NOT EXISTS idx_login_attempts_ip ON login_attempts(ip_address, attempted_at);
     """);
+
+    # Safe Schema Migrations for existing databases
+    cursor.execute("PRAGMA table_info(orders);")
+    existing_cols = {row['name'] for row in cursor.fetchall()}
+    if 'gateway_order_id' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN gateway_order_id TEXT;")
+    if 'order_access_token' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN order_access_token TEXT;")
+    if 'payment_gateway' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN payment_gateway TEXT DEFAULT 'NONE';")
+    if 'screenshot_path' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN screenshot_path TEXT;")
+    if 'screenshot_filename' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN screenshot_filename TEXT;")
+    if 'screenshot_mime_type' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN screenshot_mime_type TEXT;")
+    if 'screenshot_file_size' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN screenshot_file_size INTEGER DEFAULT 0;")
+    if 'screenshot_uploaded_at' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN screenshot_uploaded_at TEXT;")
+    if 'payment_verification_status' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN payment_verification_status TEXT DEFAULT 'PENDING';")
+    if 'admin_verification_notes' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN admin_verification_notes TEXT;")
+    if 'verified_by_admin_id' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN verified_by_admin_id INTEGER;")
+    if 'verified_at' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN verified_at TEXT;")
+    if 'rejected_at' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN rejected_at TEXT;")
+    if 'rejection_reason' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN rejection_reason TEXT;")
+    if 'receipt_file_hash' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN receipt_file_hash TEXT;")
+    if 'receipt_ocr_data' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN receipt_ocr_data TEXT;")
+    if 'receipt_mismatch_flags' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN receipt_mismatch_flags TEXT;")
+    if 'is_duplicate_receipt' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN is_duplicate_receipt INTEGER DEFAULT 0;")
+    if 'duplicate_of_order' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN duplicate_of_order TEXT;")
 
     conn.commit()
     conn.close()
