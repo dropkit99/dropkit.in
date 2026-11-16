@@ -135,6 +135,11 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
             if path == "/api/admin/me":
                 return self.send_json(200, {"user": admin_user})
 
+            if path == "/api/admin/profile":
+                from backend.api_handlers import handle_admin_get_profile
+                code, res = handle_admin_get_profile(admin_user['user_id'])
+                return self.send_json(code, res)
+
             if path == "/api/admin/overview":
                 code, res = handle_admin_overview()
                 return self.send_json(code, res)
@@ -264,6 +269,11 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
 
             if path == "/api/admin/change-credentials":
                 code, res = handle_admin_change_credentials(admin_user['user_id'], body_json)
+                return self.send_json(code, res)
+
+            if path == "/api/admin/profile":
+                from backend.api_handlers import handle_admin_update_profile
+                code, res = handle_admin_update_profile(admin_user['user_id'], body_json)
                 return self.send_json(code, res)
 
             if path == "/api/admin/clear-sales":

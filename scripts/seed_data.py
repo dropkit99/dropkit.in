@@ -228,7 +228,7 @@ def seed_database():
 
     # 4. Seed Realistic Customers & Orders for Analytics
     sample_customers = [
-        ("Aarav Sharma", "aarav.sharma@gmail.com", "+91 98201 12345"),
+        ("Customer Name", "customer@example.com", "+91 98201 12345"),
         ("Priya Patel", "priya.patel@outlook.com", "+91 97123 45678"),
         ("Rohan Verma", "rohan.v@techfoundry.in", "+91 98450 98765"),
         ("Ananya Iyer", "ananya.iyer@gmail.com", "+91 94440 11223"),

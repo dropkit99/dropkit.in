@@ -724,3 +724,50 @@ def handle_admin_clear_sales_data():
         "message": "All sales data, orders, and settlements have been completely cleared."
     }
 
+def handle_admin_get_profile(user_id: int):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT p.full_name, p.email, p.phone, p.avatar_image, u.username
+        FROM users u
+        LEFT JOIN admin_profiles p ON p.user_id = u.id
+        WHERE u.id = ?
+    """, (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return 404, {"error": "Admin profile not found"}
+    return 200, {"profile": dict(row)}
+
+def handle_admin_update_profile(user_id: int, data: dict):
+    full_name = data.get("full_name", "").strip()
+    email = data.get("email", "").strip()
+    phone = data.get("phone", "").strip()
+    avatar_image = data.get("avatar_image", None)
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = now_iso()
+
+    cursor.execute("SELECT id FROM admin_profiles WHERE user_id = ?", (user_id,))
+    existing = cursor.fetchone()
+
+    if existing:
+        updates = ["full_name = ?", "email = ?", "phone = ?", "updated_at = ?"]
+        params = [full_name or "DropKit Owner", email or "admin@dropkit.io", phone, now]
+        if avatar_image is not None:
+            updates.append("avatar_image = ?")
+            params.append(avatar_image)
+        params.append(user_id)
+        cursor.execute(f"UPDATE admin_profiles SET {', '.join(updates)} WHERE user_id = ?", params)
+    else:
+        cursor.execute("""
+            INSERT INTO admin_profiles (user_id, full_name, email, phone, avatar_image, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (user_id, full_name or "DropKit Owner", email or "admin@dropkit.io", phone, avatar_image, now, now))
+
+    conn.commit()
+    conn.close()
+    return 200, {"status": "success", "message": "Admin profile and avatar updated successfully!"}
+
+

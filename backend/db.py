@@ -42,6 +42,7 @@ def init_db():
         full_name TEXT NOT NULL,
         email TEXT NOT NULL,
         phone TEXT,
+        avatar_image TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

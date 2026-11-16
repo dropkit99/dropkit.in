@@ -81,7 +81,7 @@ def validate_admin_session(token: str):
     cursor = conn.cursor()
     now = now_iso()
     cursor.execute("""
-        SELECT s.id as session_id, s.token, s.expires_at, u.id as user_id, u.username, u.role, u.is_active, p.full_name, p.email
+        SELECT s.id as session_id, s.token, s.expires_at, u.id as user_id, u.username, u.role, u.is_active, p.full_name, p.email, p.phone, p.avatar_image
         FROM admin_sessions s
         JOIN users u ON s.user_id = u.id
         LEFT JOIN admin_profiles p ON p.user_id = u.id
