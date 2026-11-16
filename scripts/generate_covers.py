@@ -1,5 +1,6 @@
 import os
 import sys
+import html
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,7 +14,7 @@ COVERS = [
         "filename": "cover_saas_growth.svg",
         "title": "SaaS Growth Engine",
         "subtitle": "0 to ₹10 Lakhs MRR Scaling Roadmap",
-        "tag": "BUSINESS & SAAS",
+        "tag": "BUSINESS &amp; SAAS",
         "pages": "48 Pages",
         "accent": "#FF653D",
         "icon": "🚀"
@@ -21,8 +22,8 @@ COVERS = [
     {
         "filename": "cover_instagram_funnel.svg",
         "title": "Instagram Reel Funnel",
-        "subtitle": "DM Automation & Lead Conversion Guide",
-        "tag": "MARKETING & SALES",
+        "subtitle": "DM Automation &amp; Lead Conversion Guide",
+        "tag": "MARKETING &amp; SALES",
         "pages": "32 Pages",
         "accent": "#E1306C",
         "icon": "📸"
@@ -30,7 +31,7 @@ COVERS = [
     {
         "filename": "cover_system_architecture.svg",
         "title": "Full-Stack System Architecture",
-        "subtitle": "Enterprise Cloud & Microservices Blueprint 2026",
+        "subtitle": "Enterprise Cloud &amp; Microservices Blueprint 2026",
         "tag": "DEVELOPER PLAYBOOKS",
         "pages": "72 Pages",
         "accent": "#3B82F6",
@@ -40,7 +41,7 @@ COVERS = [
         "filename": "cover_cold_emails.svg",
         "title": "50+ Micro-SaaS Cold Emails",
         "subtitle": "High-Converting B2B Outreach Templates",
-        "tag": "OUTREACH & SALES",
+        "tag": "OUTREACH &amp; SALES",
         "pages": "24 Pages",
         "accent": "#10B981",
         "icon": "✉️"
@@ -48,8 +49,8 @@ COVERS = [
     {
         "filename": "cover_ui_ux_checklist.svg",
         "title": "Modern UI/UX Design System",
-        "subtitle": "200+ SaaS Wireframes & Design Token Checklist",
-        "tag": "DESIGN & UI KITS",
+        "subtitle": "200+ SaaS Wireframes &amp; Design Token Checklist",
+        "tag": "DESIGN &amp; UI KITS",
         "pages": "56 Pages",
         "accent": "#8B5CF6",
         "icon": "🎨"
@@ -57,8 +58,8 @@ COVERS = [
     {
         "filename": "cover_tax_playbook.svg",
         "title": "Indian Creator Tax Playbook",
-        "subtitle": "GST, Section 44ADA & Accounting Compliance",
-        "tag": "FINANCE & COMPLIANCE",
+        "subtitle": "GST, Section 44ADA &amp; Accounting Compliance",
+        "tag": "FINANCE &amp; COMPLIANCE",
         "pages": "64 Pages",
         "accent": "#F59E0B",
         "icon": "📊"
@@ -66,7 +67,8 @@ COVERS = [
 ]
 
 def generate_svg_cover(c):
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
   <defs>
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#1B1D3B"/>
@@ -105,7 +107,7 @@ def generate_svg_cover(c):
 
   <!-- Category Tag -->
   <g transform="translate(60, 140)">
-    <rect width="200" height="30" rx="6" fill="rgba(255, 101, 61, 0.15)" stroke="rgba(255, 101, 61, 0.4)" stroke-width="1"/>
+    <rect width="210" height="30" rx="6" fill="rgba(255, 101, 61, 0.15)" stroke="rgba(255, 101, 61, 0.4)" stroke-width="1"/>
     <text x="14" y="20" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#FF653D" letter-spacing="1.5">{c['tag']}</text>
   </g>
 

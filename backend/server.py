@@ -403,7 +403,10 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
 
         if target_file.exists() and target_file.is_file():
             content_type, _ = mimetypes.guess_type(str(target_file))
-            content_type = content_type or "application/octet-stream"
+            if target_file.suffix.lower() == ".svg":
+                content_type = "image/svg+xml; charset=utf-8"
+            else:
+                content_type = content_type or "application/octet-stream"
             try:
                 with open(target_file, "rb") as f:
                     content = f.read()
