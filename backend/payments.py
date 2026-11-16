@@ -333,7 +333,8 @@ def create_order(
     product_id: int,
     customer_phone: str = None,
     payment_method: str = "DIRECT_UPI",
-    is_demo: bool = False
+    is_demo: bool = False,
+    selected_language: str = "en"
 ) -> dict:
     """
     Creates an order with server-enforced product pricing and dynamic UPI QR:
@@ -351,6 +352,11 @@ def create_order(
     effective_vpa = upi_cfg["upi_vpa"]
     effective_name = upi_cfg["merchant_name"]
     effective_acc_id = upi_cfg.get("merchant_account_id", "")
+
+    # Normalize language (en, ml, hi)
+    lang_normalized = (selected_language or "en").lower().strip()
+    if lang_normalized not in ("en", "ml", "hi"):
+        lang_normalized = "en"
 
     # 2. Database operations for product lookup and customer upsert
     conn = get_connection()
@@ -407,14 +413,14 @@ def create_order(
         INSERT INTO orders (
             order_number, customer_id, product_id, amount_inr, status,
             payment_method, payment_gateway, gateway_order_id, order_access_token,
-            upi_vpa, upi_txn_ref, is_demo, merchant_account_id, created_at, updated_at
+            upi_vpa, upi_txn_ref, is_demo, merchant_account_id, selected_language, created_at, updated_at
         )
-        VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         order_number, customer_id, product['id'], product_price,
         method_normalized, payment_gateway, gateway_order_id, order_access_token,
         effective_vpa, order_number,
-        1 if is_demo else 0, effective_acc_id, now_iso(), now_iso()
+        1 if is_demo else 0, effective_acc_id, lang_normalized, now_iso(), now_iso()
     ))
     order_id = cursor.lastrowid
 
@@ -440,6 +446,7 @@ def create_order(
         "product_title": product['title'],
         "customer_name": customer_name,
         "customer_email": clean_email,
+        "selected_language": lang_normalized,
         "upi_vpa": effective_vpa,
         "merchant_name": effective_name,
         "merchant_account_id": effective_acc_id,
@@ -447,6 +454,134 @@ def create_order(
         "qr_svg": qr_svg,
         "status": "PENDING",
         "is_demo": is_demo
+    }
+
+def switch_alternative_upi(order_number: str, order_access_token: str) -> dict:
+    """
+    Customer-initiated UPI failover switcher:
+    When a customer experiences payment failure, bank downtime, or app issues,
+    they can switch to another verified merchant UPI ID configured in the system.
+    Dynamically re-assigns the order, generates a new NPCI UPI URI and updated QR code SVG.
+    """
+    if not order_number or not order_access_token:
+        raise ValueError("Missing order number or verification token.")
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT o.id, o.order_number, o.order_access_token, o.amount_inr, o.status,
+               o.merchant_account_id, o.upi_vpa, p.title as product_title
+        FROM orders o
+        JOIN products p ON o.product_id = p.id
+        WHERE o.order_number = ? AND o.order_access_token = ?
+    """, (order_number, order_access_token))
+    order = cursor.fetchone()
+
+    if not order:
+        conn.close()
+        raise ValueError("Order not found or unauthorized access token.")
+
+    if order['status'] != 'PENDING':
+        conn.close()
+        raise ValueError(f"Cannot switch payment method. Order is already in status: {order['status']}")
+
+    current_account_id = order['merchant_account_id'] or ""
+    current_vpa = order['upi_vpa'] or ""
+
+    # Fetch all enabled and available merchant accounts
+    cursor.execute("""
+        SELECT account_id, merchant_name, upi_vpa, collection_threshold_inr, confirmed_collection_total, priority
+        FROM merchant_upi_accounts
+        WHERE is_enabled = 1 AND availability_status = 'AVAILABLE'
+        ORDER BY priority ASC, id ASC
+    """)
+    all_accounts = [dict(r) for r in cursor.fetchall()]
+
+    if not all_accounts:
+        conn.close()
+        raise ValueError("No alternative merchant payment accounts are currently available.")
+
+    # Filter for accounts different from current
+    alt_accounts = [acc for acc in all_accounts if acc['account_id'] != current_account_id and acc['upi_vpa'] != current_vpa]
+
+    if not alt_accounts:
+        conn.close()
+        return {
+            "ok": False,
+            "switched": False,
+            "message": "Only one merchant UPI account is currently configured. Please scan or tap your app to complete payment.",
+            "upi_vpa": all_accounts[0]["upi_vpa"],
+            "merchant_name": all_accounts[0]["merchant_name"],
+            "merchant_account_id": all_accounts[0]["account_id"],
+            "upi_uri": generate_upi_uri(
+                order_number=order['order_number'],
+                amount_inr=float(order['amount_inr']),
+                product_title=order['product_title'],
+                vpa=all_accounts[0]['upi_vpa'],
+                merchant_name=all_accounts[0]['merchant_name'],
+                gateway_ref=order['order_number']
+            ),
+            "qr_svg": generate_svg_qr(generate_upi_uri(
+                order_number=order['order_number'],
+                amount_inr=float(order['amount_inr']),
+                product_title=order['product_title'],
+                vpa=all_accounts[0]['upi_vpa'],
+                merchant_name=all_accounts[0]['merchant_name'],
+                gateway_ref=order['order_number']
+            ), size=260)
+        }
+
+    # Pick the best alternative account
+    target_account = alt_accounts[0]
+
+    # Update order with new merchant account
+    now = now_iso()
+    cursor.execute("""
+        UPDATE orders
+        SET merchant_account_id = ?, upi_vpa = ?, updated_at = ?
+        WHERE id = ?
+    """, (target_account['account_id'], target_account['upi_vpa'], now, order['id']))
+
+    # Log in switch history
+    cursor.execute("""
+        INSERT INTO upi_switch_history (
+            prev_account_id, prev_upi_vpa, new_account_id, new_upi_vpa,
+            switch_reason, provider_event_ref, switched_by, details, created_at
+        )
+        VALUES (?, ?, ?, ?, 'CUSTOMER_FAILOVER_REQUEST', ?, 'CUSTOMER', ?, ?)
+    """, (
+        current_account_id, current_vpa,
+        target_account['account_id'], target_account['upi_vpa'],
+        order_number,
+        f"Customer requested alternative UPI ID due to checkout failure on order {order_number}",
+        now
+    ))
+
+    conn.commit()
+    conn.close()
+
+    # Generate new UPI URI & QR SVG
+    new_upi_uri = generate_upi_uri(
+        order_number=order['order_number'],
+        amount_inr=float(order['amount_inr']),
+        product_title=order['product_title'],
+        vpa=target_account['upi_vpa'],
+        merchant_name=target_account['merchant_name'],
+        gateway_ref=order['order_number']
+    )
+    new_qr_svg = generate_svg_qr(new_upi_uri, size=260)
+
+    return {
+        "ok": True,
+        "switched": True,
+        "message": f"Successfully switched to backup verified UPI: {target_account['merchant_name']}",
+        "order_number": order['order_number'],
+        "upi_vpa": target_account['upi_vpa'],
+        "merchant_name": target_account['merchant_name'],
+        "merchant_account_id": target_account['account_id'],
+        "upi_uri": new_upi_uri,
+        "qr_svg": new_qr_svg
     }
 
 # -----------------------------------------------------------------------------

@@ -18,7 +18,15 @@
       <a href="/" class="dk-logo-link">
         <img src="/assets/dropkit-logo-horizontal.png" alt="DropKit Logo" class="dk-logo-img">
       </a>
-      <div class="dk-nav-actions">
+      <div class="dk-nav-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+        <div class="switchers-wrap">
+          <button type="button" class="switch-pill-btn lang-toggle-btn" onclick="DropKitI18n.toggleLanguage()" title="Change Language">
+            🌐 മലയാളം
+          </button>
+          <button type="button" class="switch-pill-btn theme-toggle-btn" onclick="DropKitI18n.toggleTheme()" title="Toggle Dark/Light Mode">
+            🌙 Dark
+          </button>
+        </div>
         <a href="/products" class="btn btn-outline btn-sm">&larr; Back to Products</a>
       </div>
     </div>
@@ -110,6 +118,34 @@
                   </span>
                 </div>
                 <span style="font-size: 1.25rem;">🇮🇳</span>
+              </div>
+            </div>
+
+            <!-- PDF Language Selection (English / Malayalam / Hindi) -->
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label class="form-label" style="font-weight: 700; margin-bottom: 0.4rem; display: flex; justify-content: space-between;">
+                <span data-i18n="select_pdf_edition">📚 Select PDF Language Edition:</span>
+                <span id="selected-lang-tag" style="font-size: 0.75rem; color: var(--dk-orange); font-weight: 700;">English Edition</span>
+              </label>
+              <div class="pdf-lang-selector" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                <label class="pdf-lang-btn active" id="lang-btn-en" onclick="selectPdfLanguage('en')">
+                  <input type="radio" name="pdf_language" value="en" checked style="display: none;">
+                  <span style="font-size: 1.15rem; display: block; margin-bottom: 0.2rem;">🇬🇧</span>
+                  <span style="font-weight: 700; font-size: 0.85rem;">English</span>
+                  <span style="font-size: 0.68rem; color: var(--dk-muted); display: block;" data-i18n="edition_en">Original Edition</span>
+                </label>
+                <label class="pdf-lang-btn" id="lang-btn-ml" onclick="selectPdfLanguage('ml')">
+                  <input type="radio" name="pdf_language" value="ml" style="display: none;">
+                  <span style="font-size: 1.15rem; display: block; margin-bottom: 0.2rem;">🇮🇳</span>
+                  <span style="font-weight: 700; font-size: 0.85rem;">മലയാളം</span>
+                  <span style="font-size: 0.68rem; color: var(--dk-muted); display: block;" data-i18n="edition_ml">മലയാളം പതിപ്പ്</span>
+                </label>
+                <label class="pdf-lang-btn" id="lang-btn-hi" onclick="selectPdfLanguage('hi')">
+                  <input type="radio" name="pdf_language" value="hi" style="display: none;">
+                  <span style="font-size: 1.15rem; display: block; margin-bottom: 0.2rem;">🇮🇳</span>
+                  <span style="font-weight: 700; font-size: 0.85rem;">हिन्दी</span>
+                  <span style="font-size: 0.68rem; color: var(--dk-muted); display: block;" data-i18n="edition_hi">हिन्दी संस्करण</span>
+                </label>
               </div>
             </div>
 
@@ -215,6 +251,24 @@
             <a id="btn-open-upi-app" class="btn btn-navy btn-sm" style="flex: 1; justify-content: center;" href="#">
               📱 Open in UPI App
             </a>
+          </div>
+
+          <!-- Alternative UPI Failover Assistance (Customer Self-Service Backup UPI) -->
+          <div id="alternative-upi-box" style="margin-top: 0.85rem; background: #FFFBEB; border: 1px solid #FCD34D; border-radius: var(--dk-radius-sm); padding: 0.85rem 1rem; text-align: left;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+              <div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: #92400E; display: flex; align-items: center; gap: 0.35rem;">
+                  <span>⚠️</span> <span data-i18n="alt_upi_title">Facing payment failure or bank downtime?</span>
+                </div>
+                <div style="font-size: 0.74rem; color: #B45309; margin-top: 0.15rem;" data-i18n="alt_upi_sub">
+                  പേയ്‌മെന്റിൽ എന്തെങ്കിലും പ്രശ്നമോ പരാജയമോ നേരിടുന്നുണ്ടോ? മറ്റൊരു ബാങ്ക് UPI ഐഡിയിലേക്ക് മാറുക.
+                </div>
+              </div>
+              <button type="button" id="btn-switch-alt-upi" class="btn btn-sm btn-outline" style="border-color: #D97706; color: #92400E; font-weight: 700; font-size: 0.75rem;" onclick="requestAlternativeUpi()">
+                🔄 Try Alternative UPI / മറ്റൊരു UPI ഉപയോഗിക്കുക
+              </button>
+            </div>
+            <div id="alt-upi-status-msg" style="display: none; margin-top: 0.5rem; font-size: 0.78rem; font-weight: 600; padding: 0.4rem 0.6rem; border-radius: 6px;"></div>
           </div>
 
           <!-- Select Preferred UPI App (6 Official App Buttons) -->
@@ -398,6 +452,7 @@
   </style>
 
   <script src="/js/app.js"></script>
+  <script src="/js/i18n.js"></script>
   <script>
     let currentProduct = null;
     let currentOrder = null;
@@ -407,6 +462,79 @@
     let secondsLeft = 600; // 10 minutes
     let selectedScreenshot = null;
     let selectedUpiApp = null;
+    let currentSelectedLanguage = 'en';
+
+    function selectPdfLanguage(lang) {
+      currentSelectedLanguage = lang;
+      document.querySelectorAll('.pdf-lang-btn').forEach(btn => btn.classList.remove('active'));
+      const targetBtn = document.getElementById(`lang-btn-${lang}`);
+      if (targetBtn) {
+        targetBtn.classList.add('active');
+        const radio = targetBtn.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+      }
+      const labels = { en: 'English Edition', ml: 'മലയാളം പതിപ്പ്', hi: 'हिन्दी संस्करण' };
+      const tagEl = document.getElementById('selected-lang-tag');
+      if (tagEl) tagEl.textContent = labels[lang] || lang.toUpperCase();
+    }
+
+    async function requestAlternativeUpi() {
+      if (!currentOrder || !currentOrder.order_number) {
+        DropKit.toast('Please proceed to UPI Payment first before requesting an alternative UPI ID.', 'error');
+        return;
+      }
+      const btn = document.getElementById('btn-switch-alt-upi');
+      const statusMsg = document.getElementById('alt-upi-status-msg');
+      btn.disabled = true;
+      btn.innerHTML = 'Switching UPI...';
+
+      try {
+        const res = await DropKit.api('/api/checkout/switch-alternative-upi', {
+          method: 'POST',
+          body: JSON.stringify({
+            order_number: currentOrder.order_number,
+            order_access_token: currentOrder.order_access_token
+          })
+        });
+
+        if (res.switched) {
+          currentOrder.upi_vpa = res.upi_vpa;
+          currentOrder.merchant_name = res.merchant_name;
+          currentOrder.merchant_account_id = res.merchant_account_id;
+          currentOrder.upi_uri = res.upi_uri;
+          currentOrder.qr_svg = res.qr_svg;
+
+          // Update UI displays
+          document.getElementById('disp-payee-name').textContent = res.merchant_name;
+          document.getElementById('disp-upi-vpa').textContent = res.upi_vpa;
+          document.getElementById('qr-code-mount').innerHTML = res.qr_svg;
+
+          // Re-bind open UPI link
+          const openBtn = document.getElementById('btn-open-upi-app');
+          if (openBtn) openBtn.href = res.upi_uri;
+
+          statusMsg.style.display = 'block';
+          statusMsg.style.background = '#ECFDF5';
+          statusMsg.style.color = '#065F46';
+          statusMsg.style.border = '1px solid #A7F3D0';
+          statusMsg.textContent = `✅ Switched to verified standby account: ${res.merchant_name} (${res.upi_vpa}). Please scan the updated QR code or tap your payment app below.`;
+
+          DropKit.toast(`UPI ID updated to ${res.upi_vpa}`, 'success');
+        } else {
+          statusMsg.style.display = 'block';
+          statusMsg.style.background = '#FEF2F2';
+          statusMsg.style.color = '#991B1B';
+          statusMsg.style.border = '1px solid #FECACA';
+          statusMsg.textContent = res.message || 'Only one merchant UPI account is configured.';
+          DropKit.toast(res.message, 'warning');
+        }
+      } catch (err) {
+        DropKit.toast(err.message || 'Failed to switch alternative UPI account', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🔄 Try Alternative UPI / മറ്റൊരു UPI ഉപയോഗിക്കുക';
+      }
+    }
 
     const pathParts = window.location.pathname.split('/');
     const prodId = pathParts[pathParts.length - 1] || '1';
@@ -501,6 +629,7 @@
         customer_name: document.getElementById('cust-name').value.trim(),
         customer_email: document.getElementById('cust-email').value.trim(),
         customer_phone: document.getElementById('cust-phone').value.trim(),
+        selected_language: currentSelectedLanguage,
         payment_method: 'DIRECT_UPI'
       };
 

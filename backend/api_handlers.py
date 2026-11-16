@@ -130,6 +130,7 @@ def handle_create_order(data: dict):
     cust_email = data.get("customer_email", "").strip()
     cust_phone = data.get("customer_phone", "").strip()
     product_id = data.get("product_id")
+    selected_language = data.get("selected_language", "en")
 
     if not cust_name or not cust_email or not product_id:
         return 400, {"error": "Name, email, and product are required."}
@@ -143,12 +144,26 @@ def handle_create_order(data: dict):
             product_id=product_id,
             customer_phone=cust_phone,
             payment_method="DIRECT_UPI",
-            is_demo=False
+            is_demo=False,
+            selected_language=selected_language
         )
         # Generate inline SVG QR from the computed UPI payment URI
         qr_svg = generate_svg_qr(order_info['upi_uri'], size=260)
         order_info['qr_svg'] = qr_svg
         return 201, {"order": order_info}
+    except Exception as e:
+        return 400, {"error": str(e)}
+
+def handle_switch_alternative_upi(data: dict):
+    order_number = data.get("order_number", "").strip()
+    order_access_token = data.get("order_access_token", "").strip()
+    if not order_number or not order_access_token:
+        return 400, {"error": "Order number and verification token are required."}
+
+    try:
+        from .payments import switch_alternative_upi
+        result = switch_alternative_upi(order_number, order_access_token)
+        return 200, result
     except Exception as e:
         return 400, {"error": str(e)}
 
@@ -438,6 +453,10 @@ def handle_admin_save_product(data: dict):
     price_inr = float(data.get("price_inr", 0.0))
     compare_price_inr = float(data.get("compare_price_inr", 0.0)) if data.get("compare_price_inr") else None
     pdf_filename = data.get("pdf_filename", "default.pdf")
+    pdf_filename_en = data.get("pdf_filename_en") or pdf_filename
+    pdf_filename_ml = data.get("pdf_filename_ml") or ""
+    pdf_filename_hi = data.get("pdf_filename_hi") or ""
+    available_languages = data.get("available_languages") or "en,ml,hi"
     pdf_pages = int(data.get("pdf_pages", 10))
     cover_image = data.get("cover_image", "cover_placeholder.png")
     is_published = 1 if data.get("is_published", True) else 0
@@ -454,9 +473,14 @@ def handle_admin_save_product(data: dict):
     cursor.execute("""
         INSERT INTO products (
             title, slug, description, category_id, price_inr, compare_price_inr,
-            pdf_filename, pdf_pages, cover_image, is_published, publish_date, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (title, slug, description, category_id, price_inr, compare_price_inr, pdf_filename, pdf_pages, cover_image, is_published, now, now, now))
+            pdf_filename, pdf_filename_en, pdf_filename_ml, pdf_filename_hi, available_languages,
+            pdf_pages, cover_image, is_published, publish_date, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        title, slug, description, category_id, price_inr, compare_price_inr,
+        pdf_filename, pdf_filename_en, pdf_filename_ml, pdf_filename_hi, available_languages,
+        pdf_pages, cover_image, is_published, now, now, now
+    ))
     prod_id = cursor.lastrowid
     conn.commit()
     conn.close()
@@ -480,6 +504,11 @@ def handle_admin_update_product(product_id: int, data: dict):
             compare_price_inr = ?,
             is_published = COALESCE(?, is_published),
             category_id = COALESCE(?, category_id),
+            pdf_filename = COALESCE(?, pdf_filename),
+            pdf_filename_en = COALESCE(?, pdf_filename_en),
+            pdf_filename_ml = COALESCE(?, pdf_filename_ml),
+            pdf_filename_hi = COALESCE(?, pdf_filename_hi),
+            available_languages = COALESCE(?, available_languages),
             updated_at = ?
         WHERE id = ?
     """, (
@@ -489,6 +518,11 @@ def handle_admin_update_product(product_id: int, data: dict):
         data.get("compare_price_inr"),
         data.get("is_published"),
         data.get("category_id"),
+        data.get("pdf_filename"),
+        data.get("pdf_filename_en"),
+        data.get("pdf_filename_ml"),
+        data.get("pdf_filename_hi"),
+        data.get("available_languages"),
         now,
         product_id
     ))
@@ -1291,6 +1325,60 @@ def handle_admin_test_notification_alert(admin_id: int):
         "status": "success" if ok else "warning",
         "message": msg
     }
+
+def handle_admin_upi_analytics_breakdown():
+    """
+    Returns verified revenue, collection share, order counts, and threshold utilization
+    for every configured merchant UPI account.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            m.id,
+            m.account_id,
+            m.merchant_name,
+            m.upi_vpa,
+            m.provider_ref,
+            m.is_enabled,
+            m.availability_status,
+            m.collection_threshold_inr,
+            m.confirmed_collection_total,
+            m.priority,
+            m.is_active,
+            m.created_at,
+            COUNT(o.id) as total_orders,
+            COALESCE(SUM(CASE WHEN o.status = 'PAID' THEN o.amount_inr ELSE 0 END), 0) as verified_revenue,
+            COUNT(CASE WHEN o.status = 'PAID' THEN 1 END) as paid_orders_count,
+            COUNT(CASE WHEN o.status = 'PENDING' THEN 1 END) as pending_orders_count,
+            COUNT(CASE WHEN o.payment_verification_status = 'PENDING' THEN 1 END) as pending_receipts_count
+        FROM merchant_upi_accounts m
+        LEFT JOIN orders o ON o.merchant_account_id = m.account_id OR (o.merchant_account_id IS NULL AND o.upi_vpa = m.upi_vpa)
+        GROUP BY m.id
+        ORDER BY verified_revenue DESC, m.priority ASC
+    """)
+    rows = [dict(r) for r in cursor.fetchall()]
+
+    # Also compute overall totals for percentage distribution
+    total_revenue = sum(float(r['verified_revenue']) for r in rows)
+    total_paid = sum(int(r['paid_orders_count']) for r in rows)
+
+    for r in rows:
+        rev = float(r['verified_revenue'])
+        r['revenue_share_pct'] = round((rev / total_revenue * 100), 1) if total_revenue > 0 else 0.0
+        thresh = float(r['collection_threshold_inr'])
+        r['threshold_pct'] = min(100.0, round((rev / thresh * 100), 1)) if thresh > 0 else 0.0
+
+    conn.close()
+    return 200, {
+        "status": "success",
+        "accounts": rows,
+        "total_revenue": total_revenue,
+        "total_paid_orders": total_paid,
+        "account_count": len(rows)
+    }
+
 
 
 

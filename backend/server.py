@@ -95,6 +95,19 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
             code, res = handle_get_payment_config()
             return self.send_json(code, res)
 
+        if path == "/api/preview/qr":
+            from backend.payments import generate_svg_qr
+            target_url = "http://192.168.1.20:8080/checkout/1"
+            qr_svg = generate_svg_qr(target_url, size=280)
+            svg_bytes = qr_svg.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "image/svg+xml; charset=utf-8")
+            self.send_header("Content-Length", str(len(svg_bytes)))
+            self.send_header("Cache-Control", "no-cache")
+            self.end_headers()
+            self.wfile.write(svg_bytes)
+            return
+
         if path.startswith("/api/orders/"):
             order_num = path.split("/")[-1]
             token = self.headers.get("X-Order-Token") or query.get("token", [None])[0]
@@ -148,6 +161,11 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
 
             if path == "/api/admin/overview":
                 code, res = handle_admin_overview()
+                return self.send_json(code, res)
+
+            if path in ("/api/admin/analytics/upi-breakdown", "/api/admin/upi/analytics"):
+                from backend.api_handlers import handle_admin_upi_analytics_breakdown
+                code, res = handle_admin_upi_analytics_breakdown()
                 return self.send_json(code, res)
 
             if path == "/api/admin/analytics":
@@ -273,6 +291,11 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         if path in ("/api/checkout/upload-screenshot", "/api/checkout/submit-screenshot"):
             from backend.api_handlers import handle_customer_submit_screenshot
             code, res = handle_customer_submit_screenshot(body_json)
+            return self.send_json(code, res)
+
+        if path == "/api/checkout/switch-alternative-upi":
+            from backend.api_handlers import handle_switch_alternative_upi
+            code, res = handle_switch_alternative_upi(body_json)
             return self.send_json(code, res)
 
         if path in ["/api/webhooks/payment", "/api/webhook/payment"]:
@@ -528,6 +551,23 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 orig_fn, pdf_b = uploaded_files["pdf_file"]
                 pdf_filename = save_uploaded_pdf(pdf_b, orig_fn)
 
+            pdf_filename_en = form_fields.get("pdf_filename_en", "")
+            if "pdf_file_en" in uploaded_files:
+                orig_fn, pdf_b = uploaded_files["pdf_file_en"]
+                pdf_filename_en = save_uploaded_pdf(pdf_b, orig_fn)
+            elif not pdf_filename_en:
+                pdf_filename_en = pdf_filename
+
+            pdf_filename_ml = form_fields.get("pdf_filename_ml", "")
+            if "pdf_file_ml" in uploaded_files:
+                orig_fn, pdf_b = uploaded_files["pdf_file_ml"]
+                pdf_filename_ml = save_uploaded_pdf(pdf_b, orig_fn)
+
+            pdf_filename_hi = form_fields.get("pdf_filename_hi", "")
+            if "pdf_file_hi" in uploaded_files:
+                orig_fn, pdf_b = uploaded_files["pdf_file_hi"]
+                pdf_filename_hi = save_uploaded_pdf(pdf_b, orig_fn)
+
             cover_image = "cover_placeholder.png"
             if "cover_file" in uploaded_files:
                 orig_fn, img_b = uploaded_files["cover_file"]
@@ -541,6 +581,10 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 "price_inr": float(form_fields.get("price_inr", 0.0)),
                 "compare_price_inr": float(form_fields.get("compare_price_inr")) if form_fields.get("compare_price_inr") else None,
                 "pdf_filename": pdf_filename,
+                "pdf_filename_en": pdf_filename_en,
+                "pdf_filename_ml": pdf_filename_ml,
+                "pdf_filename_hi": pdf_filename_hi,
+                "available_languages": form_fields.get("available_languages", "en,ml,hi"),
                 "pdf_pages": int(form_fields.get("pdf_pages", 10)),
                 "cover_image": cover_image,
                 "is_published": 1 if form_fields.get("is_published") in ("1", "true", "on") else 0

@@ -92,14 +92,25 @@
         <li class="dk-nav-item"><a href="/my-downloads">My Downloads</a></li>
         <li class="dk-nav-item"><a href="/contact">Contact</a></li>
       </ul>
-      <div class="dk-nav-actions">
+      <div class="dk-nav-actions" style="display: flex; align-items: center; gap: 0.5rem;">
+        <div class="switchers-wrap">
+          <button type="button" class="switch-pill-btn lang-toggle-btn" onclick="DropKitI18n.toggleLanguage()" title="Change Language">
+            🌐 മലയാളം
+          </button>
+          <button type="button" class="switch-pill-btn theme-toggle-btn" onclick="DropKitI18n.toggleTheme()" title="Toggle Dark/Light Mode">
+            🌙 Dark
+          </button>
+          <button type="button" class="switch-pill-btn" onclick="openMobilePreviewModal()" style="color: var(--dk-orange); border-color: var(--dk-orange); font-weight: 700;">
+            📱 Phone Preview
+          </button>
+        </div>
         <a href="/my-downloads" class="btn btn-outline btn-sm">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Access Library
+          <span data-i18n="nav_my_downloads">Access Library</span>
         </a>
         <a href="/admin/login" class="btn btn-navy btn-sm" title="Authorized Business Owner Login">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Admin Portal
+          <span data-i18n="nav_admin">Admin Portal</span>
         </a>
       </div>
     </div>
@@ -298,8 +309,35 @@
     </div>
   </footer>
 
+  <!-- Mobile Preview Modal -->
+  <div id="mobile-preview-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,17,26,0.78); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div class="card" style="max-width: 420px; width: 90%; text-align: center; padding: 2rem; border-radius: var(--dk-radius); position: relative; box-shadow: var(--dk-shadow-lg);">
+      <button type="button" onclick="closeMobilePreviewModal()" style="position: absolute; top: 1rem; right: 1rem; border: none; background: transparent; font-size: 1.5rem; cursor: pointer; color: var(--dk-muted);">&times;</button>
+      <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📱</div>
+      <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--dk-navy);">Open On Your Mobile Phone</h3>
+      <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Scan this QR code with your phone camera to test the mobile UPI checkout:
+      </p>
+      <div style="background: #FFFFFF; padding: 0.85rem; border-radius: 12px; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--dk-border); margin-bottom: 1rem;">
+        <img src="/api/preview/qr" alt="Mobile Preview QR Code" style="width: 200px; height: 200px; display: block;">
+      </div>
+      <div style="background: var(--dk-bg); padding: 0.65rem 0.85rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; color: var(--dk-orange); font-weight: 700; word-break: break-all; margin-bottom: 1rem;">
+        http://192.168.1.20:8080/checkout/1
+      </div>
+      <button type="button" class="btn btn-navy" style="width: 100%;" onclick="closeMobilePreviewModal()">Done / Close</button>
+    </div>
+  </div>
+
   <script src="/js/app.js"></script>
+  <script src="/js/i18n.js"></script>
   <script>
+    function openMobilePreviewModal() {
+      document.getElementById('mobile-preview-modal').style.display = 'flex';
+    }
+    function closeMobilePreviewModal() {
+      document.getElementById('mobile-preview-modal').style.display = 'none';
+    }
+
     let cachedProducts = [];
 
     async function loadFeaturedProducts() {

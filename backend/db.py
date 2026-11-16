@@ -87,6 +87,10 @@ def init_db():
         price_inr REAL NOT NULL,
         compare_price_inr REAL,
         pdf_filename TEXT NOT NULL,
+        pdf_filename_en TEXT,
+        pdf_filename_ml TEXT,
+        pdf_filename_hi TEXT,
+        available_languages TEXT DEFAULT 'en,ml,hi',
         pdf_filesize INTEGER DEFAULT 0,
         pdf_pages INTEGER DEFAULT 1,
         cover_image TEXT NOT NULL,
@@ -122,6 +126,7 @@ def init_db():
         upi_vpa TEXT,
         upi_txn_ref TEXT,
         is_demo INTEGER NOT NULL DEFAULT 0,
+        selected_language TEXT DEFAULT 'en',
         notes TEXT,
         screenshot_path TEXT,
         screenshot_filename TEXT,
@@ -356,6 +361,20 @@ def init_db():
         cursor.execute("ALTER TABLE orders ADD COLUMN duplicate_of_order TEXT;")
     if 'merchant_account_id' not in existing_cols:
         cursor.execute("ALTER TABLE orders ADD COLUMN merchant_account_id TEXT;")
+    if 'selected_language' not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN selected_language TEXT DEFAULT 'en';")
+
+    # Safe Schema Migrations for products
+    cursor.execute("PRAGMA table_info(products);")
+    product_cols = {row['name'] for row in cursor.fetchall()}
+    if 'pdf_filename_en' not in product_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN pdf_filename_en TEXT;")
+    if 'pdf_filename_ml' not in product_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN pdf_filename_ml TEXT;")
+    if 'pdf_filename_hi' not in product_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN pdf_filename_hi TEXT;")
+    if 'available_languages' not in product_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN available_languages TEXT DEFAULT 'en,ml,hi';")
 
     # Seed Default Verified Merchant UPI Account if none exist
     cursor.execute("SELECT COUNT(*) FROM merchant_upi_accounts;")

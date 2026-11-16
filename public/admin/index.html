@@ -282,6 +282,17 @@
           </div>
           <span id="topbar-admin-name" style="font-size: 0.82rem; font-weight: 600; color: var(--dk-navy);">Store Owner</span>
         </div>
+        <div class="switchers-wrap">
+          <button type="button" class="switch-pill-btn lang-toggle-btn" onclick="DropKitI18n.toggleLanguage()" title="Change Language">
+            🌐 മലയാളം
+          </button>
+          <button type="button" class="switch-pill-btn theme-toggle-btn" onclick="DropKitI18n.toggleTheme()" title="Toggle Dark/Light Mode">
+            🌙 Dark
+          </button>
+          <button type="button" class="switch-pill-btn" onclick="openAdminMobileQrModal()" style="color: var(--dk-orange); border-color: var(--dk-orange); font-weight: 700;" title="Open Mobile Preview QR Code">
+            📱 Phone Preview QR
+          </button>
+        </div>
         <a href="/" target="_blank" class="btn btn-outline btn-sm">
           <span>🌐</span> View Public Store
         </a>
@@ -432,6 +443,7 @@
             <button class="tab-pill" onclick="loadAnalyticsTab('monthly')">5. Monthly</button>
             <button class="tab-pill" onclick="loadAnalyticsTab('yearly')">6. Yearly</button>
             <button class="tab-pill" onclick="loadAnalyticsTab('custom')">7. Custom Range</button>
+            <button class="tab-pill" onclick="loadAnalyticsTab('upi')">8. UPI Account Collections & Share</button>
           </div>
 
           <div>
@@ -811,6 +823,43 @@
           <!-- Injected via loadUpiAccounts() -->
         </div>
 
+        <!-- Professional Multi-Chart UPI Analytics Section -->
+        <div style="display: grid; grid-template-columns: 1fr 1.35fr; gap: 1.5rem; margin-bottom: 2rem;">
+          <!-- Chart 1: Revenue Share Doughnut Chart -->
+          <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div>
+                <h4 style="font-size: 1.05rem; color: var(--dk-navy); margin-bottom: 0.2rem;">Revenue Share by UPI ID</h4>
+                <div style="font-size: 0.78rem; color: var(--dk-muted);">Percentage distribution of verified collections</div>
+              </div>
+              <span class="badge badge-orange" style="font-size: 0.7rem;">Share %</span>
+            </div>
+            <div style="position: relative; height: 240px; display: flex; align-items: center; justify-content: center;">
+              <canvas id="upi-doughnut-chart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+            <div id="upi-doughnut-legend" style="display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem; font-size: 0.8rem;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- Chart 2: Collections vs Threshold Bar Chart -->
+          <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div>
+                <h4 style="font-size: 1.05rem; color: var(--dk-navy); margin-bottom: 0.2rem;">Collections vs. Limit (₹)</h4>
+                <div style="font-size: 0.78rem; color: var(--dk-muted);">Comparison of verified collections against configured threshold limit</div>
+              </div>
+              <span class="badge badge-navy" style="font-size: 0.7rem;">Account Volume</span>
+            </div>
+            <div style="position: relative; height: 240px;">
+              <canvas id="upi-bar-chart" style="width: 100%; height: 100%;"></canvas>
+            </div>
+            <div id="upi-top-performer-banner" style="margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 8px; background: var(--dk-bg); border: 1px solid var(--dk-border); font-size: 0.82rem; display: flex; align-items: center; justify-content: space-between;">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </div>
+
         <!-- All Merchant Accounts Registry Table -->
         <div class="card" style="margin-bottom: 2rem; overflow: hidden;">
           <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between;">
@@ -1128,10 +1177,23 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Upload PDF Publication *</label>
-          <input type="file" name="pdf_file" accept=".pdf" class="form-control">
-          <small class="text-muted">PDF is stored in encrypted private directory (never public).</small>
+        <div style="background: var(--dk-bg); border: 1px solid var(--dk-border); border-radius: var(--dk-radius-sm); padding: 1rem; margin-bottom: 1rem;">
+          <div style="font-weight: 700; font-size: 0.88rem; color: var(--dk-navy); margin-bottom: 0.5rem;">
+            📚 Multi-Language PDF Editions:
+          </div>
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <label class="form-label" style="font-size: 0.8rem;">🇬🇧 English PDF Publication (Primary) *</label>
+            <input type="file" name="pdf_file_en" accept=".pdf" class="form-control" style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <label class="form-label" style="font-size: 0.8rem;">🇮🇳 Malayalam PDF Version (മലയാളം)</label>
+            <input type="file" name="pdf_file_ml" accept=".pdf" class="form-control" style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0.25rem;">
+            <label class="form-label" style="font-size: 0.8rem;">🇮🇳 Hindi PDF Version (हिन्दी)</label>
+            <input type="file" name="pdf_file_hi" accept=".pdf" class="form-control" style="font-size: 0.85rem;">
+          </div>
+          <small class="text-muted" style="font-size: 0.75rem; display: block; margin-top: 0.4rem;">Files are stored safely in encrypted storage.</small>
         </div>
 
         <div class="form-group">
@@ -1189,6 +1251,24 @@
         <div class="form-group">
           <label class="form-label">Description</label>
           <textarea id="edit-prod-desc" rows="3" class="form-control"></textarea>
+        </div>
+
+        <div style="background: var(--dk-bg); border: 1px solid var(--dk-border); border-radius: var(--dk-radius-sm); padding: 0.85rem 1rem; margin-bottom: 1rem;">
+          <div style="font-weight: 700; font-size: 0.85rem; color: var(--dk-navy); margin-bottom: 0.5rem;">
+            📚 Language PDF Versions:
+          </div>
+          <div class="form-group" style="margin-bottom: 0.6rem;">
+            <label class="form-label" style="font-size: 0.8rem;">🇬🇧 English PDF Filename</label>
+            <input type="text" id="edit-prod-pdf-en" class="form-control" placeholder="filename_en.pdf" style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0.6rem;">
+            <label class="form-label" style="font-size: 0.8rem;">🇮🇳 Malayalam PDF Filename (മലയാളം)</label>
+            <input type="text" id="edit-prod-pdf-ml" class="form-control" placeholder="filename_ml.pdf" style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0.25rem;">
+            <label class="form-label" style="font-size: 0.8rem;">🇮🇳 Hindi PDF Filename (हिन्दी)</label>
+            <input type="text" id="edit-prod-pdf-hi" class="form-control" placeholder="filename_hi.pdf" style="font-size: 0.85rem;">
+          </div>
         </div>
 
         <div class="form-group">
@@ -1412,10 +1492,40 @@
     </div>
   </div>
 
+  <!-- Admin Mobile Preview Modal -->
+  <div id="admin-mobile-preview-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,17,26,0.78); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div class="card" style="max-width: 440px; width: 90%; text-align: center; padding: 2rem; border-radius: var(--dk-radius); position: relative; box-shadow: var(--dk-shadow-lg);">
+      <button type="button" onclick="closeAdminMobileQrModal()" style="position: absolute; top: 1rem; right: 1rem; border: none; background: transparent; font-size: 1.5rem; cursor: pointer; color: var(--dk-muted);">&times;</button>
+      <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📱</div>
+      <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--dk-navy);">Open Store on Mobile Phone</h3>
+      <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
+        Scan this QR code with your phone camera or barcode app to open the live mobile checkout directly on your phone:
+      </p>
+      <div style="background: #FFFFFF; padding: 0.85rem; border-radius: 12px; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--dk-border); margin-bottom: 1rem;">
+        <img src="/api/preview/qr" alt="Mobile Preview QR Code" style="width: 200px; height: 200px; display: block;">
+      </div>
+      <div style="background: var(--dk-bg); padding: 0.65rem 0.85rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; color: var(--dk-orange); font-weight: 700; word-break: break-all; margin-bottom: 1rem;">
+        http://192.168.1.20:8080/checkout/1
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn btn-outline" style="flex: 1;" onclick="navigator.clipboard.writeText('http://192.168.1.20:8080/checkout/1'); DropKit.toast('Mobile URL copied to clipboard!', 'success');">📋 Copy URL</button>
+        <button type="button" class="btn btn-navy" style="flex: 1;" onclick="closeAdminMobileQrModal()">Done / Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Chart.js & App Scripts -->
   <script src="/js/chart.min.js"></script>
   <script src="/js/app.js"></script>
+  <script src="/js/i18n.js"></script>
   <script>
+    function openAdminMobileQrModal() {
+      document.getElementById('admin-mobile-preview-modal').style.display = 'flex';
+    }
+    function closeAdminMobileQrModal() {
+      document.getElementById('admin-mobile-preview-modal').style.display = 'none';
+    }
+
     let overviewChart = null;
     let analyticsChart = null;
     let minutePollInterval = null;
@@ -1854,6 +1964,27 @@
           const dRevs = (an.daily_breakdown || []).map(d => d.revenue);
           renderChart('line', dLabels, dRevs, 'Custom Range Revenue (₹)');
         }
+        else if (tab === 'upi') {
+          titleEl.textContent = 'Merchant UPI Account Collections & Revenue Share';
+          subEl.textContent = 'Reconciled collections and volume distribution across configured merchant accounts';
+
+          const upiRes = await DropKit.api('/api/admin/analytics/upi-breakdown');
+          const accs = upiRes.accounts || [];
+
+          summaryBox.innerHTML = accs.map(a => `
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="badge ${a.is_active ? 'badge-success' : 'badge-navy'}">${a.account_id}</span>
+                <span style="font-size:0.75rem; font-weight:700; color:var(--dk-orange);">${a.revenue_share_pct}% share</span>
+              </div>
+              <div style="font-size:0.85rem; font-weight:700; color:var(--dk-navy); margin-top:0.4rem; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${a.upi_vpa}</div>
+              <div style="font-size:1.45rem; font-weight:800; color:var(--dk-navy); margin:0.25rem 0;">${DropKit.formatINR(a.verified_revenue)}</div>
+              <div style="font-size:0.75rem; color:var(--dk-muted);">${a.paid_orders_count} Paid Orders • Limit: ${DropKit.formatINR(a.collection_threshold_inr)}</div>
+            </div>
+          `).join('');
+
+          renderChart('bar', accs.map(a => a.account_id), accs.map(a => a.verified_revenue), 'Verified Collections (₹)');
+        }
       } catch (err) {
         console.error(err);
       }
@@ -1936,6 +2067,9 @@
       document.getElementById('edit-prod-compare').value = prod.compare_price_inr || '';
       document.getElementById('edit-prod-desc').value = prod.description || '';
       document.getElementById('edit-prod-published').checked = Boolean(prod.is_published);
+      document.getElementById('edit-prod-pdf-en').value = prod.pdf_filename_en || prod.pdf_filename || '';
+      document.getElementById('edit-prod-pdf-ml').value = prod.pdf_filename_ml || '';
+      document.getElementById('edit-prod-pdf-hi').value = prod.pdf_filename_hi || '';
       document.getElementById('edit-modal-subtitle').textContent = `Editing: ${prod.title}`;
       document.getElementById('edit-product-modal').style.display = 'flex';
     }
@@ -1956,7 +2090,10 @@
         price_inr: parseFloat(document.getElementById('edit-prod-price').value),
         compare_price_inr: document.getElementById('edit-prod-compare').value ? parseFloat(document.getElementById('edit-prod-compare').value) : null,
         description: document.getElementById('edit-prod-desc').value.trim(),
-        is_published: document.getElementById('edit-prod-published').checked ? 1 : 0
+        is_published: document.getElementById('edit-prod-published').checked ? 1 : 0,
+        pdf_filename_en: document.getElementById('edit-prod-pdf-en').value.trim() || undefined,
+        pdf_filename_ml: document.getElementById('edit-prod-pdf-ml').value.trim() || undefined,
+        pdf_filename_hi: document.getElementById('edit-prod-pdf-hi').value.trim() || undefined
       };
 
       try {
@@ -2701,8 +2838,9 @@
           }).join('');
         }
 
-        // 4. Load Switch History
+        // 4. Load Switch History & Analytics Charts
         loadUpiSwitchHistory();
+        loadUpiAnalyticsCharts();
       } catch (err) {
         console.error('Failed to load UPI accounts:', err);
         DropKit.toast(err.message, 'error');
@@ -2733,6 +2871,115 @@
         }
       } catch (e) {
         console.warn(e);
+      }
+    }
+
+    let upiDoughnutChartInstance = null;
+    let upiBarChartInstance = null;
+
+    async function loadUpiAnalyticsCharts() {
+      try {
+        const res = await DropKit.api('/api/admin/analytics/upi-breakdown');
+        const accounts = res.accounts || [];
+        if (!accounts || accounts.length === 0) return;
+
+        const palette = ['#FF653D', '#1B1D3B', '#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899'];
+
+        // 1. Doughnut Chart: Revenue Share
+        const doughnutCanvas = document.getElementById('upi-doughnut-chart');
+        if (doughnutCanvas) {
+          const doughnutLabels = accounts.map(a => a.account_id);
+          const doughnutData = accounts.map(a => Math.max(1, a.verified_revenue));
+          const doughnutColors = accounts.map((a, i) => palette[i % palette.length]);
+
+          if (upiDoughnutChartInstance) {
+            upiDoughnutChartInstance.update({
+              labels: doughnutLabels,
+              datasets: [{
+                data: doughnutData,
+                backgroundColor: doughnutColors
+              }]
+            });
+          } else {
+            upiDoughnutChartInstance = new DropKitChart('upi-doughnut-chart', {
+              type: 'doughnut',
+              data: {
+                labels: doughnutLabels,
+                datasets: [{
+                  data: doughnutData,
+                  backgroundColor: doughnutColors
+                }]
+              }
+            });
+          }
+
+          // Custom Doughnut Legend
+          const legendEl = document.getElementById('upi-doughnut-legend');
+          if (legendEl) {
+            legendEl.innerHTML = accounts.map((a, i) => `
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.25rem 0.5rem; background: var(--dk-bg); border-radius: 6px;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span style="width: 10px; height: 10px; border-radius: 50%; background: ${palette[i % palette.length]}; display: inline-block;"></span>
+                  <strong style="color: var(--dk-navy);">${a.account_id}</strong>
+                  <span style="color: var(--dk-muted); font-size: 0.75rem;">(${a.upi_vpa})</span>
+                </div>
+                <div style="text-align: right;">
+                  <span style="font-weight: 700; color: var(--dk-navy);">${DropKit.formatINR(a.verified_revenue)}</span>
+                  <span class="badge ${a.is_active ? 'badge-success' : 'badge-navy'}" style="font-size: 0.65rem; margin-left: 0.35rem;">${a.revenue_share_pct}%</span>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+
+        // 2. Bar Chart: Collections vs. Threshold
+        const barCanvas = document.getElementById('upi-bar-chart');
+        if (barCanvas) {
+          const barLabels = accounts.map(a => a.account_id);
+          const barData = accounts.map(a => a.verified_revenue);
+
+          if (upiBarChartInstance) {
+            upiBarChartInstance.update({
+              labels: barLabels,
+              datasets: [{
+                label: 'Collections (₹)',
+                data: barData,
+                backgroundColor: '#10B981',
+                borderColor: '#059669',
+                fill: false
+              }]
+            });
+          } else {
+            upiBarChartInstance = new DropKitChart('upi-bar-chart', {
+              type: 'bar',
+              data: {
+                labels: barLabels,
+                datasets: [{
+                  label: 'Collections (₹)',
+                  data: barData,
+                  backgroundColor: '#10B981',
+                  borderColor: '#059669',
+                  fill: false
+                }]
+              }
+            });
+          }
+
+          // Top Performer Banner
+          const bannerEl = document.getElementById('upi-top-performer-banner');
+          if (bannerEl && accounts.length > 0) {
+            const topAcc = accounts[0];
+            bannerEl.innerHTML = `
+              <div>
+                <span style="font-weight: 700; color: #047857;">🏆 Top Collecting UPI Account:</span>
+                <strong>${topAcc.merchant_name} (${topAcc.account_id})</strong> — Collected <strong>${DropKit.formatINR(topAcc.verified_revenue)}</strong> (${topAcc.revenue_share_pct}% share)
+              </div>
+              <span class="badge badge-success">${topAcc.paid_orders_count} Paid Orders</span>
+            `;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load UPI analytics charts:', err);
       }
     }
 

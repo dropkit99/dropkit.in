@@ -1051,3 +1051,159 @@ h1, h2, h3, h4, h5 {
   line-height: 1.5;
   color: var(--dk-muted);
 }
+
+/* ============================================================
+   DROPKIT DARK THEME SYSTEM & HIGH-CONTRAST ACCENTS
+   ============================================================ */
+[data-theme="dark"] {
+  --dk-navy: #F3F4F8;
+  --dk-navy-light: #E2E4ED;
+  --dk-navy-dark: #FFFFFF;
+  --dk-bg: #0D0F1A;
+  --dk-card-bg: #161828;
+  --dk-text: #E5E7EB;
+  --dk-muted: #9CA3AF;
+  --dk-border: #262A40;
+  --dk-border-light: #1E2235;
+  --dk-orange-light: #38201A;
+  --dk-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  --dk-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.5);
+  --dk-shadow-lg: 0 16px 38px -4px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] body {
+  background-color: var(--dk-bg) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .navbar {
+  background: rgba(13, 15, 26, 0.94) !important;
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .card {
+  background-color: var(--dk-card-bg) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .form-control {
+  background-color: #121422 !important;
+  border-color: var(--dk-border) !important;
+  color: #F3F4F8 !important;
+}
+
+[data-theme="dark"] .form-control:focus {
+  border-color: var(--dk-orange) !important;
+  background-color: #161828 !important;
+}
+
+[data-theme="dark"] .table {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .table th {
+  background-color: #1A1D30 !important;
+  color: #D1D5DB !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .table td {
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .table tr:hover td {
+  background-color: #1D2138 !important;
+}
+
+[data-theme="dark"] .admin-sidebar {
+  background-color: #121424 !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .upi-app-card {
+  background: #181B2D !important;
+  border-color: #2A2E47 !important;
+}
+
+[data-theme="dark"] .upi-app-card:hover {
+  background: #1F233B !important;
+  border-color: var(--dk-orange) !important;
+}
+
+[data-theme="dark"] .modal-dialog,
+[data-theme="dark"] .modal-card,
+[data-theme="dark"] .modal-content {
+  background-color: #161828 !important;
+  color: #F3F4F8 !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .btn-outline {
+  border-color: #3B4263 !important;
+  color: #E2E4ED !important;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  background: #242942 !important;
+}
+
+[data-theme="dark"] .footer {
+  background-color: #0B0D17 !important;
+  border-top-color: var(--dk-border) !important;
+}
+
+/* Multi-language PDF Selection Buttons */
+.pdf-lang-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.5rem;
+  border: 2px solid var(--dk-border);
+  border-radius: var(--dk-radius-sm);
+  background: var(--dk-card-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.pdf-lang-btn:hover {
+  border-color: var(--dk-orange);
+  transform: translateY(-2px);
+}
+
+.pdf-lang-btn.active {
+  border-color: var(--dk-orange) !important;
+  background: var(--dk-orange-light) !important;
+  box-shadow: 0 0 0 1px var(--dk-orange);
+}
+
+/* Theme & Language Switcher Pill in Navbar */
+.switchers-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.switch-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.32rem 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid var(--dk-border);
+  background: var(--dk-card-bg);
+  color: var(--dk-navy);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.switch-pill-btn:hover {
+  border-color: var(--dk-orange);
+  color: var(--dk-orange);
+}
+

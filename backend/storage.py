@@ -130,8 +130,9 @@ def verify_and_claim_download(token: str, ip_address: str = None, user_agent: st
     cursor.execute("""
         SELECT e.id as entitlement_id, e.order_id, e.max_downloads, e.download_count,
                e.expires_at, e.is_revoked,
-               o.status as order_status, o.order_number,
-               p.title as product_title, p.pdf_filename
+               o.status as order_status, o.order_number, o.selected_language,
+               p.title as product_title, p.pdf_filename,
+               p.pdf_filename_en, p.pdf_filename_ml, p.pdf_filename_hi
         FROM download_entitlements e
         JOIN orders o ON e.order_id = o.id
         JOIN products p ON o.product_id = p.id
@@ -169,8 +170,27 @@ def verify_and_claim_download(token: str, ip_address: str = None, user_agent: st
         conn.close()
         return False, f"Download limit exceeded (maximum {ent['max_downloads']} downloads allowed).", None, ""
 
+    # Determine language-specific PDF file
+    lang = (ent['selected_language'] or 'en').lower().strip()
+    target_filename = None
+    if lang == 'ml' and ent['pdf_filename_ml']:
+        test_path = get_secure_pdf_path(ent['pdf_filename_ml'])
+        if test_path:
+            target_filename = ent['pdf_filename_ml']
+    elif lang == 'hi' and ent['pdf_filename_hi']:
+        test_path = get_secure_pdf_path(ent['pdf_filename_hi'])
+        if test_path:
+            target_filename = ent['pdf_filename_hi']
+    elif lang == 'en' and ent['pdf_filename_en']:
+        test_path = get_secure_pdf_path(ent['pdf_filename_en'])
+        if test_path:
+            target_filename = ent['pdf_filename_en']
+
+    if not target_filename:
+        target_filename = ent['pdf_filename']
+
     # Find file
-    pdf_path = get_secure_pdf_path(ent['pdf_filename'])
+    pdf_path = get_secure_pdf_path(target_filename)
     if not pdf_path:
         conn.close()
         return False, "Digital product file not found on server storage.", None, ""
@@ -191,5 +211,5 @@ def verify_and_claim_download(token: str, ip_address: str = None, user_agent: st
     conn.commit()
     conn.close()
 
-    clean_download_name = f"{ent['product_title'].replace(' ', '_')}.pdf"
+    clean_download_name = f"{ent['product_title'].replace(' ', '_')}_{lang.upper()}.pdf"
     return True, "Download authorized", pdf_path, clean_download_name

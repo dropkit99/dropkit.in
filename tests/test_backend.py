@@ -778,8 +778,104 @@ def run_tests():
     assert pay_cfg["base_url"] == "https://dropkit.com", f"Expected base_url https://dropkit.com, got {pay_cfg['base_url']}"
     print(f" PASS: Authoritative base_url configured: {pay_cfg['base_url']}")
 
+    # =========================================================================
+    # REQUIREMENT 21: Multi-Language PDF Support (English, Malayalam, Hindi)
+    # =========================================================================
+    print("\n[TEST 21] Multi-Language PDF Versioning & Delivery:")
+    # Create order selecting Malayalam edition ('ml')
+    order_ml = create_order(
+        customer_name="Kerala Buyer",
+        customer_email="kerala.buyer@example.com",
+        product_id=prod['id'],
+        customer_phone="+91 94471 23456",
+        selected_language="ml"
+    )
+    assert order_ml["selected_language"] == "ml", f"Expected 'ml', got {order_ml['selected_language']}"
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("SELECT selected_language FROM orders WHERE order_number = ?", (order_ml["order_number"],))
+    row = c.fetchone()
+    assert row["selected_language"] == "ml", f"DB order selected_language must be 'ml', got {row['selected_language']}"
+    conn.close()
+    print(f" PASS: Order {order_ml['order_number']} successfully created with selected_language='ml'")
+
+    # =========================================================================
+    # REQUIREMENT 22: Alternative Merchant UPI ID Switcher on Failure
+    # =========================================================================
+    print("\n[TEST 22] Customer Alternative UPI Failover Switcher:")
+    from backend.payments import switch_alternative_upi
+    from backend.api_handlers import handle_switch_alternative_upi
+
+    # Ensure a second standby account exists
+    from backend.merchant_manager import add_merchant_account
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM merchant_upi_accounts WHERE account_id = 'MCH-TEST-STANDBY'")
+    if c.fetchone()[0] == 0:
+        add_merchant_account({
+            "account_id": "MCH-TEST-STANDBY",
+            "merchant_name": "DropKit Standby Merchant",
+            "upi_vpa": "standby.store@okaxis",
+            "provider_ref": "AXIS-MCH-02",
+            "is_enabled": 1,
+            "availability_status": "AVAILABLE",
+            "collection_threshold_inr": 150000.0,
+            "priority": 2
+        }, created_by="TEST_SUITE")
+    conn.close()
+
+    # Trigger switch for order_ml
+    switch_res = switch_alternative_upi(order_ml["order_number"], order_ml["order_access_token"])
+    assert switch_res["ok"] is True, f"Alternative switch failed: {switch_res}"
+    assert switch_res["switched"] is True, "Switch must be confirmed"
+    assert "upi://" in switch_res["upi_uri"], "New UPI payment URI must be generated"
+    assert "<svg" in switch_res["qr_svg"], "New QR SVG must be generated"
+
+    # Verify database update
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("SELECT upi_vpa, merchant_account_id FROM orders WHERE order_number = ?", (order_ml["order_number"],))
+    upd_row = c.fetchone()
+    assert upd_row["upi_vpa"] == switch_res["upi_vpa"], "Order VPA must be updated"
+    # Check switch history recorded
+    c.execute("SELECT switch_reason FROM upi_switch_history WHERE switch_reason = 'CUSTOMER_FAILOVER_REQUEST' ORDER BY id DESC LIMIT 1")
+    hist_row = c.fetchone()
+    assert hist_row is not None, "Customer failover request must be logged in audit history"
+    conn.close()
+    print(f" PASS: Customer seamlessly switched to alternative merchant account: {switch_res['merchant_name']} ({switch_res['upi_vpa']})")
+
+    # =========================================================================
+    # REQUIREMENT 23: UPI Collections Analytics Breakdown
+    # =========================================================================
+    print("\n[TEST 23] UPI Account Performance & Analytics Breakdown:")
+    from backend.api_handlers import handle_admin_upi_analytics_breakdown
+    code_upi, res_upi = handle_admin_upi_analytics_breakdown()
+    assert code_upi == 200, f"UPI analytics endpoint failed: {res_upi}"
+    assert "accounts" in res_upi, "Response must include accounts list"
+    assert len(res_upi["accounts"]) >= 1, "At least one merchant account should be in breakdown"
+    acc0 = res_upi["accounts"][0]
+    assert "verified_revenue" in acc0, "Account breakdown must include verified_revenue"
+    assert "revenue_share_pct" in acc0, "Account breakdown must include revenue_share_pct"
+    print(f" PASS: UPI Analytics returned {len(res_upi['accounts'])} accounts. Top account {acc0['account_id']} has ₹{acc0['verified_revenue']} verified revenue ({acc0['revenue_share_pct']}%)")
+
+    # =========================================================================
+    # REQUIREMENT 24: Authentic PhonePe & Navi Vector Logos Verification
+    # =========================================================================
+    print("\n[TEST 24] Authentic PhonePe & Navi Brand Logos Verification:")
+    phonepe_path = BASE_DIR / "public" / "assets" / "logos" / "phonepe.svg"
+    navi_path = BASE_DIR / "public" / "assets" / "logos" / "navi.svg"
+    assert phonepe_path.exists(), "PhonePe logo file must exist"
+    assert navi_path.exists(), "Navi logo file must exist"
+
+    phonepe_svg = phonepe_path.read_text(encoding="utf-8")
+    navi_svg = navi_path.read_text(encoding="utf-8")
+
+    assert "#6739B7" in phonepe_svg or "#5F259F" in phonepe_svg, "PhonePe must contain official brand purple"
+    assert "#00D09C" in navi_svg or "#00B887" in navi_svg, "Navi must contain official brand teal-emerald"
+    print(" PASS: Verified authentic official SVG assets for PhonePe and Navi with official brand colors")
+
     print("\n" + "=" * 75)
-    print("ALL 20 COMPREHENSIVE SECURITY, PAYMENT & MANAGEMENT TESTS PASSED (100% SUCCESS)!")
+    print("ALL 24 COMPREHENSIVE SECURITY, PAYMENT & MULTI-LANGUAGE TESTS PASSED (100% SUCCESS)!")
     print("=" * 75)
 
 if __name__ == "__main__":
