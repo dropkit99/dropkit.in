@@ -618,3 +618,67 @@ def handle_admin_update_settings(data: dict):
     conn.commit()
     conn.close()
     return 200, {"status": "success", "message": "Settings updated"}
+
+def handle_admin_change_credentials(user_id: int, data: dict):
+    current_password = data.get("current_password", "")
+    new_username = data.get("new_username", "").strip()
+    new_password = data.get("new_password", "").strip()
+
+    if not current_password:
+        return 400, {"error": "Current password is required to verify identity."}
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, username, password_hash FROM users WHERE id = ?", (user_id,))
+    user = cursor.fetchone()
+    if not user:
+        conn.close()
+        return 404, {"error": "User account not found."}
+
+    from .auth import verify_password, hash_password
+    if not verify_password(user['password_hash'], current_password):
+        conn.close()
+        return 400, {"error": "Incorrect current password."}
+
+    updates = []
+    params = []
+
+    if new_username and new_username != user['username']:
+        cursor.execute("SELECT id FROM users WHERE username = ? AND id != ?", (new_username, user_id))
+        if cursor.fetchone():
+            conn.close()
+            return 400, {"error": f"Username '{new_username}' is already in use."}
+        updates.append("username = ?")
+        params.append(new_username)
+
+    if new_password:
+        if len(new_password) < 8:
+            conn.close()
+            return 400, {"error": "New password must be at least 8 characters long."}
+        new_hash = hash_password(new_password)
+        updates.append("password_hash = ?")
+        params.append(new_hash)
+
+    if not updates:
+        conn.close()
+        return 400, {"error": "Please provide a new username or new password to update."}
+
+    params.append(user_id)
+    cursor.execute(f"UPDATE users SET {', '.join(updates)} WHERE id = ?", params)
+
+    # Log audit event
+    now = now_iso()
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (?, 'UPDATE_CREDENTIALS', 'users', ?, 'Owner updated administrative credentials', ?)
+    """, (user_id, str(user_id), now))
+
+    conn.commit()
+    conn.close()
+
+    return 200, {
+        "status": "success",
+        "message": "Credentials updated successfully. Please use your new details for future logins.",
+        "username": new_username if new_username else user['username']
+    }
+

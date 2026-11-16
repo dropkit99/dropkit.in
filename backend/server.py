@@ -38,6 +38,7 @@ from backend.api_handlers import (
     handle_admin_test_instagram_flow,
     handle_admin_settings,
     handle_admin_update_settings,
+    handle_admin_change_credentials,
     export_sales_csv
 )
 
@@ -253,6 +254,10 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
 
             if path == "/api/admin/settings":
                 code, res = handle_admin_update_settings(body_json)
+                return self.send_json(code, res)
+
+            if path == "/api/admin/change-credentials":
+                code, res = handle_admin_change_credentials(admin_user['user_id'], body_json)
                 return self.send_json(code, res)
 
         return self.send_json(404, {"error": "Endpoint not found"})

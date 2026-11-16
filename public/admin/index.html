@@ -641,6 +641,34 @@
             </button>
           </form>
         </div>
+
+        <!-- Change Admin Credentials Card -->
+        <div class="card" style="max-width: 720px; padding: 2rem; margin-top: 2rem;">
+          <form id="credentials-form">
+            <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--dk-navy);">Change Administrator Username & Password</h4>
+            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.5rem;">Update your credentials. All password hashes are calculated with PBKDF2-SHA256 (600,000 rounds).</p>
+
+            <div class="form-group">
+              <label class="form-label">Current Password *</label>
+              <input type="password" id="cred-current-pw" class="form-control" placeholder="Enter your current password" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">New Username</label>
+                <input type="text" id="cred-new-username" class="form-control" placeholder="Leave blank to keep current">
+              </div>
+              <div class="form-group">
+                <label class="form-label">New Password (Min 8 chars)</label>
+                <input type="password" id="cred-new-pw" class="form-control" placeholder="Leave blank to keep current">
+              </div>
+            </div>
+
+            <button type="submit" id="btn-save-cred" class="btn btn-navy" style="margin-top: 0.5rem;">
+              Update Login Credentials
+            </button>
+          </form>
+        </div>
       </section>
 
     </div>
@@ -1384,6 +1412,34 @@
         DropKit.toast('Platform settings updated successfully', 'success');
       } catch (err) {
         DropKit.toast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('credentials-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-cred');
+      btn.disabled = true;
+      btn.textContent = 'Updating Credentials...';
+
+      const current_password = document.getElementById('cred-current-pw').value;
+      const new_username = document.getElementById('cred-new-username').value.trim();
+      const new_password = document.getElementById('cred-new-pw').value;
+
+      try {
+        const res = await DropKit.api('/api/admin/change-credentials', {
+          method: 'POST',
+          body: JSON.stringify({ current_password, new_username, new_password })
+        });
+        DropKit.toast(res.message, 'success');
+        document.getElementById('credentials-form').reset();
+        if (res.username) {
+          document.getElementById('admin-display-name').textContent = res.username;
+        }
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Update Login Credentials';
       }
     });
 
