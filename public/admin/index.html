@@ -669,6 +669,17 @@
             </button>
           </form>
         </div>
+
+        <!-- Danger Zone: Reset Sales Data -->
+        <div class="card" style="max-width: 720px; padding: 2rem; margin-top: 2rem; border-color: #FCA5A5; background: #FFFBFB;">
+          <h4 style="font-size: 1rem; margin-bottom: 0.5rem; color: #DC2626;">Danger Zone: Reset / Clear Sales Data</h4>
+          <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
+            Permanently clear all demo or sample sales records, transactions, orders, settlements, and customer lists. This resets revenue back to ₹0.00 while preserving your digital products and admin login.
+          </p>
+          <button type="button" class="btn btn-outline" style="border-color: #EF4444; color: #DC2626; font-weight: 600;" onclick="clearAllSalesData()">
+            🗑️ Clear All Sales & Order Records
+          </button>
+        </div>
       </section>
 
     </div>
@@ -1442,6 +1453,21 @@
         btn.textContent = 'Update Login Credentials';
       }
     });
+
+    async function clearAllSalesData() {
+      if (!confirm("Are you sure you want to permanently clear all example sales, order, settlement, and customer records? This will reset all revenue metrics to ₹0.00.")) {
+        return;
+      }
+      try {
+        const res = await DropKit.api('/api/admin/clear-sales', { method: 'POST' });
+        DropKit.toast(res.message, 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } catch (err) {
+        DropKit.toast(err.message, 'error');
+      }
+    }
 
     function toggleDemoMode() {
       isLiveMode = !isLiveMode;

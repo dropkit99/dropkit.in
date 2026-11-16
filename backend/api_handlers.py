@@ -682,3 +682,23 @@ def handle_admin_change_credentials(user_id: int, data: dict):
         "username": new_username if new_username else user['username']
     }
 
+def handle_admin_clear_sales_data():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM download_logs;")
+    cursor.execute("DELETE FROM download_entitlements;")
+    cursor.execute("DELETE FROM payment_events;")
+    cursor.execute("DELETE FROM payments;")
+    cursor.execute("DELETE FROM order_items;")
+    cursor.execute("DELETE FROM refunds;")
+    cursor.execute("DELETE FROM orders;")
+    cursor.execute("DELETE FROM settlements;")
+    cursor.execute("DELETE FROM customers;")
+    cursor.execute("DELETE FROM sqlite_sequence WHERE name IN ('orders', 'order_items', 'payments', 'payment_events', 'download_entitlements', 'download_logs', 'refunds', 'settlements', 'customers');")
+    conn.commit()
+    conn.close()
+    return 200, {
+        "status": "success",
+        "message": "All sales data, orders, and settlements have been completely cleared."
+    }
+
