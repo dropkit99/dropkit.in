@@ -72,7 +72,7 @@ def change_credentials(new_username: str = None, new_password: str = None):
     print("SUCCESS: DropKit Administrator Credentials Updated!")
     print(f" - Username: {new_username}")
     print(f" - Password: [UPDATED & HASHED WITH PBKDF2-SHA256 (600,000 rounds)]")
-    print(f" - Admin Login URL: http://localhost:8080/admin/login")
+    print(f" - Admin Login URL: https://dropkit.com/admin/login (Local: http://localhost:8080/admin/login)")
     print("=" * 60)
     return True
 

@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
-from backend.db import get_connection, init_db
+from backend.db import get_connection, init_db, now_iso
 from backend.auth import (
     authenticate_admin,
     create_admin_session,
@@ -67,7 +67,11 @@ from backend.api_handlers import (
     handle_admin_add_merchant_account,
     handle_admin_update_merchant_account,
     handle_admin_set_active_merchant_account,
-    handle_admin_get_switching_history
+    handle_admin_get_switching_history,
+    handle_admin_delete_customer,
+    handle_admin_clear_all_customers,
+    handle_admin_delete_settlement,
+    handle_admin_clear_all_settlements
 )
 from backend.merchant_manager import (
     list_merchant_accounts,
@@ -715,8 +719,67 @@ def run_tests():
     assert restored_acc["account_id"] == "MCH-001"
     print(f" PASS: Normal checkout flow restored to primary verified account {restored_acc['account_id']}")
 
+    # =========================================================================
+    # REQUIREMENT 19: Customer & Settlement Deletion Options
+    # =========================================================================
+    print("\n[TEST 19] Customer & Buyer Deletion and Settlement Record Deletion:")
+    # Create a temporary test customer
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("""
+        INSERT INTO customers (name, email, phone, created_at, updated_at)
+        VALUES ('Temporary Buyer', 'temp.buyer@test.dropkit.io', '+91 99999 11111', ?, ?)
+    """, (now_iso(), now_iso()))
+    temp_cust_id = c.lastrowid
+    # Create an order linked to this customer
+    c.execute("""
+        INSERT INTO orders (
+            order_number, customer_id, product_id, amount_inr, status,
+            payment_method, payment_gateway, order_access_token, upi_vpa, is_demo, created_at, updated_at
+        ) VALUES (?, ?, ?, 199.0, 'PENDING', 'DIRECT_UPI', 'DIRECT_UPI', 'tok_temp_123', 'store.founder@upi', 0, ?, ?)
+    """, (f"ORD-TEMP-{uuid.uuid4().hex[:6].upper()}", temp_cust_id, prod['id'], now_iso(), now_iso()))
+    temp_order_id = c.lastrowid
+
+    # Insert a temporary settlement record
+    temp_set_ref = f"SET-TEMP-{uuid.uuid4().hex[:6].upper()}"
+    c.execute("""
+        INSERT INTO settlements (settlement_ref, amount_inr, fee_inr, net_amount_inr, bank_account_masked, utr_number, status, settled_at)
+        VALUES (?, 1000.0, 20.0, 980.0, 'HDFC Bank ****4921', 'UTR-TEMP-9988', 'SETTLED', ?)
+    """, (temp_set_ref, now_iso()))
+    temp_set_id = c.lastrowid
+    conn.commit()
+    conn.close()
+
+    # Test single customer deletion
+    del_c_code, del_c_res = handle_admin_delete_customer(temp_cust_id)
+    assert del_c_code == 200, f"Customer deletion failed: {del_c_res}"
+    # Verify customer and order are gone
+    conn = get_connection()
+    c = conn.cursor()
+    c.execute("SELECT id FROM customers WHERE id = ?", (temp_cust_id,))
+    assert c.fetchone() is None, "Customer must be deleted from DB"
+    c.execute("SELECT id FROM orders WHERE id = ?", (temp_order_id,))
+    assert c.fetchone() is None, "Customer orders must be deleted from DB"
+    print(" PASS: Successfully deleted individual customer and cleaned up associated order records")
+
+    # Test single settlement deletion
+    del_s_code, del_s_res = handle_admin_delete_settlement(temp_set_id)
+    assert del_s_code == 200, f"Settlement deletion failed: {del_s_res}"
+    c.execute("SELECT id FROM settlements WHERE id = ?", (temp_set_id,))
+    assert c.fetchone() is None, "Settlement record must be deleted from DB"
+    conn.close()
+    print(f" PASS: Successfully deleted individual settlement record {temp_set_ref}")
+
+    # =========================================================================
+    # REQUIREMENT 20: Production Domain (https://dropkit.com) Verification
+    # =========================================================================
+    print("\n[TEST 20] Production Domain (https://dropkit.com) Verification:")
+    pay_cfg = get_effective_payment_config()
+    assert pay_cfg["base_url"] == "https://dropkit.com", f"Expected base_url https://dropkit.com, got {pay_cfg['base_url']}"
+    print(f" PASS: Authoritative base_url configured: {pay_cfg['base_url']}")
+
     print("\n" + "=" * 75)
-    print("ALL 18 COMPREHENSIVE SECURITY, PAYMENT & AUTO-SWITCHING AUDIT TESTS PASSED (100% SUCCESS)!")
+    print("ALL 20 COMPREHENSIVE SECURITY, PAYMENT & MANAGEMENT TESTS PASSED (100% SUCCESS)!")
     print("=" * 75)
 
 if __name__ == "__main__":

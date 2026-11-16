@@ -231,11 +231,12 @@ cd C:\Users\Student\.gemini\antigravity\scratch\dropkit
 python backend/server.py
 ```
 
-- **Customer Storefront:** `http://localhost:8080/`
-- **Catalog:** `http://localhost:8080/products`
-- **Checkout:** `http://localhost:8080/checkout/1`
-- **Customer Downloads Vault:** `http://localhost:8080/my-downloads`
-- **Admin Login:** `http://localhost:8080/admin/login`
+- **Production Domain:** `https://dropkit.com`
+- **Customer Storefront:** `https://dropkit.com/` (Local: `http://localhost:8080/`)
+- **Catalog:** `https://dropkit.com/products` (Local: `http://localhost:8080/products`)
+- **Checkout:** `https://dropkit.com/checkout/1` (Local: `http://localhost:8080/checkout/1`)
+- **Customer Downloads Vault:** `https://dropkit.com/my-downloads` (Local: `http://localhost:8080/my-downloads`)
+- **Admin Login:** `https://dropkit.com/admin/login` (Local: `http://localhost:8080/admin/login`)
   - **Username:** `admin`
   - **Password:** `Admin@DropKit2026!`
-- **Admin Dashboard:** `http://localhost:8080/admin`
+- **Admin Dashboard:** `https://dropkit.com/admin` (Local: `http://localhost:8080/admin`)

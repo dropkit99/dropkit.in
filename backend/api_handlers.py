@@ -576,6 +576,68 @@ def handle_admin_customer_history(customer_id: int):
 
     return 200, {"orders": orders}
 
+def handle_admin_delete_customer(customer_id: int):
+    """Deletes an individual customer and safely cleans up associated order records."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, name, email FROM customers WHERE id = ?", (customer_id,))
+    cust = cursor.fetchone()
+    if not cust:
+        conn.close()
+        return 404, {"error": "Customer not found"}
+
+    cust_name = cust['name']
+    cust_email = cust['email']
+
+    # Find customer orders to clean up dependencies
+    cursor.execute("SELECT id FROM orders WHERE customer_id = ?", (customer_id,))
+    order_ids = [r['id'] for r in cursor.fetchall()]
+
+    if order_ids:
+        placeholders = ','.join(['?'] * len(order_ids))
+        cursor.execute(f"DELETE FROM download_logs WHERE order_id IN ({placeholders})", order_ids)
+        cursor.execute(f"DELETE FROM download_entitlements WHERE order_id IN ({placeholders})", order_ids)
+        cursor.execute(f"DELETE FROM payment_events WHERE order_id IN ({placeholders})", order_ids)
+        cursor.execute(f"DELETE FROM payments WHERE order_id IN ({placeholders})", order_ids)
+        cursor.execute(f"DELETE FROM order_items WHERE order_id IN ({placeholders})", order_ids)
+        cursor.execute(f"DELETE FROM refunds WHERE order_id IN ({placeholders})", order_ids)
+        cursor.execute(f"DELETE FROM orders WHERE id IN ({placeholders})", order_ids)
+
+    cursor.execute("DELETE FROM customers WHERE id = ?", (customer_id,))
+    now = now_iso()
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (NULL, 'customer.deleted', 'customer', ?, ?, ?)
+    """, (str(customer_id), f"Deleted customer {cust_name} ({cust_email}) and {len(order_ids)} orders", now))
+
+    conn.commit()
+    conn.close()
+    return 200, {"status": "success", "message": f"Customer '{cust_name}' deleted successfully."}
+
+def handle_admin_clear_all_customers():
+    """Clears all customers and their associated order ledgers."""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM download_logs")
+    cursor.execute("DELETE FROM download_entitlements")
+    cursor.execute("DELETE FROM payment_events")
+    cursor.execute("DELETE FROM payments")
+    cursor.execute("DELETE FROM order_items")
+    cursor.execute("DELETE FROM refunds")
+    cursor.execute("DELETE FROM orders")
+    cursor.execute("DELETE FROM customers")
+
+    now = now_iso()
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (NULL, 'customers.cleared_all', 'customers', 'ALL', 'Cleared all customer records and associated orders', ?)
+    """, (now,))
+
+    conn.commit()
+    conn.close()
+    return 200, {"status": "success", "message": "All customers and associated order ledgers have been cleared successfully."}
+
 def handle_admin_orders(query_params: dict):
     status = query_params.get("status", [""])[0]
     search = query_params.get("q", [""])[0]
@@ -725,6 +787,43 @@ def handle_admin_finances():
         "settlements": settlements
     }
 
+def handle_admin_delete_settlement(settlement_id: int):
+    """Deletes an individual financial settlement record."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, settlement_ref, amount_inr FROM settlements WHERE id = ?", (settlement_id,))
+    st = cursor.fetchone()
+    if not st:
+        conn.close()
+        return 404, {"error": "Settlement record not found"}
+
+    ref = st['settlement_ref']
+    cursor.execute("DELETE FROM settlements WHERE id = ?", (settlement_id,))
+    now = now_iso()
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (NULL, 'settlement.deleted', 'settlement', ?, ?, ?)
+    """, (str(settlement_id), f"Deleted settlement record {ref}", now))
+
+    conn.commit()
+    conn.close()
+    return 200, {"status": "success", "message": f"Settlement record '{ref}' deleted successfully."}
+
+def handle_admin_clear_all_settlements():
+    """Clears all financial settlement records."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM settlements")
+    now = now_iso()
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (NULL, 'settlements.cleared_all', 'settlements', 'ALL', 'Cleared all settlement records', ?)
+    """, (now,))
+
+    conn.commit()
+    conn.close()
+    return 200, {"status": "success", "message": "All bank settlement records have been cleared successfully."}
+
 def handle_admin_instagram():
     conn = get_connection()
     cursor = conn.cursor()
@@ -757,12 +856,12 @@ def handle_admin_test_instagram_flow(data: dict):
         conn.close()
         return 404, {"error": f"No active automation rule found for keyword '{keyword}'"}
 
-    # Generate UTM link
+    # Generate UTM link with production dropkit.com domain
     checkout_url = f"/checkout/{rule['product_id']}?utm_source=instagram&utm_medium=reel_comment&utm_campaign={keyword.lower()}"
     rendered_dm = rule['dm_template']
     rendered_dm = rendered_dm.replace("{{first_name}}", first_name)
     rendered_dm = rendered_dm.replace("{{product_title}}", rule['product_title'])
-    rendered_dm = rendered_dm.replace("{{checkout_link}}", f"https://dropkit.io{checkout_url}")
+    rendered_dm = rendered_dm.replace("{{checkout_link}}", f"https://dropkit.com{checkout_url}")
 
     # Increment trigger count
     cursor.execute("UPDATE instagram_configs SET trigger_count = trigger_count + 1 WHERE id = ?", (rule['id'],))

@@ -373,6 +373,16 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 code, res = handle_admin_test_notification_alert(admin_user['user_id'])
                 return self.send_json(code, res)
 
+            if path == "/api/admin/customers/clear":
+                from backend.api_handlers import handle_admin_clear_all_customers
+                code, res = handle_admin_clear_all_customers()
+                return self.send_json(code, res)
+
+            if path == "/api/admin/settlements/clear":
+                from backend.api_handlers import handle_admin_clear_all_settlements
+                code, res = handle_admin_clear_all_settlements()
+                return self.send_json(code, res)
+
         return self.send_json(404, {"error": "Endpoint not found"})
 
     def do_PUT(self):
@@ -412,6 +422,18 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         if path.startswith("/api/admin/products/"):
             prod_id = int(path.split("/")[-1])
             code, res = handle_admin_delete_product(prod_id)
+            return self.send_json(code, res)
+
+        if path.startswith("/api/admin/customers/"):
+            cust_id = int(path.split("/")[-1])
+            from backend.api_handlers import handle_admin_delete_customer
+            code, res = handle_admin_delete_customer(cust_id)
+            return self.send_json(code, res)
+
+        if path.startswith("/api/admin/settlements/"):
+            settlement_id = int(path.split("/")[-1])
+            from backend.api_handlers import handle_admin_delete_settlement
+            code, res = handle_admin_delete_settlement(settlement_id)
             return self.send_json(code, res)
 
         return self.send_json(404, {"error": "Endpoint not found"})
