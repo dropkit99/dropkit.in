@@ -1,78 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
   <defs>
+    <!-- Deep Obsidian Studio Background -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1B1D3B"/>
-      <stop offset="60%" stop-color="#15172E"/>
-      <stop offset="100%" stop-color="#0E0F1F"/>
+      <stop offset="0%" stop-color="#0F1126"/>
+      <stop offset="45%" stop-color="#151833"/>
+      <stop offset="100%" stop-color="#0A0B1A"/>
     </linearGradient>
-    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+
+    <!-- Accent Title Gradient -->
+    <linearGradient id="titleAccentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#3B82F6"/>
-      <stop offset="100%" stop-color="#FF653D"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
-    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000" flood-opacity="0.4"/>
+
+    <!-- Glass Pill Gradient -->
+    <linearGradient id="pillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.12)"/>
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.03)"/>
+    </linearGradient>
+
+    <!-- Fire / Engine Glow -->
+    <linearGradient id="fireGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF653D"/>
+      <stop offset="60%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#EF4444"/>
+    </linearGradient>
+
+    <!-- Instagram Gradient -->
+    <linearGradient id="igGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#833AB4"/>
+      <stop offset="50%" stop-color="#FD1D1D"/>
+      <stop offset="100%" stop-color="#FCB045"/>
+    </linearGradient>
+
+    <!-- Glow & Shadow Filters -->
+    <filter id="glowBlur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="35" result="blur"/>
     </filter>
+    <filter id="fireGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+    <pattern id="dotGrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="rgba(255, 255, 255, 0.06)"/>
+    </pattern>
   </defs>
 
-  <!-- Background -->
-  <rect width="600" height="800" fill="url(#bgGrad)"/>
+  <!-- Background Base -->
+  <rect width="800" height="500" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Dot Grid Overlay -->
+  <rect width="800" height="500" fill="url(#dotGrid)"/>
 
-  <!-- Geometric Grid & Glow Accents -->
-  <circle cx="500" cy="150" r="220" fill="#3B82F6" opacity="0.12"/>
-  <circle cx="100" cy="700" r="180" fill="#FF653D" opacity="0.08"/>
-  <rect x="0" y="0" width="600" height="8" fill="url(#accentGrad)"/>
+  <!-- Dynamic Ambient Light Blooms -->
+  <circle cx="680" cy="180" r="190" fill="#3B82F6" opacity="0.14" filter="url(#glowBlur)"/>
+  <circle cx="120" cy="420" r="160" fill="#06B6D4" opacity="0.08" filter="url(#glowBlur)"/>
 
-  <!-- Left Spine simulation -->
-  <rect x="0" y="0" width="24" height="800" fill="#121326" opacity="0.6"/>
-  <line x1="24" y1="0" x2="24" y2="800" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  <!-- Top Cyber Accent Border Line -->
+  <rect x="0" y="0" width="800" height="4" fill="url(#titleAccentGrad)"/>
 
-  <!-- Header Branding -->
-  <g transform="translate(60, 55)">
-    <!-- Droplet Icon -->
-    <circle cx="20" cy="20" r="18" fill="#FF653D"/>
-    <path d="M 20 10 C 26 20 26 25 20 28 C 14 25 14 20 20 10 Z" fill="#FFFFFF"/>
-    <text x="48" y="26" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="20" font-weight="800" fill="#FFFFFF">DropKit</text>
-    <text x="135" y="26" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#74778D" letter-spacing="1">PUBLICATIONS</text>
-  </g>
+  <!-- Left Futuristic Framing Spine -->
+  <rect x="0" y="0" width="12" height="500" fill="#3B82F6" opacity="0.85"/>
+  <line x1="12" y1="0" x2="12" y2="500" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
 
-  <!-- Category Tag -->
-  <g transform="translate(60, 140)">
-    <rect width="210" height="30" rx="6" fill="rgba(255, 101, 61, 0.15)" stroke="rgba(255, 101, 61, 0.4)" stroke-width="1"/>
-    <text x="14" y="20" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#FF653D" letter-spacing="1.5">DEVELOPER PLAYBOOKS</text>
-  </g>
-
-  <!-- Title Area -->
-  <g transform="translate(60, 230)">
-    <text x="0" y="0" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="44" font-weight="800" fill="#FFFFFF" line-height="1.2">
-      Full-Stack System Arch
-    </text>
-    <text x="0" y="50" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="44" font-weight="800" fill="url(#accentGrad)">
-      itecture
-    </text>
-    <text x="0" y="110" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#A0A3BD" width="480">
-      Enterprise Cloud &amp; Microservices Blueprint 2026
-    </text>
-  </g>
-
-  <!-- Central Graphic Icon Badge -->
-  <g transform="translate(300, 480)" filter="url(#cardShadow)">
-    <circle cx="0" cy="0" r="75" fill="#1B1D3B" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
-    <circle cx="0" cy="0" r="62" fill="url(#accentGrad)" opacity="0.2"/>
-    <text x="0" y="18" font-size="52" text-anchor="middle" dominant-baseline="middle">⚡</text>
-  </g>
-
-  <!-- Bottom Feature Strip -->
-  <g transform="translate(60, 680)">
-    <rect width="480" height="60" rx="12" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <!-- ================= LEFT CONTENT AREA ================= -->
+  
+  <!-- Header Branding & Category Tag -->
+  <g transform="translate(48, 45)">
+    <!-- Official DropKit Droplet Brand Stamp -->
+    <rect width="28" height="28" rx="8" fill="#1B1D3B" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <path d="M 14 6 C 18 13 18 17 14 20 C 10 17 10 13 14 6 Z" fill="#FF653D"/>
     
-    <!-- Pages info -->
-    <text x="24" y="36" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">📄 72 Pages</text>
-    <circle cx="130" cy="32" r="3" fill="#74778D"/>
-    <text x="145" y="36" font-family="system-ui, sans-serif" font-size="14" font-weight="500" fill="#A0A3BD">Instant PDF Delivery</text>
+    <text x="38" y="19" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">DropKit</text>
+    <text x="96" y="19" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#74778D" letter-spacing="1.5">PUBLICATIONS // 2026 ARCHITECTURE</text>
 
-    <!-- Verified Badge -->
-    <rect x="360" y="15" width="100" height="30" rx="15" fill="#10B981" opacity="0.2"/>
-    <text x="410" y="35" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#10B981" text-anchor="middle">VERIFIED</text>
+    <!-- Category Pill Badge -->
+    <g transform="translate(0, 42)">
+      <rect width="180" height="26" rx="13" fill="url(#pillGrad)" stroke="#3B82F6" stroke-width="1.2"/>
+      <circle cx="14" cy="13" r="4" fill="#3B82F6"/>
+      <text x="26" y="17" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#3B82F6" letter-spacing="1">DEVELOPER PLAYBOOKS</text>
+    </g>
+  </g>
+
+  <!-- Main Publication Title (2 Carefully Balanced Lines) -->
+  <g transform="translate(48, 175)">
+    <text x="0" y="0" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="38" font-weight="800" fill="#FFFFFF" letter-spacing="-0.8">
+      Full-Stack System
+    </text>
+    <text x="0" y="46" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="38" font-weight="800" fill="url(#titleAccentGrad)" letter-spacing="-0.8">
+      Architecture 2026
+    </text>
+  </g>
+
+  <!-- Editorial Value Subtitle -->
+  <g transform="translate(48, 290)">
+    <text x="0" y="0" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="400" fill="#9CA3AF" width="420">
+      <tspan x="0" dy="0">High-concurrency microservices, caching topologies, database s</tspan>
+      <tspan x="0" dy="22">harding, and zero-trust authentication blueprints.</tspan>
+    </text>
+  </g>
+
+  <!-- 3-Pill Feature Badges -->
+  <g transform="translate(48, 375)">
+    <!-- Pill 1: Verified PDF -->
+    <rect width="105" height="28" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+    <text x="12" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#E5E7EB">📄 72 Pages</text>
+
+    <!-- Pill 2: Reading Time -->
+    <g transform="translate(115, 0)">
+      <rect width="115" height="28" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+      <text x="12" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#E5E7EB">⏱️ 90 Min Read</text>
+    </g>
+
+    <!-- Pill 3: Instant Dynamic UPI -->
+    <g transform="translate(240, 0)">
+      <rect width="145" height="28" rx="8" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1"/>
+      <circle cx="14" cy="14" r="3.5" fill="#10B981"/>
+      <text x="24" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#10B981">UPI QR VERIFIED</text>
+    </g>
+  </g>
+
+  <!-- ================= RIGHT 3D VECTOR GRAPHIC ================= -->
+  
+        <!-- System Architecture 3D Cloud Graphic -->
+        <g transform="translate(630, 240)">
+          <!-- Outer Network Ring -->
+          <circle cx="0" cy="0" r="145" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="8,8" opacity="0.4"/>
+          <circle cx="0" cy="0" r="95" fill="#3B82F6" opacity="0.15" filter="url(#glowBlur)"/>
+
+          <!-- 3D Isometric Microservice Cubes -->
+          <!-- Top Cube -->
+          <g transform="translate(0, -50)">
+            <polygon points="0,-22 35,-2 0,18 -35,-2" fill="#06B6D4"/>
+            <polygon points="-35,-2 0,18 0,50 -35,30" fill="#3B82F6"/>
+            <polygon points="0,18 35,-2 35,30 0,50" fill="#1E40AF"/>
+          </g>
+
+          <!-- Left Cube -->
+          <g transform="translate(-55, 30)">
+            <polygon points="0,-18 28,-2 0,14 -28,-2" fill="#06B6D4" opacity="0.9"/>
+            <polygon points="-28,-2 0,14 0,40 -28,24" fill="#3B82F6"/>
+            <polygon points="0,14 28,-2 28,24 0,40" fill="#1E40AF"/>
+          </g>
+
+          <!-- Right Cube -->
+          <g transform="translate(55, 30)">
+            <polygon points="0,-18 28,-2 0,14 -28,-2" fill="#06B6D4" opacity="0.9"/>
+            <polygon points="-28,-2 0,14 0,40 -28,24" fill="#3B82F6"/>
+            <polygon points="0,14 28,-2 28,24 0,40" fill="#1E40AF"/>
+          </g>
+
+          <!-- Interconnect Light Lines -->
+          <line x1="0" y1="-2" x2="-55" y2="30" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4,4"/>
+          <line x1="0" y1="-2" x2="55" y2="30" stroke="#38BDF8" stroke-width="2" stroke-dasharray="4,4"/>
+          <line x1="-55" y1="30" x2="55" y2="30" stroke="#38BDF8" stroke-width="1.5"/>
+
+          <!-- Central Core Energy Glow -->
+          <circle cx="0" cy="20" r="10" fill="#38BDF8" filter="url(#fireGlow)"/>
+
+          <!-- Floating Architecture Badge -->
+          <g transform="translate(-75, 95)" filter="url(#cardShadow)">
+            <rect width="150" height="34" rx="17" fill="#0B1329" stroke="#38BDF8" stroke-width="1.5"/>
+            <text x="18" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="#38BDF8">99.999% HIGH AVAIL</text>
+          </g>
+        </g>
+        
+
+  <!-- ================= BOTTOM SPECIFICATION STRIP ================= -->
+  <g transform="translate(48, 455)">
+    <line x1="0" y1="0" x2="704" y2="0" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+    <text x="0" y="24" font-family="monospace" font-size="9" fill="#6B7280" letter-spacing="1">
+      AUTHENTICATED DIGITAL PUBLICATION // SPEC: 256-BIT ENCRYPTED PDF // DYNAMIC UPI RECONCILIATION // 2026 EDITION
+    </text>
+    <text x="704" y="24" font-family="monospace" font-size="9" font-weight="700" fill="#3B82F6" text-anchor="end" letter-spacing="1">
+      SECURE TOKEN FULFILLMENT ✓
+    </text>
   </g>
 </svg>
