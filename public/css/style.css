@@ -84,6 +84,134 @@ a {
   height: 42px;
   width: auto;
   object-fit: contain;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: logoFloat 4s ease-in-out infinite;
+}
+
+.dk-logo-link:hover .dk-logo-img {
+  transform: translateY(-2px) scale(1.04);
+  filter: drop-shadow(0 6px 14px rgba(255, 101, 61, 0.4));
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0);
+    filter: drop-shadow(0 2px 6px rgba(27, 29, 59, 0.08));
+  }
+  50% {
+    transform: translateY(-3px);
+    filter: drop-shadow(0 6px 16px rgba(255, 101, 61, 0.35));
+  }
+}
+
+/* Hero Animated Logo Emblem */
+.hero-emblem-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.hero-emblem-ring {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 101, 61, 0.35);
+  animation: radarSpin 12s linear infinite;
+}
+
+.hero-emblem-pulse {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 101, 61, 0.25) 0%, transparent 70%);
+  animation: emblemPulse 2.5s ease-in-out infinite;
+}
+
+.hero-emblem-box {
+  width: 88px;
+  height: 88px;
+  border-radius: 22px;
+  background: #1B1D3B;
+  box-shadow: 0 16px 36px rgba(27, 29, 59, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+  animation: logoFloat 3.5s ease-in-out infinite;
+}
+
+.hero-emblem-box:hover {
+  transform: translateY(-6px) scale(1.06) rotate(2deg);
+  box-shadow: 0 20px 45px rgba(255, 101, 61, 0.45);
+}
+
+.hero-emblem-icon {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  animation: arrowDip 2.2s ease-in-out infinite;
+}
+
+@keyframes radarSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes emblemPulse {
+  0%, 100% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.22); opacity: 0.9; }
+}
+
+@keyframes arrowDip {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3.5px); }
+}
+
+/* Product Cover Visual Styling */
+.product-cover-frame {
+  height: 230px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: #1B1D3B;
+  box-shadow: 0 8px 20px rgba(27, 29, 59, 0.12);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-cover-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .product-cover-frame img {
+  transform: scale(1.04);
+}
+
+.cover-preview-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(27, 29, 59, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  backdrop-filter: blur(2px);
+}
+
+.card:hover .cover-preview-overlay {
+  opacity: 1;
 }
 
 .dk-nav-menu {

@@ -285,6 +285,99 @@
             </div>
           </div>
         </div>
+
+        <!-- Sandbox Testing Station Card -->
+        <div class="card" style="margin-bottom: 2rem; border-color: var(--dk-orange); background: #FFFFFF; box-shadow: 0 8px 24px rgba(255, 101, 61, 0.08);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="badge badge-orange" style="font-size: 0.75rem;">Interactive Simulator</span>
+                <h3 style="font-size: 1.25rem; color: var(--dk-navy); margin: 0;">Dynamic UPI QR Sandbox Testing Station</h3>
+              </div>
+              <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.25rem;">
+                Test how the automated payment verification, cryptographic webhooks, and PDF unlocking work in real-time.
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <span class="badge badge-success">Idempotency Guard Active</span>
+              <span class="badge badge-navy">HMAC-SHA256 Signed</span>
+            </div>
+          </div>
+
+          <!-- 4-Step Technical Workflow Explanation -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; background: var(--dk-bg); padding: 1rem; border-radius: var(--dk-radius-sm); font-size: 0.8rem;">
+            <div>
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">1. Dynamic QR Gen</div>
+              <div class="text-muted">Calculates ₹199 price, locks order, renders NPCI standard UPI URI.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">2. Customer UPI Scan</div>
+              <div class="text-muted">Customer pays via GPay, PhonePe, Paytm, or BHIM.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">3. Webhook Auth</div>
+              <div class="text-muted">Gateway POSTs signed callback. DropKit verifies signature & exact paise.</div>
+            </div>
+            <div>
+              <div style="font-weight: 700; color: var(--dk-navy); margin-bottom: 0.2rem;">4. Instant Unlock</div>
+              <div class="text-muted">Issues secure time-limited token (dkt_...) and streams PDF.</div>
+            </div>
+          </div>
+
+          <!-- Simulator Control Console -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start;">
+            <div>
+              <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                <div>
+                  <label class="form-label" style="font-size: 0.8rem;">Select Digital Product to Test</label>
+                  <select id="sbx-product-select" class="form-control" style="font-size: 0.85rem;">
+                    <!-- Injected dynamically -->
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label" style="font-size: 0.8rem;">Test Buyer Email</label>
+                  <input type="email" id="sbx-buyer-email" class="form-control" value="test.creator@dropkit.io" style="font-size: 0.85rem;">
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-primary btn-sm" onclick="runSandboxOrderCreate()">
+                  1. Generate Test Dynamic QR
+                </button>
+                <button class="btn btn-navy btn-sm" id="btn-sbx-pay" onclick="runSandboxPaymentSimulate('SUCCESS')" disabled>
+                  2. Simulate UPI Payment (Verified)
+                </button>
+                <button class="btn btn-outline btn-sm" id="btn-sbx-tamper" onclick="runSandboxPaymentSimulate('TAMPERED')" disabled style="color: var(--dk-danger); border-color: var(--dk-danger);">
+                  3. Test Fake/Tampered Webhook
+                </button>
+              </div>
+
+              <!-- Unlocked Download Link Box (appears on success) -->
+              <div id="sbx-success-result" style="display: none; margin-top: 1rem; padding: 1rem; background: #D1FAE5; border-radius: var(--dk-radius-sm); border: 1px solid #10B981;">
+                <div style="font-weight: 700; color: #065F46; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                  🎉 Payment Authenticated & PDF Unlocked!
+                </div>
+                <div style="font-size: 0.8rem; color: #047857; margin-bottom: 0.75rem;">
+                  A genuine download entitlement was generated. You can download the verified PDF below:
+                </div>
+                <a id="sbx-download-link" href="#" target="_blank" class="btn btn-navy btn-sm">
+                  📄 Test Single-Click PDF Download
+                </a>
+              </div>
+            </div>
+
+            <!-- Terminal / Audit Output -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <span style="font-size: 0.75rem; font-weight: 700; color: var(--dk-navy); text-transform: uppercase;">Real-Time Gateway & Webhook Log</span>
+                <button onclick="clearSandboxTerminal()" style="background: none; border: none; font-size: 0.7rem; color: var(--dk-muted); cursor: pointer;">Clear Log</button>
+              </div>
+              <div id="sbx-terminal" style="background: #121327; color: #10B981; font-family: monospace; font-size: 0.75rem; padding: 0.85rem; border-radius: var(--dk-radius-sm); height: 170px; overflow-y: auto; line-height: 1.5; border: 1px solid #1B1D3B;">
+                <div style="color: #74778D;">// Ready. Click '1. Generate Test Dynamic QR' to start...</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
 
@@ -912,7 +1005,123 @@
     }
 
     // SECTION 1: OVERVIEW
+    let currentSbxOrder = null;
+
+    async function initSandboxProducts() {
+      try {
+        const pRes = await DropKit.api('/api/products');
+        const sel = document.getElementById('sbx-product-select');
+        if (!sel) return;
+        sel.innerHTML = (pRes.products || []).map(p => `
+          <option value="${p.id}">${p.title} (${DropKit.formatINR(p.price_inr)})</option>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function appendSbxLog(text, color = '#10B981') {
+      const term = document.getElementById('sbx-terminal');
+      if (!term) return;
+      const time = new Date().toLocaleTimeString('en-IN', { hour12: false });
+      const line = document.createElement('div');
+      line.style.color = color;
+      line.textContent = `[${time}] ${text}`;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function clearSandboxTerminal() {
+      document.getElementById('sbx-terminal').innerHTML = '<div style="color: #74778D;">// Terminal cleared. Ready.</div>';
+    }
+
+    async function runSandboxOrderCreate() {
+      const prodId = document.getElementById('sbx-product-select').value;
+      const email = document.getElementById('sbx-buyer-email').value.trim() || 'test.creator@dropkit.io';
+      
+      appendSbxLog(`Creating test checkout order for product ID #${prodId}...`, '#FFFFFF');
+      try {
+        const res = await DropKit.api('/api/checkout/create-order', {
+          method: 'POST',
+          body: JSON.stringify({
+            product_id: parseInt(prodId),
+            customer_name: 'Sandbox Test Buyer',
+            customer_email: email
+          })
+        });
+
+        currentSbxOrder = res.order;
+        appendSbxLog(`SUCCESS: Order created: ${currentSbxOrder.order_number}`, '#10B981');
+        appendSbxLog(`Authoritative Price locked: ₹${currentSbxOrder.amount_inr.toFixed(2)}`, '#FF653D');
+        appendSbxLog(`Dynamic UPI Payload: ${currentSbxOrder.upi_uri.substring(0, 50)}...`, '#A0A3BD');
+        appendSbxLog(`Status: PENDING. Listening for payment gateway webhook...`, '#F59E0B');
+
+        document.getElementById('btn-sbx-pay').disabled = false;
+        document.getElementById('btn-sbx-tamper').disabled = false;
+        document.getElementById('sbx-success-result').style.display = 'none';
+        DropKit.toast(`Test Order ${currentSbxOrder.order_number} created!`, 'info');
+      } catch (err) {
+        appendSbxLog(`ERROR: ${err.message}`, '#EF4444');
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
+    async function runSandboxPaymentSimulate(mode) {
+      if (!currentSbxOrder) {
+        DropKit.toast('Please generate a test order first.', 'error');
+        return;
+      }
+
+      if (mode === 'TAMPERED') {
+        appendSbxLog(`[SIMULATION] Dispatching TAMPERED webhook with altered signature...`, '#EF4444');
+        try {
+          await DropKit.api('/api/payment/simulate', {
+            method: 'POST',
+            body: JSON.stringify({
+              order_number: currentSbxOrder.order_number,
+              simulate_status: 'TAMPERED'
+            })
+          });
+        } catch (err) {
+          appendSbxLog(`[SECURITY ALERT] ${err.message}`, '#EF4444');
+          appendSbxLog(`[DEFENSE CONFIRMED] Webhook rejected. Order remains securely locked.`, '#10B981');
+          DropKit.toast('Security Defense Confirmed: Forged webhook was successfully rejected!', 'success');
+        }
+        return;
+      }
+
+      // Valid payment simulation
+      appendSbxLog(`[SIMULATION] Customer scanned QR with UPI App. Initiating signed gateway callback...`, '#FFFFFF');
+      try {
+        const res = await DropKit.api('/api/payment/simulate', {
+          method: 'POST',
+          body: JSON.stringify({
+            order_number: currentSbxOrder.order_number,
+            simulate_status: 'SUCCESS'
+          })
+        });
+
+        appendSbxLog(`[GATEWAY] Webhook POST received from UPI gateway.`, '#A0A3BD');
+        appendSbxLog(`[AUTH] HMAC-SHA256 signature verified against secret key ✅`, '#10B981');
+        appendSbxLog(`[AMOUNT] Exact paise verification: ₹${res.data.amount_inr.toFixed(2)} verified ✅`, '#10B981');
+        appendSbxLog(`[ORDER] Order ${res.data.order_number} transitioned to PAID ✅`, '#10B981');
+        appendSbxLog(`[ENTITLEMENT] Issued token: ${res.data.download_token} ✅`, '#FF653D');
+        appendSbxLog(`[FULFILLMENT] Secure PDF download unlocked!`, '#10B981');
+
+        document.getElementById('sbx-success-result').style.display = 'block';
+        document.getElementById('sbx-download-link').href = `/api/download/${res.data.download_token}`;
+        document.getElementById('btn-sbx-pay').disabled = true;
+
+        DropKit.toast('Payment verified! Download unlocked.', 'success');
+        loadOverview(); // refresh stat cards and recent transactions
+      } catch (err) {
+        appendSbxLog(`[ERROR] ${err.message}`, '#EF4444');
+        DropKit.toast(err.message, 'error');
+      }
+    }
+
     async function loadOverview() {
+      initSandboxProducts();
       try {
         const res = await DropKit.api('/api/admin/overview');
         

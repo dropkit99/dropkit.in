@@ -180,16 +180,17 @@
       grid.innerHTML = filtered.map(p => `
         <div class="card card-hover" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div>
-            <div style="height: 180px; background: linear-gradient(135deg, #1B1D3B 0%, #2A2D5C 100%); border-radius: 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #FFFFFF; padding: 1.25rem; text-align: center; position: relative;">
-              <span style="font-size: 2.25rem; margin-bottom: 0.4rem;">📘</span>
-              <span style="font-weight: 700; font-size: 0.95rem;">${p.title}</span>
-              <div style="position: absolute; bottom: 8px; right: 12px; font-size: 0.75rem; color: rgba(255,255,255,0.85);">
-                ${p.pdf_pages} Pages • Verified PDF
+            <div class="product-cover-frame">
+              <img src="/covers/${p.cover_image}" alt="${p.title}">
+              <div class="cover-preview-overlay">
+                <a href="/checkout/${p.id}" class="btn btn-navy btn-sm">
+                  ⚡ Buy for ${DropKit.formatINR(p.price_inr)}
+                </a>
               </div>
             </div>
             <div style="margin-top: 1.25rem;">
               <span class="badge badge-navy" style="font-size: 0.7rem; margin-bottom: 0.5rem;">${p.category_name || 'Guide'}</span>
-              <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">${p.title}</h3>
+              <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;"><a href="/checkout/${p.id}">${p.title}</a></h3>
               <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5; margin-bottom: 1.25rem;">
                 ${p.description}
               </p>

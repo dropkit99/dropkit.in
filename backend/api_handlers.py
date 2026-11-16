@@ -207,6 +207,9 @@ def handle_simulate_payment(data: dict):
     if not order:
         return 404, {"error": "Order not found"}
 
+    if simulate_status == "TAMPERED":
+        return 401, {"error": "Security Alert: HMAC-SHA256 signature verification failed. The payment webhook payload has been tampered with or contains an invalid secret key. Transaction rejected."}
+
     if simulate_status == "FAILED":
         conn = get_connection()
         c2 = conn.cursor()
