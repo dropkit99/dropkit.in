@@ -1,0 +1,54 @@
+name: DropKit Firebase Automated Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+# Concurrency group ensures only one deployment runs at a time, preventing race conditions
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  test_and_verify:
+    name: Run DropKit Pre-Deployment Verification Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install qrcode
+
+      - name: Verify Database Schema and Integrity
+        run: |
+          python -m backend.db
+
+      - name: Run 24 Comprehensive Security & Payment Audit Tests
+        run: |
+          python tests/test_backend.py
+
+  deploy_to_firebase:
+    name: Deploy to Firebase Hosting & Custom Domain
+    needs: test_and_verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Firebase Hosting Live Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_DROPKIT }}
+          channelId: live
+          projectId: dropkit-app

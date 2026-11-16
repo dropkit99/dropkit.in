@@ -1,0 +1,13 @@
+.git
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+.env*.local
+storage/payment_screenshots/
+storage/secure_pdfs/*_test.pdf
+DropKit-Audit.zip
+*.zip
+.vscode/
+.idea/

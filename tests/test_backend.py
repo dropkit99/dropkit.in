@@ -806,25 +806,7 @@ def run_tests():
     from backend.payments import switch_alternative_upi
     from backend.api_handlers import handle_switch_alternative_upi
 
-    # Ensure a second standby account exists
-    from backend.merchant_manager import add_merchant_account
-    conn = get_connection()
-    c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM merchant_upi_accounts WHERE account_id = 'MCH-TEST-STANDBY'")
-    if c.fetchone()[0] == 0:
-        add_merchant_account({
-            "account_id": "MCH-TEST-STANDBY",
-            "merchant_name": "DropKit Standby Merchant",
-            "upi_vpa": "standby.store@okaxis",
-            "provider_ref": "AXIS-MCH-02",
-            "is_enabled": 1,
-            "availability_status": "AVAILABLE",
-            "collection_threshold_inr": 150000.0,
-            "priority": 2
-        }, created_by="TEST_SUITE")
-    conn.close()
-
-    # Trigger switch for order_ml
+    # Trigger switch for order_ml to available standby account
     switch_res = switch_alternative_upi(order_ml["order_number"], order_ml["order_access_token"])
     assert switch_res["ok"] is True, f"Alternative switch failed: {switch_res}"
     assert switch_res["switched"] is True, "Switch must be confirmed"
