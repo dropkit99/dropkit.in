@@ -386,6 +386,25 @@ def handle_admin_delete_product(product_id: int):
     conn.close()
     return 200, {"status": "success", "message": "Product deleted"}
 
+def handle_admin_bulk_price(data: dict):
+    price = float(data.get("price_inr", 199.0))
+    compare_price = float(data.get("compare_price_inr", 499.0)) if data.get("compare_price_inr") else None
+    if price < 0:
+        return 400, {"error": "Price must be a positive number"}
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    now = now_iso()
+    cursor.execute("""
+        UPDATE products SET
+            price_inr = ?,
+            compare_price_inr = COALESCE(?, compare_price_inr),
+            updated_at = ?
+    """, (price, compare_price, now))
+    conn.commit()
+    conn.close()
+    return 200, {"status": "success", "message": f"All products updated to ₹{price:.2f}"}
+
 def handle_admin_customers(query_params: dict):
     search = query_params.get("q", [""])[0]
     conn = get_connection()

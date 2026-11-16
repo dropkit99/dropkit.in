@@ -29,6 +29,7 @@ from backend.api_handlers import (
     handle_admin_save_product,
     handle_admin_update_product,
     handle_admin_delete_product,
+    handle_admin_bulk_price,
     handle_admin_customers,
     handle_admin_customer_history,
     handle_admin_orders,
@@ -242,6 +243,10 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
 
             if path == "/api/admin/products":
                 code, res = handle_admin_save_product(body_json)
+                return self.send_json(code, res)
+
+            if path == "/api/admin/products/bulk-price":
+                code, res = handle_admin_bulk_price(body_json)
                 return self.send_json(code, res)
 
             if path.startswith("/api/admin/orders/") and path.endswith("/refund"):
