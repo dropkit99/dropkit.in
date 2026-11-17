@@ -114,7 +114,9 @@ def run_tests():
     conn.close()
 
     # Authenticate admin for subsequent admin operations
-    ok, msg, admin_user = authenticate_admin("admin", "Admin@DropKit2026!")
+    ok, msg, admin_user = authenticate_admin("noushil", "nshl.123")
+    if not ok:
+        ok, msg, admin_user = authenticate_admin("admin", "Admin@DropKit2026!")
     assert ok, f"Admin login failed: {msg}"
     admin_id = admin_user['id']
 

@@ -96,7 +96,7 @@ else:
     WEBHOOK_SECRET = os.environ.get("DROPKIT_WEBHOOK_SECRET", "whsec_dev_local_testing_only_2026")
     DEFAULT_ADMIN_PASSWORD = os.environ.get("DROPKIT_ADMIN_PASS", "Admin@DropKit2026!")
 
-DEFAULT_ADMIN_USERNAME = os.environ.get("DROPKIT_ADMIN_USER", "admin")
+DEFAULT_ADMIN_USERNAME = os.environ.get("DROPKIT_ADMIN_USER", "noushil")
 
 # -------------------------------------------------------------
 # Payment Configuration: DIRECT UPI ONLY
