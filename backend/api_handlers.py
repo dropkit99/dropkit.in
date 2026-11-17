@@ -890,12 +890,12 @@ def handle_admin_test_instagram_flow(data: dict):
         conn.close()
         return 404, {"error": f"No active automation rule found for keyword '{keyword}'"}
 
-    # Generate UTM link with production dropkit.com domain
+    # Generate UTM link with production dropkit.in domain
     checkout_url = f"/checkout/{rule['product_id']}?utm_source=instagram&utm_medium=reel_comment&utm_campaign={keyword.lower()}"
     rendered_dm = rule['dm_template']
     rendered_dm = rendered_dm.replace("{{first_name}}", first_name)
     rendered_dm = rendered_dm.replace("{{product_title}}", rule['product_title'])
-    rendered_dm = rendered_dm.replace("{{checkout_link}}", f"https://dropkit.com{checkout_url}")
+    rendered_dm = rendered_dm.replace("{{checkout_link}}", f"https://dropkit.in{checkout_url}")
 
     # Increment trigger count
     cursor.execute("UPDATE instagram_configs SET trigger_count = trigger_count + 1 WHERE id = ?", (rule['id'],))

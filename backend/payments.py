@@ -76,7 +76,7 @@ def get_effective_payment_config() -> dict:
         direct_enabled = False
         is_available = False
 
-    base_url = settings.get("base_url") or os.environ.get("BASE_URL") or "https://dropkit.com"
+    base_url = settings.get("base_url") or os.environ.get("BASE_URL") or "https://dropkit.in"
 
     return {
         "mode": mode,

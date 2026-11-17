@@ -773,11 +773,11 @@ def run_tests():
     print(f" PASS: Successfully deleted individual settlement record {temp_set_ref}")
 
     # =========================================================================
-    # REQUIREMENT 20: Production Domain (https://dropkit.com) Verification
+    # REQUIREMENT 20: Production Domain (https://dropkit.in) Verification
     # =========================================================================
-    print("\n[TEST 20] Production Domain (https://dropkit.com) Verification:")
+    print("\n[TEST 20] Production Domain (https://dropkit.in) Verification:")
     pay_cfg = get_effective_payment_config()
-    assert pay_cfg["base_url"] == "https://dropkit.com", f"Expected base_url https://dropkit.com, got {pay_cfg['base_url']}"
+    assert pay_cfg["base_url"] == "https://dropkit.in", f"Expected base_url https://dropkit.in, got {pay_cfg['base_url']}"
     print(f" PASS: Authoritative base_url configured: {pay_cfg['base_url']}")
 
     # =========================================================================
