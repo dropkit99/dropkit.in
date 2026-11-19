@@ -289,9 +289,6 @@
           <button type="button" class="switch-pill-btn theme-toggle-btn" onclick="DropKitI18n.toggleTheme()" title="Toggle Dark/Light Mode">
             🌙 Dark
           </button>
-          <button type="button" class="switch-pill-btn" onclick="openAdminMobileQrModal()" style="color: var(--dk-orange); border-color: var(--dk-orange); font-weight: 700;" title="Open Mobile Preview QR Code">
-            📱 Phone Preview QR
-          </button>
         </div>
         <a href="/" target="_blank" class="btn btn-outline btn-sm">
           <span>🌐</span> View Public Store
@@ -1536,40 +1533,11 @@
     </div>
   </div>
 
-  <!-- Admin Mobile Preview Modal -->
-  <div id="admin-mobile-preview-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,17,26,0.78); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
-    <div class="card" style="max-width: 440px; width: 90%; text-align: center; padding: 2rem; border-radius: var(--dk-radius); position: relative; box-shadow: var(--dk-shadow-lg);">
-      <button type="button" onclick="closeAdminMobileQrModal()" style="position: absolute; top: 1rem; right: 1rem; border: none; background: transparent; font-size: 1.5rem; cursor: pointer; color: var(--dk-muted);">&times;</button>
-      <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📱</div>
-      <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--dk-navy);">Open Store on Mobile Phone</h3>
-      <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 1.25rem;">
-        Scan this QR code with your phone camera or barcode app to open the live mobile checkout directly on your phone:
-      </p>
-      <div style="background: #FFFFFF; padding: 0.85rem; border-radius: 12px; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--dk-border); margin-bottom: 1rem;">
-        <img src="/api/preview/qr" alt="Mobile Preview QR Code" style="width: 200px; height: 200px; display: block;">
-      </div>
-      <div style="background: var(--dk-bg); padding: 0.65rem 0.85rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; color: var(--dk-orange); font-weight: 700; word-break: break-all; margin-bottom: 1rem;">
-        http://192.168.1.20:8080/checkout/1
-      </div>
-      <div style="display: flex; gap: 0.5rem;">
-        <button type="button" class="btn btn-outline" style="flex: 1;" onclick="navigator.clipboard.writeText('http://192.168.1.20:8080/checkout/1'); DropKit.toast('Mobile URL copied to clipboard!', 'success');">📋 Copy URL</button>
-        <button type="button" class="btn btn-navy" style="flex: 1;" onclick="closeAdminMobileQrModal()">Done / Close</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Chart.js & App Scripts -->
   <script src="/js/chart.min.js"></script>
   <script src="/js/app.js"></script>
   <script src="/js/i18n.js"></script>
   <script>
-    function openAdminMobileQrModal() {
-      document.getElementById('admin-mobile-preview-modal').style.display = 'flex';
-    }
-    function closeAdminMobileQrModal() {
-      document.getElementById('admin-mobile-preview-modal').style.display = 'none';
-    }
-
     let overviewChart = null;
     let analyticsChart = null;
     let minutePollInterval = null;
