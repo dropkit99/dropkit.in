@@ -431,7 +431,27 @@ def handle_admin_analytics(query_params: dict):
     else:
         data = get_minute_analytics()
 
-    return 200, {"tab": tab, "analytics": data}
+    # Fetch recent transactions included in chart analytics for inspection and deletion
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT o.id, o.order_number, o.created_at, o.amount_inr, o.status,
+               o.upi_vpa, o.merchant_account_id,
+               c.name as customer_name, c.email as customer_email,
+               p.title as product_title
+        FROM orders o
+        JOIN customers c ON o.customer_id = c.id
+        JOIN products p ON o.product_id = p.id
+        ORDER BY o.created_at DESC
+        LIMIT 50
+    """)
+    txs = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+
+    for tx in txs:
+        tx['created_at_ist'] = to_ist(tx['created_at']).strftime("%d %b %Y, %H:%M IST")
+
+    return 200, {"tab": tab, "analytics": data, "transactions": txs}
 
 def handle_admin_list_products():
     conn = get_connection()
@@ -786,6 +806,185 @@ def handle_admin_issue_refund(order_number: str, data: dict):
     conn.close()
 
     return 200, {"status": "success", "message": f"Order {order_number} refunded. Download access revoked.", "refund_ref": refund_ref}
+
+def handle_admin_delete_order(order_identifier: str):
+    """
+    Deletes an individual order and its payment confirmation record.
+    Cleans up all child tables (download entitlements, logs, payments, order items, refunds).
+    If order was PAID, safely decrements confirmed_collection_total on assigned merchant UPI account.
+    Removes screenshot file from disk if present.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, order_number, amount_inr, status, merchant_account_id, screenshot_path
+        FROM orders
+        WHERE order_number = ? OR id = ?
+    """, (str(order_identifier), str(order_identifier)))
+    order = cursor.fetchone()
+
+    if not order:
+        conn.close()
+        return 404, {"error": f"Order '{order_identifier}' not found."}
+
+    order_id = order['id']
+    order_num = order['order_number']
+    amount = float(order['amount_inr'] or 0.0)
+    status = order['status']
+    mch_id = order['merchant_account_id']
+    sc_path = order['screenshot_path']
+
+    # 1. If order was confirmed PAID, adjust merchant account confirmed collection total
+    if status == 'PAID' and mch_id:
+        cursor.execute("""
+            UPDATE merchant_upi_accounts
+            SET confirmed_collection_total = MAX(0.0, confirmed_collection_total - ?)
+            WHERE account_id = ?
+        """, (amount, mch_id))
+
+    # 2. Clean up child records
+    cursor.execute("DELETE FROM download_logs WHERE order_id = ?", (order_id,))
+    cursor.execute("DELETE FROM download_entitlements WHERE order_id = ?", (order_id,))
+    cursor.execute("DELETE FROM payment_events WHERE order_id = ?", (order_id,))
+    cursor.execute("DELETE FROM payments WHERE order_id = ?", (order_id,))
+    cursor.execute("DELETE FROM order_items WHERE order_id = ?", (order_id,))
+    cursor.execute("DELETE FROM refunds WHERE order_id = ?", (order_id,))
+    cursor.execute("DELETE FROM orders WHERE id = ?", (order_id,))
+
+    # 3. Log audit event
+    now = now_iso()
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (NULL, 'order.deleted', 'order', ?, ?, ?)
+    """, (order_num, f"Deleted order {order_num} (Status: {status}, Amount: ₹{amount}) and its confirmation record", now))
+
+    conn.commit()
+    conn.close()
+
+    # 4. Remove physical screenshot file if it exists
+    if sc_path and os.path.exists(sc_path):
+        try:
+            os.remove(sc_path)
+        except Exception:
+            pass
+
+    return 200, {
+        "status": "success",
+        "message": f"Order #{order_num} and cash confirmation record deleted successfully.",
+        "deleted_order_number": order_num
+    }
+
+def handle_admin_clear_orders(data: dict):
+    """
+    Allows admin to clear orders by status filter:
+    - 'PAID': Clears confirmed cash payments and resets merchant account collection totals.
+    - 'VERIFICATION_PENDING': Clears pending payment screenshots/confirmations.
+    - 'ALL': Clears all orders.
+    """
+    filter_status = (data.get("status") or "ALL").upper().strip()
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if filter_status == "ALL":
+        cursor.execute("SELECT id, screenshot_path FROM orders")
+        rows = cursor.fetchall()
+        order_ids = [r['id'] for r in rows]
+        sc_paths = [r['screenshot_path'] for r in rows if r['screenshot_path']]
+        if order_ids:
+            placeholders = ",".join("?" * len(order_ids))
+            cursor.execute(f"DELETE FROM download_logs WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM download_entitlements WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM payment_events WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM payments WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM order_items WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM refunds WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM orders WHERE id IN ({placeholders})", order_ids)
+        cursor.execute("UPDATE merchant_upi_accounts SET confirmed_collection_total = 0.0")
+        msg = f"All {len(order_ids)} orders and cash confirmation records cleared."
+    else:
+        cursor.execute("SELECT id, screenshot_path FROM orders WHERE status = ?", (filter_status,))
+        rows = cursor.fetchall()
+        order_ids = [r['id'] for r in rows]
+        sc_paths = [r['screenshot_path'] for r in rows if r['screenshot_path']]
+        if order_ids:
+            placeholders = ",".join("?" * len(order_ids))
+            cursor.execute(f"DELETE FROM download_logs WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM download_entitlements WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM payment_events WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM payments WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM order_items WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM refunds WHERE order_id IN ({placeholders})", order_ids)
+            cursor.execute(f"DELETE FROM orders WHERE id IN ({placeholders})", order_ids)
+        if filter_status == "PAID":
+            cursor.execute("UPDATE merchant_upi_accounts SET confirmed_collection_total = 0.0")
+        msg = f"Cleared {len(order_ids)} orders in status '{filter_status}'."
+
+    conn.commit()
+    conn.close()
+
+    for p in sc_paths:
+        if p and os.path.exists(p):
+            try:
+                os.remove(p)
+            except Exception:
+                pass
+
+    return 200, {"status": "success", "message": msg, "cleared_count": len(order_ids)}
+
+def handle_admin_clear_analytics_data():
+    """
+    Permanently clears all sales/order records, resetting chart analyzing data to ₹0.00.
+    Preserves products, categories, customers, and admin configurations.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT screenshot_path FROM orders WHERE screenshot_path IS NOT NULL")
+    sc_paths = [r[0] for r in cursor.fetchall()]
+
+    cursor.execute("DELETE FROM download_logs;")
+    cursor.execute("DELETE FROM download_entitlements;")
+    cursor.execute("DELETE FROM payment_events;")
+    cursor.execute("DELETE FROM payments;")
+    cursor.execute("DELETE FROM order_items;")
+    cursor.execute("DELETE FROM refunds;")
+    cursor.execute("DELETE FROM orders;")
+    cursor.execute("UPDATE merchant_upi_accounts SET confirmed_collection_total = 0.0;")
+    cursor.execute("DELETE FROM sqlite_sequence WHERE name IN ('orders', 'order_items', 'payments', 'payment_events', 'download_entitlements', 'download_logs', 'refunds');")
+    conn.commit()
+    conn.close()
+
+    for p in sc_paths:
+        if p and os.path.exists(p):
+            try:
+                os.remove(p)
+            except Exception:
+                pass
+
+    return 200, {"status": "success", "message": "All sales and chart analytics data cleared successfully. Revenue reset to ₹0.00."}
+
+def handle_admin_reset_merchant_collections(account_id: str):
+    """
+    Resets confirmed collection total for a specific merchant UPI account to ₹0.00.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, merchant_name FROM merchant_upi_accounts WHERE account_id = ?", (account_id,))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return 404, {"error": f"Merchant account '{account_id}' not found."}
+
+    cursor.execute("UPDATE merchant_upi_accounts SET confirmed_collection_total = 0.0 WHERE account_id = ?", (account_id,))
+    now = now_iso()
+    cursor.execute("""
+        INSERT INTO audit_logs (user_id, action, entity_type, entity_id, details, created_at)
+        VALUES (NULL, 'merchant.collections_reset', 'merchant_account', ?, ?, ?)
+    """, (account_id, f"Reset confirmed collections for {row['merchant_name']} ({account_id}) to ₹0.00", now))
+
+    conn.commit()
+    conn.close()
+    return 200, {"status": "success", "message": f"Collections counter for merchant '{account_id}' reset to ₹0.00."}
 
 def handle_admin_finances():
     conn = get_connection()

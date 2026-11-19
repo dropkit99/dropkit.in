@@ -18,6 +18,13 @@ storage/payment_screenshots/
 # Temporary generated test PDFs
 storage/secure_pdfs/*_test.pdf
 
+# Temporary local tunnel scripts and keys
+temp_key*
+tunnel_url.txt
+*tunnel*.py
+get_pinggy_url.py
+test_token_live.py
+
 # Archives and build artifacts
 *.zip
 DropKit-Audit.zip

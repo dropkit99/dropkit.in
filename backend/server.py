@@ -406,6 +406,22 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
                 code, res = handle_admin_clear_all_settlements()
                 return self.send_json(code, res)
 
+            if path == "/api/admin/orders/clear":
+                from backend.api_handlers import handle_admin_clear_orders
+                code, res = handle_admin_clear_orders(body_json)
+                return self.send_json(code, res)
+
+            if path == "/api/admin/analytics/clear":
+                from backend.api_handlers import handle_admin_clear_analytics_data
+                code, res = handle_admin_clear_analytics_data()
+                return self.send_json(code, res)
+
+            if path.startswith("/api/admin/merchant-accounts/") and path.endswith("/reset-collections"):
+                acc_id = path.split("/")[4].upper()
+                from backend.api_handlers import handle_admin_reset_merchant_collections
+                code, res = handle_admin_reset_merchant_collections(acc_id)
+                return self.send_json(code, res)
+
         return self.send_json(404, {"error": "Endpoint not found"})
 
     def do_PUT(self):
@@ -457,6 +473,12 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
             settlement_id = int(path.split("/")[-1])
             from backend.api_handlers import handle_admin_delete_settlement
             code, res = handle_admin_delete_settlement(settlement_id)
+            return self.send_json(code, res)
+
+        if path.startswith("/api/admin/orders/"):
+            order_identifier = path.split("/")[-1]
+            from backend.api_handlers import handle_admin_delete_order
+            code, res = handle_admin_delete_order(order_identifier)
             return self.send_json(code, res)
 
         return self.send_json(404, {"error": "Endpoint not found"})
@@ -650,6 +672,8 @@ class DropKitRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
         self.wfile.write(b"<h1>404 - DropKit Page Not Found</h1><p><a href='/'>Return to Storefront</a></p>")
+
+DropKitHandler = DropKitRequestHandler
 
 def run_server(port: int = 8080):
     from backend.config import validate_production_config, get_configured_provider, DROPKIT_ENV

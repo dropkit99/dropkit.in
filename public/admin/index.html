@@ -446,7 +446,10 @@
             <button class="tab-pill" onclick="loadAnalyticsTab('upi')">8. UPI Account Collections & Share</button>
           </div>
 
-          <div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" onclick="clearAllChartData()" style="color: #EF4444; border-color: #EF4444; font-size: 0.8rem; padding: 0.35rem 0.75rem;" title="Clear chart sales records and reset revenue to ₹0.00">
+              <span>🗑️</span> Reset Chart Data
+            </button>
             <a href="/api/admin/analytics/export" class="btn btn-navy btn-sm" download>
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Export Sales CSV
@@ -489,6 +492,38 @@
         <!-- Analytics Metric Breakdown Summary -->
         <div id="analytics-summary-cards" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;">
           <!-- Injected via JS -->
+        </div>
+
+        <!-- Detailed Transactions in Chart Analysis Table -->
+        <div class="card" style="margin-top: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h3 style="font-size: 1.15rem; margin: 0; color: var(--dk-navy);">Transactions Included in Chart Analysis</h3>
+              <p class="text-muted" style="font-size: 0.82rem; margin: 0.2rem 0 0;">Delete any individual sales transaction to immediately recalculate chart curves and metric totals.</p>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="clearAllChartData()" style="color: #EF4444; border-color: #EF4444; font-size: 0.78rem;">
+              🗑️ Clear All Chart Records
+            </button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Order Ref</th>
+                  <th>Date &amp; Time (IST)</th>
+                  <th>Customer</th>
+                  <th>Product</th>
+                  <th>Amount (₹)</th>
+                  <th>UPI Account (VPA)</th>
+                  <th>Status</th>
+                  <th>Delete Action</th>
+                </tr>
+              </thead>
+              <tbody id="analytics-transactions-table">
+                <tr><td colspan="8" style="text-align: center; color: var(--dk-muted); padding: 1.5rem;">Loading chart transaction records...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -594,6 +629,14 @@
               <button class="tab-pill" onclick="filterOrders('PAID')">✓ Verified Paid</button>
               <button class="tab-pill" onclick="filterOrders('PAYMENT_REJECTED')">✕ Rejected</button>
               <button class="tab-pill" onclick="filterOrders('REFUNDED')">↩ Refunded</button>
+            </div>
+            <div style="display: flex; gap: 0.4rem; margin-left: auto;">
+              <button class="btn btn-outline btn-sm" onclick="clearOrdersPrompt('PAID')" style="color: #EF4444; border-color: #EF4444; font-size: 0.78rem;" title="Delete all confirmed cash payments">
+                🗑️ Clear Confirmed Cash
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="clearOrdersPrompt('ALL')" style="color: #EF4444; border-color: #EF4444; font-size: 0.78rem;" title="Clear all orders">
+                🗑️ Clear All Orders
+              </button>
             </div>
           </div>
         </div>
@@ -1402,9 +1445,10 @@
       </div>
 
       <!-- Modal Action Buttons -->
-      <div id="sc-modal-actions" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; border-top: 1px solid var(--dk-border); padding-top: 0.85rem;">
+      <div id="sc-modal-actions" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; border-top: 1px solid var(--dk-border); padding-top: 0.85rem; flex-wrap: wrap;">
         <button type="button" class="btn btn-outline" onclick="closeScreenshotModal()">Close</button>
-        <button type="button" class="btn btn-outline" id="btn-modal-reject" style="color: #EF4444; border-color: #EF4444;" onclick="triggerModalReject()">✕ Reject Payment</button>
+        <button type="button" class="btn btn-outline" id="btn-modal-delete" style="color: #EF4444; border-color: #EF4444;" onclick="triggerModalDelete()">🗑️ Delete Record</button>
+        <button type="button" class="btn btn-outline" id="btn-modal-reject" style="color: #F59E0B; border-color: #F59E0B;" onclick="triggerModalReject()">✕ Reject Payment</button>
         <button type="button" class="btn btn-primary" id="btn-modal-approve" style="background: #10B981; border-color: #10B981;" onclick="triggerModalApprove()">✓ Confirm Bank Credit &amp; Approve</button>
       </div>
     </div>
@@ -1985,6 +2029,35 @@
 
           renderChart('bar', accs.map(a => a.account_id), accs.map(a => a.verified_revenue), 'Verified Collections (₹)');
         }
+
+        // Render detailed transactions table for chart analysis
+        const txTbody = document.getElementById('analytics-transactions-table');
+        if (txTbody) {
+          const txs = res.transactions || [];
+          if (txs.length === 0) {
+            txTbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--dk-muted); padding: 1.5rem;">No transaction records found in current chart analysis.</td></tr>';
+          } else {
+            txTbody.innerHTML = txs.map(t => `
+              <tr>
+                <td><span style="font-family: monospace; font-weight: 700; color: var(--dk-navy);">${t.order_number}</span></td>
+                <td><span style="font-size: 0.8rem; color: var(--dk-muted);">${t.created_at_ist || t.created_at}</span></td>
+                <td>
+                  <div style="font-weight: 600; font-size: 0.85rem;">${t.customer_name || 'Anonymous'}</div>
+                  <div style="font-size: 0.72rem; color: var(--dk-muted);">${t.customer_email || ''}</div>
+                </td>
+                <td style="font-size: 0.85rem; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.product_title || 'Digital Product'}</td>
+                <td><span style="font-weight: 800; color: var(--dk-navy);">${DropKit.formatINR(t.amount_inr)}</span></td>
+                <td><span style="font-family: monospace; font-size: 0.75rem; color: var(--dk-orange);">${t.upi_vpa || t.merchant_account_id || 'Direct UPI'}</span></td>
+                <td><span class="badge ${t.status === 'PAID' ? 'badge-success' : (t.status === 'VERIFICATION_PENDING' ? 'badge-warning' : 'badge-danger')}" style="font-size: 0.7rem;">${t.status}</span></td>
+                <td>
+                  <button class="btn btn-outline btn-sm" onclick="deleteOrder('${t.order_number}', true)" style="color: #EF4444; border-color: #EF4444; font-size: 0.75rem; padding: 3px 8px;" title="Delete this transaction from chart analysis">
+                    🗑️ Delete
+                  </button>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
       } catch (err) {
         console.error(err);
       }
@@ -2348,20 +2421,23 @@
           }
 
           let actionCol = '—';
+          const orderDelBtn = `<button class="btn btn-outline btn-sm" onclick="deleteOrder('${o.order_number}')" style="padding:4px 8px;font-size:0.75rem;color:#EF4444;border-color:#EF4444;" title="Delete this cash confirmation & order record">🗑️ Delete</button>`;
+
           if (o.status === 'VERIFICATION_PENDING') {
             actionCol = `
-              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
                 <button class="btn btn-primary btn-sm" onclick="adminApprovePayment('${o.order_number}', ${o.amount_inr}, '${o.customer_name}')" style="padding:4px 8px;font-size:0.75rem;background:#10B981;border-color:#10B981;" title="Confirm bank credit & unlock PDF">
                   ✓ Approve Payment
                 </button>
-                <button class="btn btn-outline btn-sm" onclick="adminRejectPayment('${o.order_number}')" style="padding:4px 8px;font-size:0.75rem;color:#EF4444;border-color:#EF4444;" title="Reject payment receipt">
+                <button class="btn btn-outline btn-sm" onclick="adminRejectPayment('${o.order_number}')" style="padding:4px 8px;font-size:0.75rem;color:#F59E0B;border-color:#F59E0B;" title="Reject payment receipt">
                   ✕ Reject
                 </button>
+                ${orderDelBtn}
               </div>
             `;
           } else if (o.status === 'PAID') {
             actionCol = `
-              <div style="display:flex;gap:0.4rem;align-items:center;">
+              <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
                 <span class="badge badge-success" style="font-size:0.7rem;">✓ Approved</span>
                 ${o.download_token ? `
                   <a href="/api/download/${o.download_token}" target="_blank" class="btn btn-navy btn-sm" style="padding:4px 8px;font-size:0.75rem;" title="Test Verified Download Link">
@@ -2371,17 +2447,26 @@
                 <button class="btn btn-outline btn-sm" onclick="refundOrder('${o.order_number}')" style="padding:4px 8px;font-size:0.75rem;color:var(--dk-danger);border-color:var(--dk-danger);">
                   Refund
                 </button>
+                ${orderDelBtn}
               </div>
             `;
           } else if (o.status === 'PAYMENT_REJECTED') {
             actionCol = `
-              <div>
-                <span class="badge badge-danger" style="font-size:0.7rem;">✕ Rejected</span>
-                ${o.rejection_reason ? `<div style="font-size:0.7rem;color:#DC2626;margin-top:2px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${o.rejection_reason}">${o.rejection_reason}</div>` : ''}
+              <div style="display:flex;gap:0.4rem;align-items:center;">
+                <div>
+                  <span class="badge badge-danger" style="font-size:0.7rem;">✕ Rejected</span>
+                  ${o.rejection_reason ? `<div style="font-size:0.7rem;color:#DC2626;margin-top:2px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${o.rejection_reason}">${o.rejection_reason}</div>` : ''}
+                </div>
+                ${orderDelBtn}
               </div>
             `;
-          } else if (o.status === 'PENDING') {
-            actionCol = `<span class="text-muted" style="font-size:0.75rem;font-style:italic;">Awaiting Customer Receipt</span>`;
+          } else {
+            actionCol = `
+              <div style="display:flex;gap:0.4rem;align-items:center;">
+                <span class="text-muted" style="font-size:0.75rem;font-style:italic;">${o.status}</span>
+                ${orderDelBtn}
+              </div>
+            `;
           }
 
           let downloadStatus = '—';
@@ -2523,6 +2608,14 @@
       }
     }
 
+    function triggerModalDelete() {
+      if (currentModalOrder) {
+        const orderNum = currentModalOrder.order_number;
+        closeScreenshotModal();
+        deleteOrder(orderNum);
+      }
+    }
+
     function filterOrders(status) {
       currentOrderStatus = status;
       document.querySelectorAll('#section-orders .tab-pill').forEach(b => b.classList.remove('active'));
@@ -2583,6 +2676,84 @@
         loadOrders();
       } catch (err) {
         DropKit.toast(err.message, 'error');
+      }
+    }
+
+    async function deleteOrder(orderNum, isFromAnalytics = false) {
+      if (!confirm(`Are you sure you want to permanently delete order #${orderNum} and its cash confirmation record?\n\nThis will remove it from all charts, revenue calculations, and transaction ledgers. This action cannot be undone.`)) {
+        return;
+      }
+      try {
+        const res = await DropKit.api(`/api/admin/orders/${orderNum}`, { method: 'DELETE' });
+        DropKit.toast(res.message || `Order #${orderNum} deleted successfully`, 'success');
+        
+        if (typeof loadOrders === 'function') loadOrders();
+        if (typeof loadOverview === 'function') loadOverview();
+        if (typeof fetchAndRenderAnalytics === 'function') {
+          const activeTabBtn = document.querySelector('#section-analytics .tab-pill.active');
+          const tab = activeTabBtn ? activeTabBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'minute';
+          fetchAndRenderAnalytics(tab, true);
+        }
+        if (typeof loadUpiAnalyticsCharts === 'function') loadUpiAnalyticsCharts();
+      } catch (err) {
+        DropKit.toast(err.message || 'Failed to delete order', 'error');
+      }
+    }
+
+    async function clearOrdersPrompt(statusFilter) {
+      const label = statusFilter === 'PAID' ? 'CONFIRMED CASH PAYMENTS' : 'ALL ORDERS';
+      if (!confirm(`Are you sure you want to clear all ${label}?\n\nThis will permanently delete these records and recalculate your accounting metrics.`)) {
+        return;
+      }
+      try {
+        const res = await DropKit.api('/api/admin/orders/clear', {
+          method: 'POST',
+          body: JSON.stringify({ status: statusFilter })
+        });
+        DropKit.toast(res.message || 'Orders cleared successfully', 'success');
+        loadOrders();
+        loadOverview();
+        if (typeof fetchAndRenderAnalytics === 'function') {
+          const activeTabBtn = document.querySelector('#section-analytics .tab-pill.active');
+          const tab = activeTabBtn ? activeTabBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'minute';
+          fetchAndRenderAnalytics(tab, true);
+        }
+        if (typeof loadUpiAnalyticsCharts === 'function') loadUpiAnalyticsCharts();
+      } catch (err) {
+        DropKit.toast(err.message || 'Failed to clear orders', 'error');
+      }
+    }
+
+    async function clearAllChartData() {
+      if (!confirm("Are you sure you want to permanently clear ALL sales records and reset chart data to ₹0.00?\n\nThis will clear all transactions, orders, and cash confirmations while preserving your digital products and admin settings.")) {
+        return;
+      }
+      try {
+        const res = await DropKit.api('/api/admin/analytics/clear', { method: 'POST' });
+        DropKit.toast(res.message || 'All chart data cleared successfully', 'success');
+        loadOverview();
+        const activeTabBtn = document.querySelector('#section-analytics .tab-pill.active');
+        const tab = activeTabBtn ? activeTabBtn.getAttribute('onclick').match(/'([^']+)'/)[1] : 'minute';
+        fetchAndRenderAnalytics(tab, true);
+        if (typeof loadOrders === 'function') loadOrders();
+        if (typeof loadUpiAnalyticsCharts === 'function') loadUpiAnalyticsCharts();
+      } catch (err) {
+        DropKit.toast(err.message || 'Failed to clear chart data', 'error');
+      }
+    }
+
+    async function resetMerchantCollections(accountId, name) {
+      if (!confirm(`Are you sure you want to reset the confirmed collections counter for account "${name}" (${accountId}) back to ₹0.00?`)) {
+        return;
+      }
+      try {
+        const res = await DropKit.api(`/api/admin/merchant-accounts/${accountId}/reset-collections`, { method: 'POST' });
+        DropKit.toast(res.message || 'Collections reset to ₹0.00', 'success');
+        if (typeof loadUpiAccounts === 'function') loadUpiAccounts();
+        if (typeof loadUpiAnalyticsCharts === 'function') loadUpiAnalyticsCharts();
+        if (typeof loadOverview === 'function') loadOverview();
+      } catch (err) {
+        DropKit.toast(err.message || 'Failed to reset collections', 'error');
       }
     }
 
@@ -2827,6 +2998,9 @@
                     ` : ''}
                     <button class="btn btn-outline btn-sm" onclick="openEditUpiAccountModal('${a.account_id}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Edit Account">
                       ✏️
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="resetMerchantCollections('${a.account_id}', '${a.merchant_name.replace(/'/g, "\\'")}')" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: #EF4444; border-color: #EF4444;" title="Reset Collections counter to ₹0.00">
+                      🔄 Reset
                     </button>
                     <button class="btn btn-outline btn-sm" onclick="toggleUpiAccountEnabled('${a.account_id}', ${a.is_enabled ? 0 : 1})" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: ${a.is_enabled ? '#EF4444' : '#10B981'};" title="${a.is_enabled ? 'Disable Account' : 'Enable Account'}">
                       ${a.is_enabled ? '⏸' : '▶'}

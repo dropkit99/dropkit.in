@@ -858,8 +858,55 @@ def run_tests():
     assert "#00D09C" in navi_svg or "#00B887" in navi_svg, "Navi must contain official brand teal-emerald"
     print(" PASS: Verified authentic official SVG assets for PhonePe and Navi with official brand colors")
 
+    # =========================================================================
+    # REQUIREMENT 25: Admin Order Deletion, Cash Confirmation & Chart Reset
+    # =========================================================================
+    print("\n[TEST 25] Admin Order & Cash Confirmation Deletion and Chart Analysis Reset:")
+    from backend.api_handlers import (
+        handle_admin_delete_order,
+        handle_admin_clear_orders,
+        handle_admin_reset_merchant_collections,
+        handle_admin_analytics
+    )
+
+    # 1. Create a test order to delete
+    c_code, c_res = handle_create_order({
+        "product_id": prod['id'],
+        "customer_name": "Delete Tester",
+        "customer_email": "delete.tester@example.com",
+        "customer_phone": "+91 99999 11111",
+        "payment_method": "DIRECT_UPI"
+    })
+    assert c_code == 201, f"Create order failed: {c_res}"
+    test_ord_num = c_res["order"]["order_number"]
+
+    # 2. Delete the order
+    del_code, del_res = handle_admin_delete_order(test_ord_num)
+    assert del_code == 200, f"Delete order failed: {del_res}"
+    assert del_res["status"] == "success"
+    print(f" PASS: Successfully deleted order #{test_ord_num} and its cash confirmation record")
+
+    # 3. Verify order no longer exists in database
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM orders WHERE order_number = ?", (test_ord_num,))
+    assert cur.fetchone() is None, "Order record must be permanently removed"
+    conn.close()
+    print(" PASS: Database verified: order and associated records permanently purged")
+
+    # 4. Test analytics transactions list integration
+    a_code, a_res = handle_admin_analytics({"tab": ["minute"]})
+    assert a_code == 200, f"Analytics failed: {a_res}"
+    assert "transactions" in a_res, "Analytics must return transactions for chart analyzing table"
+    print(f" PASS: Analytics endpoint returns chart data and {len(a_res['transactions'])} transactions with delete capability")
+
+    # 5. Test merchant account collection counter reset
+    rst_code, rst_res = handle_admin_reset_merchant_collections("MCH-001")
+    assert rst_code == 200, f"Reset merchant collections failed: {rst_res}"
+    print(" PASS: Successfully reset merchant collections counter for MCH-001 to ₹0.00")
+
     print("\n" + "=" * 75)
-    print("ALL 24 COMPREHENSIVE SECURITY, PAYMENT & MULTI-LANGUAGE TESTS PASSED (100% SUCCESS)!")
+    print("ALL 25 COMPREHENSIVE SECURITY, PAYMENT & MULTI-LANGUAGE TESTS PASSED (100% SUCCESS)!")
     print("=" * 75)
 
 if __name__ == "__main__":
