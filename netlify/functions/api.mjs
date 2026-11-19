@@ -310,13 +310,25 @@ export default async function handler(req, context) {
     let body = {};
     try { body = await req.json(); } catch (e) {}
     const orderNum = "ORD-" + Date.now().toString(36).toUpperCase();
+    const amount = Number(body.amount) || 199.0;
+    const vpa = "store.founder@upi";
+    const merchantName = "DropKit Official Creator";
+    const upiUri = `upi://pay?pa=${vpa}&pn=${encodeURIComponent(merchantName)}&am=${amount.toFixed(2)}&cu=INR&tn=${orderNum}`;
+    const qrSvg = `<div style="display:flex;justify-content:center;align-items:center;padding:12px;background:#ffffff;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.06);"><img src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(upiUri)}" alt="Scan UPI QR" style="width:240px;height:240px;border-radius:8px;display:block;" /></div>`;
+
     return new Response(JSON.stringify({
       success: true,
       order: {
         order_number: orderNum,
-        total_inr: body.amount || 199.0,
-        status: "PENDING_CONFIRMATION",
-        upi_vpa: "store.founder@upi"
+        amount_inr: amount,
+        total_inr: amount,
+        status: "PENDING",
+        upi_vpa: vpa,
+        merchant_name: merchantName,
+        product_title: body.product_title || "SaaS Growth Engine",
+        upi_uri: upiUri,
+        qr_svg: qrSvg,
+        order_access_token: "dkt_" + Date.now().toString(36)
       }
     }), { status: 200, headers });
   }
