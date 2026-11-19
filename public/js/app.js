@@ -474,31 +474,135 @@ const DropKit = {
         pending_orders: 0,
         customers: 6,
         active_merchants: 1,
-        stats: { revenue: 1194.0, orders: 6, conversion_rate: 34.2 }
+        stat_cards: [
+          { title: "Total Revenue", value: "₹1,194.00", change_pct: 18.5, trend: "up", period: "vs previous 30 days" },
+          { title: "Today's Revenue", value: "₹199.00", change_pct: 0.0, trend: "neutral", period: "since 00:00 IST" },
+          { title: "Total Orders", value: "6", change_pct: 12.0, trend: "up", period: "verified checkouts" },
+          { title: "Successful Payments", value: "6", change_pct: 100.0, trend: "up", period: "100% success rate" },
+          { title: "Pending Payments", value: "0", change_pct: 0.0, trend: "neutral", period: "under review" },
+          { title: "Failed Payments", value: "0", change_pct: 0.0, trend: "neutral", period: "0.0% failure rate" },
+          { title: "Total Products", value: "6", change_pct: 0.0, trend: "neutral", period: "live in catalog" },
+          { title: "Total Customers", value: "6", change_pct: 20.0, trend: "up", period: "unique buyers" },
+          { title: "Available Settlements", value: "₹1,194.00", change_pct: 18.5, trend: "up", period: "ready for bank transfer" },
+          { title: "Total Refunds", value: "₹0.00", change_pct: 0.0, trend: "neutral", period: "0 processed" }
+        ],
+        recent_transactions: [
+          { order_number: "ORD-20261119-90D6A7", customer_name: "Noushil Store Admin", amount_inr: 199.0, status: "PAID", product_title: "SaaS Growth Engine: 0 to ₹10 Lakhs MRR", created_at_ist: "19 Nov, 14:30 IST", upi_txn_ref: "UPI/632490182741" },
+          { order_number: "ORD-20261119-5ADA2D", customer_name: "Rahul Sharma", amount_inr: 199.0, status: "PAID", product_title: "Instagram Reel Funnel That Prints ₹50k/Mo", created_at_ist: "19 Nov, 12:15 IST", upi_txn_ref: "UPI/632489110294" },
+          { order_number: "ORD-20261118-DF5534", customer_name: "Ananya Patel", amount_inr: 199.0, status: "PAID", product_title: "Fullstack SaaS Architecture Blueprint", created_at_ist: "18 Nov, 18:40 IST", upi_txn_ref: "UPI/632410882710" },
+          { order_number: "ORD-20261118-285C76", customer_name: "Kiran Varma", amount_inr: 199.0, status: "PAID", product_title: "50+ Battle-Tested B2B Cold Email Templates", created_at_ist: "18 Nov, 15:20 IST", upi_txn_ref: "UPI/632400991823" },
+          { order_number: "ORD-20261117-75E60B", customer_name: "Mohammed Fasil", amount_inr: 199.0, status: "PAID", product_title: "Ultimate UI/UX Design System & Checklist", created_at_ist: "17 Nov, 20:10 IST", upi_txn_ref: "UPI/632388172604" },
+          { order_number: "ORD-20261116-BB6675", customer_name: "Deepak Menon", amount_inr: 199.0, status: "PAID", product_title: "Creator Economy Tax & Accounting Playbook", created_at_ist: "16 Nov, 11:05 IST", upi_txn_ref: "UPI/632311726190" }
+        ]
       };
     }
 
     // 7. Admin Analytics
+    if (cleanUrl.startsWith('/admin/analytics/upi-breakdown')) {
+      return {
+        success: true,
+        accounts: [
+          { account_id: "MCH-001", merchant_name: "DropKit Primary Treasury", upi_vpa: "store.founder@upi", verified_revenue: 1194.0, revenue_share_pct: 100.0, is_active: true },
+          { account_id: "MCH-002", merchant_name: "DropKit Secondary HDFC", upi_vpa: "dropkit.treasury@icici", verified_revenue: 0.0, revenue_share_pct: 0.0, is_active: false },
+          { account_id: "MCH-003", merchant_name: "DropKit Axis Business", upi_vpa: "dropkit.business@axisbank", verified_revenue: 0.0, revenue_share_pct: 0.0, is_active: false }
+        ]
+      };
+    }
+
     if (cleanUrl.startsWith('/admin/analytics')) {
       if (cleanUrl.includes('clear')) {
         return { success: true, message: "Analytics reset successfully." };
       }
       return {
         success: true,
-        summary: { total_revenue: 1194.0, total_orders: 6, avg_order_value: 199.0 },
-        chart_data: [
-          { label: "16 Nov", date: "2026-11-16", revenue: 398.0, orders: 2 },
-          { label: "17 Nov", date: "2026-11-17", revenue: 199.0, orders: 1 },
-          { label: "18 Nov", date: "2026-11-18", revenue: 398.0, orders: 2 },
-          { label: "19 Nov", date: "2026-11-19", revenue: 199.0, orders: 1 }
+        analytics: {
+          latest_refresh_ist: "Just now (Auto-refreshed)",
+          total_sales_period: 1194.0,
+          total_paid_orders: 6,
+          total_failed_orders: 0,
+          best_performing_hour: "18:00 - 19:00 IST",
+          best_hour_revenue: 398.0,
+          success_rate_pct: 100.0,
+          total_hourly_orders: 6,
+          best_selling_products: [
+            { title: "SaaS Growth Engine: 0 to ₹10 Lakhs MRR", units: 3, revenue: 597.0 }
+          ],
+          timeline: [
+            { minute: "14:25", sales: 199, orders: 1 },
+            { minute: "14:26", sales: 0, orders: 0 },
+            { minute: "14:27", sales: 199, orders: 1 },
+            { minute: "14:28", sales: 0, orders: 0 },
+            { minute: "14:29", sales: 0, orders: 0 },
+            { minute: "14:30", sales: 199, orders: 1 }
+          ],
+          items: [
+            { label: "14 Nov", hour: "10:00", revenue: 199.0, gross_revenue: 199.0, gateway_fees: 0.0, net_revenue: 199.0, orders: 1, units: 1, growth_pct: 15.0 },
+            { label: "15 Nov", hour: "12:00", revenue: 199.0, gross_revenue: 199.0, gateway_fees: 0.0, net_revenue: 199.0, orders: 1, units: 1, growth_pct: 0.0 },
+            { label: "16 Nov", hour: "14:00", revenue: 398.0, gross_revenue: 398.0, gateway_fees: 0.0, net_revenue: 398.0, orders: 2, units: 2, growth_pct: 100.0 },
+            { label: "17 Nov", hour: "16:00", revenue: 199.0, gross_revenue: 199.0, gateway_fees: 0.0, net_revenue: 199.0, orders: 1, units: 1, growth_pct: -50.0 },
+            { label: "18 Nov", hour: "18:00", revenue: 398.0, gross_revenue: 398.0, gateway_fees: 0.0, net_revenue: 398.0, orders: 2, units: 2, growth_pct: 100.0 },
+            { label: "19 Nov", hour: "20:00", revenue: 199.0, gross_revenue: 199.0, gateway_fees: 0.0, net_revenue: 199.0, orders: 1, units: 1, growth_pct: 0.0 }
+          ],
+          transactions: [
+            { order_number: "ORD-20261119-90D6A7", date_ist: "19 Nov 2026, 14:30 IST", customer_name: "Noushil Store Admin", customer_email: "dropkit99@gmail.com", product_title: "SaaS Growth Engine", amount: 199.0, upi_account: "store.founder@upi", status: "VERIFIED" },
+            { order_number: "ORD-20261119-5ADA2D", date_ist: "19 Nov 2026, 12:15 IST", customer_name: "Rahul Sharma", customer_email: "rahul@gmail.com", product_title: "Instagram Reel Funnel", amount: 199.0, upi_account: "store.founder@upi", status: "VERIFIED" },
+            { order_number: "ORD-20261118-DF5534", date_ist: "18 Nov 2026, 18:40 IST", customer_name: "Ananya Patel", customer_email: "ananya@gmail.com", product_title: "Fullstack SaaS Architecture", amount: 199.0, upi_account: "store.founder@upi", status: "VERIFIED" }
+          ]
+        }
+      };
+    }
+
+    if (cleanUrl === '/admin/finances') {
+      return {
+        success: true,
+        gross_revenue: 1194.0,
+        gateway_fees: 0.0,
+        net_revenue: 1194.0,
+        available_settlements: 1194.0,
+        settlements: [
+          { settlement_ref: "SET-20261119-4921", gross_amount: 1194.0, gateway_fee: 0.0, net_amount: 1194.0, bank_account: "HDFC Bank ****4921", utr_number: "HDFC839201948271", settlement_date_ist: "19 Nov 2026, 06:00 IST", status: "SETTLED" }
+        ]
+      };
+    }
+
+    if (cleanUrl.startsWith('/admin/upi/accounts')) {
+      return {
+        success: true,
+        accounts: [
+          { priority: 1, account_id: "MCH-001", merchant_name: "DropKit Primary Treasury", upi_vpa: "store.founder@upi", provider_ref: "HDFC-MERCHANT-01", confirmed_total: 1194.0, threshold_limit: 50000.0, is_active: true, status: "ACTIVE" },
+          { priority: 2, account_id: "MCH-002", merchant_name: "DropKit Secondary HDFC", upi_vpa: "dropkit.treasury@icici", provider_ref: "ICICI-MCH-02", confirmed_total: 0.0, threshold_limit: 50000.0, is_active: false, status: "STANDBY" },
+          { priority: 3, account_id: "MCH-003", merchant_name: "DropKit Axis Business", upi_vpa: "dropkit.business@axisbank", provider_ref: "AXIS-MCH-03", confirmed_total: 0.0, threshold_limit: 50000.0, is_active: false, status: "STANDBY" }
         ],
-        transactions: [
-          { id: 1, order_number: "ORD-20261119-01", product_title: "SaaS Growth Engine", amount: 199.0, date: "2026-11-19", status: "VERIFIED" },
-          { id: 2, order_number: "ORD-20261118-02", product_title: "Instagram Reel Funnel", amount: 199.0, date: "2026-11-18", status: "VERIFIED" },
-          { id: 3, order_number: "ORD-20261118-01", product_title: "System Architecture Blueprint", amount: 199.0, date: "2026-11-18", status: "VERIFIED" },
-          { id: 4, order_number: "ORD-20261117-01", product_title: "50+ Cold Email Templates", amount: 199.0, date: "2026-11-17", status: "VERIFIED" }
-        ],
-        breakdown: { upi: 1194.0, card: 0, netbanking: 0 }
+        audit_history: [
+          { timestamp_ist: "19 Nov 2026, 09:00 IST", previous_account: "None", new_active_account: "MCH-001", switch_reason: "INITIAL_ACTIVATION", triggered_by: "System", details: "Default account initialized" }
+        ]
+      };
+    }
+
+    if (cleanUrl === '/admin/customers') {
+      return {
+        success: true,
+        customers: [
+          { id: 1, name: "Noushil Store Admin", email: "dropkit99@gmail.com", total_orders: 1, total_spent: 199.0, last_purchase_ist: "19 Nov 2026, 14:30 IST" },
+          { id: 2, name: "Rahul Sharma", email: "rahul@gmail.com", total_orders: 1, total_spent: 199.0, last_purchase_ist: "19 Nov 2026, 12:15 IST" },
+          { id: 3, name: "Ananya Patel", email: "ananya@gmail.com", total_orders: 1, total_spent: 199.0, last_purchase_ist: "18 Nov 2026, 18:40 IST" }
+        ]
+      };
+    }
+
+    if (cleanUrl === '/admin/gateways') {
+      if (method === 'POST') {
+        let body = {};
+        try { body = JSON.parse(options.body || '{}'); } catch(e) {}
+        if (body.razorpay_enabled !== undefined) localStorage.setItem('dropkit_razorpay_enabled', body.razorpay_enabled);
+        if (body.cashfree_enabled !== undefined) localStorage.setItem('dropkit_cashfree_enabled', body.cashfree_enabled);
+        return { success: true, message: "Gateway settings updated" };
+      }
+      return {
+        success: true,
+        direct_upi_enabled: true,
+        razorpay_enabled: localStorage.getItem('dropkit_razorpay_enabled') === 'true',
+        cashfree_enabled: localStorage.getItem('dropkit_cashfree_enabled') === 'true'
       };
     }
 
