@@ -314,19 +314,25 @@
     async function loadFeaturedProducts() {
       try {
         const data = await DropKit.api('/api/products');
-        cachedProducts = data.products || [];
+        const apiProds = data.products || [];
+        const custom = DropKit.getProducts().filter(p => !apiProds.some(ep => ep.id === p.id));
+        cachedProducts = [...custom, ...apiProds];
         const container = document.getElementById('featured-products-grid');
         if (!cachedProducts || cachedProducts.length === 0) {
           container.innerHTML = '<div style="grid-column: span 3; text-align: center;">No published products available.</div>';
           return;
         }
 
-        container.innerHTML = cachedProducts.slice(0, 6).map(p => `
+        container.innerHTML = cachedProducts.slice(0, 6).map(p => {
+          const coverSrc = p.cover_image && (p.cover_image.startsWith('data:') || p.cover_image.startsWith('/')) 
+            ? p.cover_image 
+            : `/covers/${p.cover_image || 'cover_saas_growth.svg'}`;
+          return `
           <div class="card card-hover" style="display: flex; flex-direction: column; justify-content: space-between;">
             <div>
               <a href="/checkout/${p.id}" style="text-decoration: none; color: inherit; display: block;">
                 <div class="product-cover-frame">
-                  <img src="/covers/${p.cover_image}" alt="${p.title}" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='/storage/public_covers/${p.cover_image}';}">
+                  <img src="${coverSrc}" alt="${p.title}" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='/storage/public_covers/${p.cover_image}';}">
                 </div>
 
                 <div style="margin-top: 1.25rem;">
@@ -349,7 +355,8 @@
               </a>
             </div>
           </div>
-        `).join('');
+          `;
+        }).join('');
       } catch (err) {
         console.error(err);
       }

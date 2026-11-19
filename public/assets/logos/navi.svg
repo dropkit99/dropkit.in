@@ -1,23 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <title>Navi UPI</title>
-  <defs>
-    <linearGradient id="navi-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00D09C"/>
-      <stop offset="100%" stop-color="#0D7377"/>
-    </linearGradient>
-  </defs>
-  <!-- Authentic App Rounded Tile -->
-  <rect width="48" height="48" rx="11" fill="url(#navi-bg)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="48" height="48">
+  <title>navi</title>
+  <!-- Official Deep Violet Purple Background -->
+  <rect width="200" height="200" rx="42" fill="#240046"/>
   
-  <!-- Navi Iconic Brand Symbol: Geometric Upward Growth 'N' & Wordmark -->
-  <g fill="#FFFFFF">
-    <!-- Left vertical bar -->
-    <path d="M 11 13 L 15.5 13 L 15.5 35 L 11 35 Z"/>
-    <!-- Diagonal upward-thrusting arrow bar -->
-    <path d="M 15.5 13 L 32.5 30.5 L 32.5 35 L 28 35 L 15.5 22 Z"/>
-    <!-- Right vertical bar with arrow crest -->
-    <path d="M 32.5 13 L 37 13 L 37 35 L 32.5 35 Z"/>
-    <!-- Upward Arrow Crest on Right Peak -->
-    <polygon points="34.75,9 40,15 29.5,15" fill="#FFFFFF"/>
+  <!-- Navi Official Geometric Monogram in Mint Green (#00D09C) -->
+  <g fill="#00D09C">
+    <!-- Lower-left Chamfered 'n' Arch with curved bottom-right -->
+    <path d="M 39 160 V 92 A 12 12 0 0 1 51 80 H 95 L 121 106 V 134 A 26 26 0 0 1 95 160 H 94 V 106 H 67 V 160 H 39 Z"/>
+    <!-- Upper-right Upward Growth Arrow / Chevron -->
+    <path d="M 94 40 H 161 V 107 H 134 V 67 H 94 Z"/>
   </g>
 </svg>

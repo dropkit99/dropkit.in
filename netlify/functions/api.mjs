@@ -274,6 +274,28 @@ export default async function handler(req, context) {
 
   // 8. Admin Products
   if (path === "/admin/products") {
+    if (method === "POST") {
+      let body = {};
+      try { body = await req.json(); } catch(e) {}
+      const title = body.title || "Custom Digital Publication";
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const newProd = {
+        id: Date.now(),
+        title: title,
+        slug: slug,
+        description: body.description || "Comprehensive PDF digital publication.",
+        category_id: Number(body.category_id) || 1,
+        category_name: body.category_name || "Business & Growth",
+        price_inr: Number(body.price_inr) || 199.0,
+        compare_price_inr: Number(body.compare_price_inr) || 499.0,
+        pdf_filename: body.pdf_filename || `${slug}.pdf`,
+        cover_image: body.cover_image || `cover_saas_growth.svg`,
+        is_published: 1,
+        available_languages: "en,ml,hi"
+      };
+      PRODUCTS.unshift(newProd);
+      return new Response(JSON.stringify({ success: true, product: newProd }), { status: 200, headers });
+    }
     return new Response(JSON.stringify({ success: true, products: PRODUCTS }), { status: 200, headers });
   }
 

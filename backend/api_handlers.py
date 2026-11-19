@@ -466,6 +466,116 @@ def handle_admin_list_products():
     conn.close()
     return 200, {"products": products}
 
+def generate_svg_cover(title: str, category_name: str, price_inr: float, slug: str) -> str:
+    filename = f"cover_{slug}.svg"
+    safe_title = title.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    safe_cat = (category_name or "Digital Publication").upper().replace("&", "&amp;")
+    price_formatted = f"₹{price_inr:.2f}"
+    
+    words = safe_title.split()
+    if len(words) > 4:
+        mid = (len(words) + 1) // 2
+        line1 = " ".join(words[:mid])
+        line2 = f'<text x="0" y="44" font-family="\'Space Grotesk\', system-ui, sans-serif" font-size="34" font-weight="800" fill="url(#autoAccentGrad)" letter-spacing="-0.5">{" ".join(words[mid:])}</text>'
+    else:
+        line1 = safe_title
+        line2 = ""
+
+    svg = f"""<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="autoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F1126"/>
+      <stop offset="50%" stop-color="#161936"/>
+      <stop offset="100%" stop-color="#080914"/>
+    </linearGradient>
+    <linearGradient id="autoAccentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF653D"/>
+      <stop offset="100%" stop-color="#FFA27B"/>
+    </linearGradient>
+    <linearGradient id="autoPillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.12)"/>
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.03)"/>
+    </linearGradient>
+    <filter id="autoGlowBlur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="40" result="blur"/>
+    </filter>
+    <pattern id="autoDotGrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="rgba(255, 255, 255, 0.06)"/>
+    </pattern>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#autoBgGrad)"/>
+  <rect width="800" height="500" fill="url(#autoDotGrid)"/>
+  <circle cx="680" cy="160" r="200" fill="#FF653D" opacity="0.16" filter="url(#autoGlowBlur)"/>
+  <circle cx="100" cy="440" r="180" fill="#3B82F6" opacity="0.10" filter="url(#autoGlowBlur)"/>
+  <rect x="0" y="0" width="800" height="4" fill="url(#autoAccentGrad)"/>
+  <rect x="0" y="0" width="12" height="500" fill="#FF653D" opacity="0.9"/>
+  <line x1="12" y1="0" x2="12" y2="500" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+  <g transform="translate(48, 45)">
+    <rect width="28" height="28" rx="8" fill="#1B1D3B" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <path d="M 14 6 C 18 13 18 17 14 20 C 10 17 10 13 14 6 Z" fill="#FF653D"/>
+    <text x="38" y="19" font-family="'Space Grotesk', system-ui, sans-serif" font-size="14" font-weight="800" fill="#FFFFFF" letter-spacing="0.5">DropKit</text>
+    <text x="100" y="19" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#94A3B8" letter-spacing="1.5">PUBLICATIONS // 2026 EDITION</text>
+    <g transform="translate(0, 42)">
+      <rect width="200" height="26" rx="13" fill="url(#autoPillGrad)" stroke="#FF653D" stroke-width="1.2"/>
+      <circle cx="14" cy="13" r="4" fill="#FF653D"/>
+      <text x="26" y="17" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#FF653D" letter-spacing="1">{safe_cat}</text>
+    </g>
+  </g>
+
+  <g transform="translate(48, 175)">
+    <text x="0" y="0" font-family="'Space Grotesk', system-ui, sans-serif" font-size="34" font-weight="800" fill="#FFFFFF" letter-spacing="-0.5">
+      {line1}
+    </text>
+    {line2}
+  </g>
+
+  <g transform="translate(48, 285)">
+    <text x="0" y="0" font-family="system-ui, sans-serif" font-size="13.5" font-weight="400" fill="#94A3B8">
+      <tspan x="0" dy="0">Instant Digital Access • Authoritative PDF Publication</tspan>
+      <tspan x="0" dy="22">Verified Dynamic UPI Checkout with Instant Unlock Token</tspan>
+    </text>
+  </g>
+
+  <g transform="translate(48, 385)">
+    <rect width="125" height="28" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+    <text x="12" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#E2E8F0">📄 Digital Edition</text>
+    <g transform="translate(135, 0)">
+      <rect width="120" height="28" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+      <text x="12" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#E2E8F0">⚡ Instant Delivery</text>
+    </g>
+    <g transform="translate(265, 0)">
+      <rect width="145" height="28" rx="8" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1"/>
+      <circle cx="14" cy="14" r="3.5" fill="#10B981"/>
+      <text x="24" y="18" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#10B981">{price_formatted} • UPI QR</text>
+    </g>
+  </g>
+
+  <g transform="translate(635, 250)">
+    <circle cx="0" cy="0" r="135" fill="none" stroke="#FF653D" stroke-width="1.5" stroke-dasharray="6,8" opacity="0.4"/>
+    <circle cx="0" cy="0" r="105" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <circle cx="0" cy="0" r="75" fill="none" stroke="#3B82F6" stroke-width="1" opacity="0.3"/>
+    <circle cx="0" cy="0" r="85" fill="#FF653D" opacity="0.18" filter="url(#autoGlowBlur)"/>
+    <g transform="scale(1.2) translate(-25, -25)">
+      <rect x="0" y="0" width="50" height="50" rx="14" fill="#141830" stroke="#FF653D" stroke-width="2.5"/>
+      <path d="M 25 10 C 33 22 33 30 25 38 C 17 30 17 22 25 10 Z" fill="url(#autoAccentGrad)"/>
+      <circle cx="25" cy="26" r="4" fill="#FFFFFF"/>
+    </g>
+  </g>
+</svg>"""
+
+    from backend.config import PUBLIC_DIR, BASE_DIR
+    p1 = PUBLIC_DIR / "covers" / filename
+    p2 = BASE_DIR / "storage" / "public_covers" / filename
+    p1.parent.mkdir(parents=True, exist_ok=True)
+    p2.parent.mkdir(parents=True, exist_ok=True)
+    p1.write_text(svg, encoding="utf-8")
+    p2.write_text(svg, encoding="utf-8")
+    return filename
+
+
 def handle_admin_save_product(data: dict):
     title = data.get("title", "").strip()
     description = data.get("description", "").strip()
@@ -490,6 +600,17 @@ def handle_admin_save_product(data: dict):
     now = now_iso()
     conn = get_connection()
     cursor = conn.cursor()
+
+    if not cover_image or cover_image == "cover_placeholder.png" or cover_image.strip() == "":
+        cat_name = "Digital Guide"
+        if category_id:
+            try:
+                c_row = cursor.execute("SELECT name FROM categories WHERE id = ?", (category_id,)).fetchone()
+                if c_row:
+                    cat_name = c_row[0]
+            except Exception:
+                pass
+        cover_image = generate_svg_cover(title, cat_name, price_inr, slug)
     cursor.execute("""
         INSERT INTO products (
             title, slug, description, category_id, price_inr, compare_price_inr,

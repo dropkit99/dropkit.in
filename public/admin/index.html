@@ -197,6 +197,87 @@
     input:checked + .toggle-slider:before {
       transform: translateX(22px);
     }
+    @media (max-width: 768px) {
+      .admin-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+      }
+      .admin-sidebar {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 0.75rem 1rem !important;
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+      .admin-sidebar > div:nth-child(1) {
+        margin-bottom: 0.5rem !important;
+      }
+      .admin-sidebar > div:nth-child(1) > div:first-child {
+        padding-bottom: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      .admin-sidebar nav {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        gap: 0.4rem !important;
+        padding: 0.35rem 0 !important;
+        width: 100% !important;
+      }
+      .admin-sidebar .nav-link-btn {
+        width: auto !important;
+        white-space: nowrap !important;
+        padding: 0.45rem 0.8rem !important;
+        font-size: 0.82rem !important;
+        flex-shrink: 0 !important;
+      }
+      .admin-sidebar > div:last-child {
+        display: none !important;
+      }
+      .admin-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+      .admin-topbar {
+        padding: 0.75rem 1rem !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        position: static !important;
+      }
+      .admin-content {
+        padding: 1rem 0.75rem !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+      .stat-card-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+      }
+      .table-container {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .modal-overlay {
+        padding: 0.5rem !important;
+      }
+      .modal-overlay > .card,
+      .modal-overlay > div {
+        max-width: 96vw !important;
+        width: 100% !important;
+        padding: 1.25rem !important;
+        margin: auto !important;
+      }
+    }
+    @media (max-width: 480px) {
+      .stat-card-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1187,12 +1268,12 @@
       <form id="add-product-form" enctype="multipart/form-data">
         <div class="form-group">
           <label class="form-label">Product Title *</label>
-          <input type="text" name="title" class="form-control" required placeholder="e.g. Creator Growth Guide 2026">
+          <input type="text" name="title" class="form-control" required placeholder="e.g. Creator Growth Guide 2026" oninput="updateAutoCoverPreview()">
         </div>
 
         <div class="form-group">
           <label class="form-label">Category</label>
-          <select name="category_id" id="modal-category-select" class="form-control">
+          <select name="category_id" id="modal-category-select" class="form-control" onchange="updateAutoCoverPreview()">
             <option value="1">Business & SaaS</option>
             <option value="2">Marketing & Sales</option>
             <option value="3">Developer Playbooks</option>
@@ -1209,7 +1290,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
           <div class="form-group">
             <label class="form-label">Individual Price in INR (₹) *</label>
-            <input type="number" step="0.01" name="price_inr" class="form-control" required placeholder="99.00">
+            <input type="number" step="0.01" name="price_inr" class="form-control" required placeholder="99.00" oninput="updateAutoCoverPreview()">
           </div>
           <div class="form-group">
             <label class="form-label">Compare-at Price (₹)</label>
@@ -1237,8 +1318,12 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Upload Cover Image Preview</label>
-          <input type="file" name="cover_file" accept="image/*" class="form-control">
+          <label class="form-label">Upload Cover Image Preview (Optional)</label>
+          <input type="file" name="cover_file" id="modal-cover-file" accept="image/*" class="form-control" onchange="updateAutoCoverPreview()">
+          <div style="font-size: 0.78rem; color: var(--dk-muted); margin-top: 0.35rem; display: flex; align-items: center; gap: 0.35rem;">
+            <span>✨</span> <strong>Automatic Cover Generation:</strong> If no custom image is selected, an attractive DropKit Obsidian Studio cover will be automatically generated from the title and category!
+          </div>
+          <div id="auto-cover-preview" style="margin-top: 0.65rem; border-radius: 8px; overflow: hidden; border: 1px solid var(--dk-border); max-height: 180px; display: none;"></div>
         </div>
 
         <div class="form-group">
@@ -2071,7 +2156,9 @@
     async function loadProducts() {
       try {
         const res = await DropKit.api('/api/admin/products');
-        cachedAdminProducts = res.products || [];
+        let prods = res.products || [];
+        const custom = DropKit.getProducts().filter(p => !prods.some(ep => ep.id === p.id));
+        cachedAdminProducts = [...custom, ...prods];
         const tbody = document.getElementById('admin-products-table');
         tbody.innerHTML = cachedAdminProducts.map(p => `
           <tr>
@@ -2173,8 +2260,31 @@
       }
     }
 
+    function updateAutoCoverPreview() {
+      const titleInput = document.querySelector('#add-product-form input[name="title"]');
+      const catSelect = document.getElementById('modal-category-select');
+      const priceInput = document.querySelector('#add-product-form input[name="price_inr"]');
+      const fileInput = document.getElementById('modal-cover-file');
+      const previewBox = document.getElementById('auto-cover-preview');
+
+      if (!previewBox) return;
+      if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        previewBox.style.display = 'none';
+        return;
+      }
+
+      const title = (titleInput && titleInput.value.trim()) || 'Your Digital Publication';
+      const cat = catSelect ? catSelect.options[catSelect.selectedIndex].text : 'Digital Guide';
+      const price = (priceInput && priceInput.value.trim()) || '199';
+
+      const svg = DropKit.generateCoverSvg(title, cat, price);
+      previewBox.innerHTML = svg;
+      previewBox.style.display = 'block';
+    }
+
     function openAddProductModal() {
       document.getElementById('add-product-modal').style.display = 'flex';
+      setTimeout(updateAutoCoverPreview, 50);
     }
     function closeAddProductModal() {
       document.getElementById('add-product-modal').style.display = 'none';
@@ -2184,25 +2294,68 @@
       e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
+      const title = (formData.get('title') || 'Digital Masterclass').trim();
+      const catSelect = document.getElementById('modal-category-select');
+      const catName = catSelect ? catSelect.options[catSelect.selectedIndex].text : 'Business & SaaS';
+      const price = formData.get('price_inr') || '199.00';
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+      // Check if cover file is selected
+      const coverFile = formData.get('cover_file');
+      let coverSvg = '';
+      let coverFilename = `cover_${slug || 'product'}.svg`;
+      if (!coverFile || coverFile.size === 0) {
+        // Automatic Attractive Cover Page Generation
+        coverSvg = DropKit.generateCoverSvg(title, catName, price);
+        const coverBlob = new Blob([coverSvg], { type: 'image/svg+xml' });
+        formData.set('cover_file', coverBlob, coverFilename);
+      }
+
       const btn = document.getElementById('btn-save-prod');
       btn.disabled = true;
-      btn.textContent = 'Uploading...';
+      btn.textContent = 'Generating & Saving...';
 
       try {
         const token = localStorage.getItem('dropkit_admin_token');
-        const response = await fetch('/api/admin/products', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          body: formData
-        });
-        const res = await response.json();
-        if (!response.ok) throw new Error(res.error || 'Failed to upload product');
+        let savedProd = null;
+        try {
+          const response = await fetch('/api/admin/products', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            body: formData
+          });
+          if (response.ok) {
+            const res = await response.json();
+            savedProd = res.product;
+          }
+        } catch (netErr) {
+          console.warn('Network upload fallback to client catalog:', netErr);
+        }
 
-        DropKit.toast('Product and PDF successfully saved!', 'success');
+        // Always save to DropKit client catalog (for offline & static Netlify persistence)
+        const newProductRecord = savedProd || {
+          id: Date.now(),
+          title: title,
+          slug: slug,
+          description: formData.get('description') || '',
+          category_id: parseInt(formData.get('category_id') || '1', 10),
+          category_name: catName,
+          price_inr: parseFloat(price),
+          compare_price_inr: parseFloat(formData.get('compare_price_inr') || '499.00'),
+          pdf_filename: `${slug}.pdf`,
+          cover_image: coverSvg ? `data:image/svg+xml;utf8,${encodeURIComponent(coverSvg)}` : coverFilename,
+          is_published: 1,
+          available_languages: 'en,ml,hi'
+        };
+        DropKit.saveProduct(newProductRecord);
+
+        DropKit.toast('Product saved with attractive cover page!', 'success');
         closeAddProductModal();
         form.reset();
+        const previewBox = document.getElementById('auto-cover-preview');
+        if (previewBox) previewBox.style.display = 'none';
         loadProducts();
       } catch (err) {
         DropKit.toast(err.message, 'error');

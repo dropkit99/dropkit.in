@@ -118,7 +118,9 @@
           DropKit.api('/api/categories')
         ]);
 
-        allProducts = pRes.products || [];
+        const apiProds = pRes.products || [];
+        const custom = DropKit.getProducts().filter(p => !apiProds.some(ep => ep.id === p.id));
+        allProducts = [...custom, ...apiProds];
         
         // Render category pills
         const pillContainer = document.getElementById('category-pills');
@@ -165,12 +167,16 @@
         return;
       }
 
-      grid.innerHTML = filtered.map(p => `
+      grid.innerHTML = filtered.map(p => {
+        const coverSrc = p.cover_image && (p.cover_image.startsWith('data:') || p.cover_image.startsWith('/')) 
+          ? p.cover_image 
+          : `/covers/${p.cover_image || 'cover_saas_growth.svg'}`;
+        return `
         <div class="card card-hover animate-fade-up" style="display: flex; flex-direction: column; justify-content: space-between;">
           <div>
             <a href="/checkout/${p.id}" style="text-decoration: none; color: inherit; display: block;">
               <div class="product-cover-frame">
-                <img src="/covers/${p.cover_image}" alt="${p.title}" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='/storage/public_covers/${p.cover_image}';}">
+                <img src="${coverSrc}" alt="${p.title}" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='/storage/public_covers/${p.cover_image}';}">
               </div>
               <div style="margin-top: 1.25rem;">
                 <span class="badge badge-navy" style="font-size: 0.7rem; margin-bottom: 0.5rem;">${p.category_name || 'Guide'}</span>
@@ -192,7 +198,8 @@
             </a>
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     document.getElementById('product-search').addEventListener('input', (e) => {

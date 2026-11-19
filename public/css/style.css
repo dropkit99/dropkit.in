@@ -154,6 +154,14 @@ a {
   transition: all 0.2s ease;
 }
 
+.dk-container,
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
 .dk-nav-container {
   max-width: 1240px;
   margin: 0 auto;
@@ -1321,5 +1329,436 @@ html[data-theme="dark"],
 .switch-pill-btn:hover {
   border-color: var(--dk-orange);
   color: var(--dk-orange);
+}
+
+/* ============================================================
+   DROPKIT COMPREHENSIVE DARK THEME TEXT VISIBILITY OVERRIDES
+   Ensures crystal-clear AAA readability across all elements & inline styles
+   ============================================================ */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] body,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] label,
+[data-theme="dark"] li,
+[data-theme="dark"] td,
+[data-theme="dark"] th,
+[data-theme="dark"] div:not([class*="badge"]):not([class*="btn"]) {
+  color: #E2E4ED;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] strong,
+[data-theme="dark"] b {
+  color: #F8FAFC !important;
+}
+
+/* Hardcoded dark text colors override */
+[data-theme="dark"] [style*="color: var(--dk-navy)"],
+[data-theme="dark"] [style*="color:var(--dk-navy)"],
+[data-theme="dark"] [style*="color: #1B1D3B"],
+[data-theme="dark"] [style*="color:#1B1D3B"],
+[data-theme="dark"] [style*="color: #121327"],
+[data-theme="dark"] [style*="color:#121327"],
+[data-theme="dark"] [style*="color: #0F172A"],
+[data-theme="dark"] [style*="color:#0F172A"],
+[data-theme="dark"] [style*="color: black"],
+[data-theme="dark"] [style*="color:#000000"],
+[data-theme="dark"] [style*="color:#000"] {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] [style*="color: #64748B"],
+[data-theme="dark"] [style*="color:#64748B"],
+[data-theme="dark"] [style*="color: #475569"],
+[data-theme="dark"] [style*="color:#475569"],
+[data-theme="dark"] [style*="color: #334155"],
+[data-theme="dark"] [style*="color:#334155"],
+[data-theme="dark"] [style*="color: #74778D"],
+[data-theme="dark"] [style*="color:#74778D"],
+[data-theme="dark"] [style*="color: #555"],
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] small.text-muted {
+  color: #94A3B8 !important;
+}
+
+/* Green accents / Success badges in Dark Mode */
+[data-theme="dark"] [style*="color: #065F46"],
+[data-theme="dark"] [style*="color:#065F46"],
+[data-theme="dark"] [style*="color: #047857"],
+[data-theme="dark"] [style*="color:#047857"],
+[data-theme="dark"] [style*="color: #059669"],
+[data-theme="dark"] [style*="color:#059669"] {
+  color: #6EE7B7 !important;
+}
+
+/* Amber / Warning accents in Dark Mode */
+[data-theme="dark"] [style*="color: #92400E"],
+[data-theme="dark"] [style*="color:#92400E"],
+[data-theme="dark"] [style*="color: #B45309"],
+[data-theme="dark"] [style*="color:#B45309"],
+[data-theme="dark"] [style*="color: #D97706"],
+[data-theme="dark"] [style*="color:#D97706"],
+[data-theme="dark"] [style*="color: #9A3412"],
+[data-theme="dark"] [style*="color: #C2410C"] {
+  color: #FCD34D !important;
+}
+
+/* Blue / Info accents in Dark Mode */
+[data-theme="dark"] [style*="color: #1E40AF"],
+[data-theme="dark"] [style*="color:#1E40AF"],
+[data-theme="dark"] [style*="color: #2563EB"],
+[data-theme="dark"] [style*="color:#2563EB"],
+[data-theme="dark"] [style*="color: #3730A3"] {
+  color: #93C5FD !important;
+}
+
+/* Red / Danger accents in Dark Mode */
+[data-theme="dark"] [style*="color: #991B1B"],
+[data-theme="dark"] [style*="color:#991B1B"],
+[data-theme="dark"] [style*="color: #7F1D1D"],
+[data-theme="dark"] [style*="color:#7F1D1D"] {
+  color: #FCA5A5 !important;
+}
+
+/* Dark Mode Light-box Inversions */
+[data-theme="dark"] [style*="background: #EFF6FF"],
+[data-theme="dark"] [style*="background:#EFF6FF"],
+[data-theme="dark"] [style*="background: #DBEAFE"],
+[data-theme="dark"] [style*="background:#DBEAFE"] {
+  background: #0E1A33 !important;
+  border-color: #1D4ED8 !important;
+}
+
+[data-theme="dark"] [style*="background: #ECFDF5"],
+[data-theme="dark"] [style*="background:#ECFDF5"],
+[data-theme="dark"] [style*="background: #D1FAE5"],
+[data-theme="dark"] [style*="background:#D1FAE5"] {
+  background: #06281D !important;
+  border-color: #059669 !important;
+}
+
+[data-theme="dark"] [style*="background: #FFFBEB"],
+[data-theme="dark"] [style*="background:#FFFBEB"],
+[data-theme="dark"] [style*="background: #FEF3C7"],
+[data-theme="dark"] [style*="background:#FEF3C7"] {
+  background: #271C07 !important;
+  border-color: #D97706 !important;
+}
+
+[data-theme="dark"] [style*="background: #FEF2F2"],
+[data-theme="dark"] [style*="background:#FEF2F2"] {
+  background: #2B0D11 !important;
+  border-color: #DC2626 !important;
+}
+
+[data-theme="dark"] [style*="background: #F1F5F9"],
+[data-theme="dark"] [style*="background:#F1F5F9"],
+[data-theme="dark"] [style*="background: #F8FAFC"],
+[data-theme="dark"] [style*="background:#F8FAFC"],
+[data-theme="dark"] [style*="background: #EEF0F7"],
+[data-theme="dark"] [style*="background:#EEF0F7"],
+[data-theme="dark"] [style*="background: #E2E8F0"],
+[data-theme="dark"] [style*="background:#E2E8F0"] {
+  background: #14172B !important;
+  border-color: #2D3356 !important;
+}
+
+[data-theme="dark"] [style*="background: #FFF5F2"],
+[data-theme="dark"] [style*="background:#FFF5F2"] {
+  background: #2D1711 !important;
+  border-color: #FF653D !important;
+}
+
+[data-theme="dark"] code {
+  background: #181B30 !important;
+  color: #F8FAFC !important;
+  border: 1px solid #2D3356 !important;
+}
+
+/* ============================================================
+   DROPKIT ADVANCED MOBILE RESPONSIVENESS (AUTO-FIT ALL SCREENS)
+   Flawlessly shrinks and adapts to mobile phones & expands on PC
+   ============================================================ */
+html, body {
+  width: 100% !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  position: relative !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+img, svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Base Grids */
+.grid {
+  display: grid;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  /* Prevent Any Horizontal Overflow */
+  body {
+    font-size: 0.95rem;
+  }
+
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+  }
+
+  /* Grid Resets to Single Column */
+  .grid, .grid-2, .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 1rem !important;
+  }
+
+  /* Header & Navigation Bar Responsiveness */
+  .dk-container,
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
+.dk-nav-container {
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem 1rem !important;
+    justify-content: space-between !important;
+  }
+
+  .dk-logo-img {
+    height: 32px !important;
+    width: auto !important;
+  }
+
+  .dk-nav-menu {
+    order: 3 !important;
+    width: 100% !important;
+    justify-content: flex-start !important;
+    gap: 0.65rem !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 0.35rem !important;
+  }
+
+  .dk-nav-item a {
+    white-space: nowrap !important;
+    font-size: 0.82rem !important;
+    padding: 0.35rem 0.6rem !important;
+  }
+
+  .dk-nav-actions {
+    gap: 0.35rem !important;
+  }
+
+  .dk-nav-actions .btn {
+    padding: 0.35rem 0.65rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  .switch-pill-btn {
+    padding: 0.28rem 0.55rem !important;
+    font-size: 0.72rem !important;
+  }
+
+  /* Hero Section Responsiveness */
+  .hero-section {
+    padding: 2.5rem 1rem 2rem !important;
+  }
+
+  .hero-title {
+    font-size: clamp(1.85rem, 6.5vw, 2.75rem) !important;
+    line-height: 1.2 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem !important;
+    margin-bottom: 1.75rem !important;
+    padding: 0 0.5rem !important;
+  }
+
+  .hero-glow {
+    width: 300px !important;
+    height: 300px !important;
+  }
+
+  .ambient-logo-watermark {
+    display: none !important;
+  }
+
+  .stats-ticker {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    margin-top: 2rem !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .stat-pill {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  /* Checkout Page Responsiveness */
+  #product-summary {
+    padding: 1rem !important;
+  }
+
+  #product-summary > div {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+
+  #product-summary > div > div:nth-child(2) {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  #product-summary > div > div:nth-child(3) {
+    border-left: none !important;
+    border-top: 1px solid var(--dk-border) !important;
+    padding-left: 0 !important;
+    padding-top: 0.75rem !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    text-align: left !important;
+  }
+
+  .upi-app-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+
+  .upi-app-card {
+    padding: 0.5rem 0.6rem !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* Admin Portal Mobile Responsiveness */
+  .admin-layout {
+    flex-direction: column !important;
+  }
+
+  .admin-sidebar {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 0.75rem 1rem !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .admin-sidebar > div:nth-child(1) {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .admin-sidebar nav {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 0.4rem !important;
+    padding: 0.35rem 0 !important;
+    width: 100% !important;
+  }
+
+  .admin-sidebar .nav-link-btn,
+  .admin-sidebar .admin-nav-item {
+    width: auto !important;
+    white-space: nowrap !important;
+    padding: 0.45rem 0.8rem !important;
+    font-size: 0.82rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  .admin-main {
+    margin-left: 0 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .admin-topbar {
+    padding: 0.75rem 1rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    position: static !important;
+  }
+
+  .admin-content {
+    padding: 1rem 0.75rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .stat-card-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Responsive Tables & Modals */
+  .table-responsive,
+  table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .card,
+  .modal-dialog,
+  .modal-card,
+  .modal-overlay > div {
+    max-width: 95vw !important;
+    width: 100% !important;
+    margin: 1rem auto !important;
+    padding: 1.25rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .upi-app-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dk-nav-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 0.25rem;
+  }
 }
 
