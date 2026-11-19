@@ -563,7 +563,9 @@
         document.getElementById('disp-total-amount').textContent = DropKit.formatINR(currentProduct.price_inr);
 
         if (currentProduct.cover_image) {
-          document.getElementById('prod-cover-img').src = `/covers/${currentProduct.cover_image}`;
+          const cImg = document.getElementById('prod-cover-img');
+          cImg.onerror = function() { this.src = `/storage/public_covers/${currentProduct.cover_image}`; };
+          cImg.src = `/covers/${currentProduct.cover_image}`;
         }
         if (currentProduct.category_name) {
           document.getElementById('prod-badge-cat').textContent = currentProduct.category_name;

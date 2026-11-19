@@ -20,6 +20,7 @@ storage/secure_pdfs/*_test.pdf
 
 # Temporary local tunnel scripts and keys
 temp_key*
+deploy_key*
 tunnel_url.txt
 *tunnel*.py
 get_pinggy_url.py

@@ -1,3 +1,5 @@
+/api/*  /.netlify/functions/api/:splat  200
+/storage/public_covers/*  /covers/:splat  200
 /products    /products.html    200
 /products/*  /product-detail.html 200
 /checkout    /checkout.html    200

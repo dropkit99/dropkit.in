@@ -22,7 +22,7 @@ def get_admin_notification_email() -> str:
             return str(row['value']).strip()
     except Exception:
         pass
-    return "admin@dropkit.io"
+    return "dropkit99@gmail.com"
 
 def send_system_alert_email(subject: str, html_body: str, plain_text: str, event_type: str = "SYSTEM_ALERT") -> tuple[bool, str]:
     """

@@ -1405,7 +1405,7 @@ def handle_admin_update_profile(user_id: int, data: dict):
 
     if existing:
         updates = ["full_name = ?", "email = ?", "phone = ?", "updated_at = ?"]
-        params = [full_name or "DropKit Owner", email or "admin@dropkit.io", phone, now]
+        params = [full_name or "DropKit Owner", email or "dropkit99@gmail.com", phone, now]
         if avatar_image is not None:
             updates.append("avatar_image = ?")
             params.append(avatar_image)
@@ -1415,7 +1415,7 @@ def handle_admin_update_profile(user_id: int, data: dict):
         cursor.execute("""
             INSERT INTO admin_profiles (user_id, full_name, email, phone, avatar_image, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (user_id, full_name or "DropKit Owner", email or "admin@dropkit.io", phone, avatar_image, now, now))
+        """, (user_id, full_name or "DropKit Owner", email or "dropkit99@gmail.com", phone, avatar_image, now, now))
 
     conn.commit()
     conn.close()
