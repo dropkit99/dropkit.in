@@ -16,6 +16,59 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      transition: background 0.3s ease;
+    }
+    [data-theme="dark"] .hero-section {
+      background: linear-gradient(180deg, #0A0C16 0%, #101326 100%) !important;
+      color: #E2E8F0 !important;
+    }
+    [data-theme="dark"] .hero-title {
+      color: #FFFFFF !important;
+    }
+    [data-theme="dark"] .hero-subtitle {
+      color: #CBD5E1 !important;
+    }
+    [data-theme="dark"] .hero-glow {
+      background: radial-gradient(circle, rgba(255, 101, 61, 0.25) 0%, rgba(10, 12, 22, 0) 70%) !important;
+    }
+    [data-theme="dark"] .btn-navy {
+      background-color: #1E223D !important;
+      color: #FFFFFF !important;
+      border: 1px solid #373C65 !important;
+    }
+    [data-theme="dark"] .btn-navy:hover {
+      background-color: #272C50 !important;
+      border-color: #FF653D !important;
+      color: #FF653D !important;
+    }
+    [data-theme="dark"] .btn-outline {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1.5px solid #3B4268 !important;
+      color: #F8FAFC !important;
+    }
+    [data-theme="dark"] .btn-outline:hover {
+      background: rgba(255, 101, 61, 0.15) !important;
+      border-color: #FF653D !important;
+      color: #FF653D !important;
+    }
+    [data-theme="dark"] .stat-pill {
+      background: #131525 !important;
+      border-color: #22263D !important;
+    }
+    [data-theme="dark"] .stat-pill div > div:first-child {
+      color: #F8FAFC !important;
+    }
+    [data-theme="dark"] .stat-pill div > div:last-child {
+      color: #94A3B8 !important;
+    }
+    [data-theme="dark"] #how-it-works,
+    [data-theme="dark"] section[style*="background: #FFFFFF"],
+    [data-theme="dark"] section[style*="background:#FFFFFF"],
+    [data-theme="dark"] section[style*="background: #ffffff"],
+    [data-theme="dark"] section[style*="background: #F7F8FC"] {
+      background: #0C0E1C !important;
+      border-color: #22263D !important;
+      color: #E2E8F0 !important;
     }
     .hero-glow {
       position: absolute;

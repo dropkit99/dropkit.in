@@ -599,3 +599,22 @@ const DropKit = {
     ta.remove();
   }
 };
+
+// Automatically clean and hide Netlify injected HUD badge / overlay
+(function autoRemoveNetlifyHud() {
+  const purge = () => {
+    document.querySelectorAll('iframe[src*="netlify"], netlify-drawer, [data-netlify-hud], [class*="netlify-hud"], div[data-nf-variant], script[src*="/.netlify/scripts/hud"]').forEach(el => {
+      try { el.remove(); } catch (e) {}
+    });
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', purge);
+  } else {
+    purge();
+  }
+  window.addEventListener('load', purge);
+  try {
+    const obs = new MutationObserver(purge);
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+  } catch (e) {}
+})();
