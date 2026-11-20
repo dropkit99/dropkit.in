@@ -147,7 +147,7 @@
     },
 
     getTheme: function() {
-      return localStorage.getItem('dropkit_theme') || 'light';
+      return localStorage.getItem('dropkit_theme') || 'dark';
     },
 
     setTheme: function(theme) {

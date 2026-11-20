@@ -11,25 +11,59 @@
   <link rel="stylesheet" href="/css/style.css">
   <style>
     .hero-section {
-      background: linear-gradient(180deg, #FFFFFF 0%, #F7F8FC 100%);
+      background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
       padding: 5rem 1.5rem 4rem;
       text-align: center;
       position: relative;
       overflow: hidden;
       transition: background 0.3s ease;
+      color: #0F172A;
     }
     [data-theme="dark"] .hero-section {
-      background: linear-gradient(180deg, #0A0C16 0%, #101326 100%) !important;
-      color: #E2E8F0 !important;
+      background: #0A0C16 !important;
+      color: #F8FAFC !important;
+    }
+    .hero-title {
+      font-size: 3.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      color: #0F172A;
     }
     [data-theme="dark"] .hero-title {
       color: #FFFFFF !important;
     }
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: #475569;
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+    }
     [data-theme="dark"] .hero-subtitle {
       color: #CBD5E1 !important;
     }
+    .hero-glow {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(255, 101, 61, 0.12) 0%, rgba(27, 29, 59, 0) 70%);
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
     [data-theme="dark"] .hero-glow {
       background: radial-gradient(circle, rgba(255, 101, 61, 0.25) 0%, rgba(10, 12, 22, 0) 70%) !important;
+    }
+    .btn-outline {
+      background: #FFFFFF;
+      border: 1.5px solid #CBD5E1;
+      color: #0F172A;
+    }
+    [data-theme="dark"] .btn-outline {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1.5px solid #3B4268 !important;
+      color: #F8FAFC !important;
     }
     [data-theme="dark"] .btn-navy {
       background-color: #1E223D !important;
@@ -41,19 +75,21 @@
       border-color: #FF653D !important;
       color: #FF653D !important;
     }
-    [data-theme="dark"] .btn-outline {
-      background: rgba(255, 255, 255, 0.05) !important;
-      border: 1.5px solid #3B4268 !important;
-      color: #F8FAFC !important;
-    }
-    [data-theme="dark"] .btn-outline:hover {
-      background: rgba(255, 101, 61, 0.15) !important;
-      border-color: #FF653D !important;
-      color: #FF653D !important;
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #FFFFFF;
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--dk-radius);
+      box-shadow: var(--dk-shadow-sm);
+      border: 1px solid #E2E8F0;
+      color: #0F172A;
     }
     [data-theme="dark"] .stat-pill {
       background: #131525 !important;
       border-color: #22263D !important;
+      color: #F8FAFC !important;
     }
     [data-theme="dark"] .stat-pill div > div:first-child {
       color: #F8FAFC !important;
@@ -69,45 +105,6 @@
       background: #0C0E1C !important;
       border-color: #22263D !important;
       color: #E2E8F0 !important;
-    }
-    .hero-glow {
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(255, 101, 61, 0.12) 0%, rgba(27, 29, 59, 0) 70%);
-      top: -150px;
-      left: 50%;
-      transform: translateX(-50%);
-      pointer-events: none;
-    }
-    .hero-title {
-      font-size: 3.25rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.25rem;
-    }
-    .hero-subtitle {
-      font-size: 1.25rem;
-      color: var(--dk-muted);
-      max-width: 680px;
-      margin: 0 auto 2.5rem;
-    }
-    .stats-ticker {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      margin-top: 3.5rem;
-      flex-wrap: wrap;
-    }
-    .stat-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: #FFFFFF;
-      padding: 0.85rem 1.4rem;
-      border-radius: var(--dk-radius);
-      box-shadow: var(--dk-shadow-sm);
-      border: 1px solid var(--dk-border);
     }
     .product-cover-thumb {
       height: 190px;

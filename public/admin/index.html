@@ -197,25 +197,44 @@
     input:checked + .toggle-slider:before {
       transform: translateX(22px);
     }
-        /* COMPREHENSIVE CONTRAST & VISIBILITY ENGINE (DARK & LIGHT MODES) */
+        /* ============================================================
+       DROPKIT FLAWLESS CONTRAST & VISIBILITY ENGINE (DARK & LIGHT)
+       ============================================================ */
+    :root {
+      --admin-bg-dark: #0A0C16;
+      --admin-card-dark: #131525;
+      --admin-border-dark: #22263D;
+      --admin-text-dark: #F8FAFC;
+      --admin-muted-dark: #94A3B8;
+      --admin-th-dark: #181B30;
+      
+      --admin-bg-light: #F8FAFC;
+      --admin-card-light: #FFFFFF;
+      --admin-border-light: #E2E8F0;
+      --admin-text-light: #0F172A;
+      --admin-muted-light: #475569;
+      --admin-th-light: #F1F5F9;
+    }
+
+    /* DARK MODE (DEFAULT) */
     [data-theme="dark"],
     html[data-theme="dark"],
     [data-theme="dark"] body {
-      background-color: #0A0C16 !important;
-      color: #F8FAFC !important;
+      background-color: var(--admin-bg-dark) !important;
+      color: var(--admin-text-dark) !important;
     }
     [data-theme="dark"] .admin-main {
-      background-color: #0A0C16 !important;
-      color: #F8FAFC !important;
+      background-color: var(--admin-bg-dark) !important;
+      color: var(--admin-text-dark) !important;
     }
     [data-theme="dark"] .admin-topbar {
       background-color: #101222 !important;
-      border-bottom: 1px solid #22263D !important;
+      border-bottom: 1px solid var(--admin-border-dark) !important;
     }
     [data-theme="dark"] .admin-topbar h2,
     [data-theme="dark"] .admin-topbar span,
     [data-theme="dark"] #topbar-admin-name {
-      color: #F8FAFC !important;
+      color: var(--admin-text-dark) !important;
     }
     [data-theme="dark"] #topbar-profile-pill {
       background: rgba(255, 255, 255, 0.08) !important;
@@ -224,9 +243,10 @@
     [data-theme="dark"] .card,
     [data-theme="dark"] div.card,
     [data-theme="dark"] .stat-card {
-      background-color: #131525 !important;
-      border: 1px solid #22263D !important;
-      color: #F8FAFC !important;
+      background-color: var(--admin-card-dark) !important;
+      border: 1px solid var(--admin-border-dark) !important;
+      color: var(--admin-text-dark) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
     }
     [data-theme="dark"] .card h2,
     [data-theme="dark"] .card h3,
@@ -236,7 +256,7 @@
     [data-theme="dark"] .stat-card div,
     [data-theme="dark"] .stat-card span,
     [data-theme="dark"] .stat-card strong {
-      color: #F8FAFC !important;
+      color: var(--admin-text-dark) !important;
     }
     [data-theme="dark"] .text-muted,
     [data-theme="dark"] .card .text-muted,
@@ -245,29 +265,29 @@
     [data-theme="dark"] [style*="color: var(--dk-muted)"],
     [data-theme="dark"] [style*="color: #64748B"],
     [data-theme="dark"] [style*="color: #A0A3BD"] {
-      color: #94A3B8 !important;
+      color: var(--admin-muted-dark) !important;
     }
     [data-theme="dark"] .table-container,
     [data-theme="dark"] table,
     [data-theme="dark"] tbody,
     [data-theme="dark"] tr {
-      background-color: #131525 !important;
-      color: #F8FAFC !important;
+      background-color: var(--admin-card-dark) !important;
+      color: var(--admin-text-dark) !important;
     }
     [data-theme="dark"] th {
-      background-color: #181B30 !important;
+      background-color: var(--admin-th-dark) !important;
       color: #CBD5E1 !important;
       border-bottom: 1px solid #262A45 !important;
     }
     [data-theme="dark"] td {
-      background-color: #131525 !important;
-      color: #F8FAFC !important;
-      border-bottom: 1px solid #22263D !important;
+      background-color: var(--admin-card-dark) !important;
+      color: var(--admin-text-dark) !important;
+      border-bottom: 1px solid var(--admin-border-dark) !important;
     }
     [data-theme="dark"] td div,
     [data-theme="dark"] td span:not([class*="badge"]),
     [data-theme="dark"] td strong {
-      color: #F8FAFC !important;
+      color: var(--admin-text-dark) !important;
     }
     [data-theme="dark"] tr:hover td {
       background-color: #1A1D34 !important;
@@ -276,7 +296,7 @@
     [data-theme="dark"] select,
     [data-theme="dark"] textarea {
       background-color: #181B30 !important;
-      color: #F8FAFC !important;
+      color: var(--admin-text-dark) !important;
       border: 1px solid #2D3356 !important;
     }
     [data-theme="dark"] input::placeholder,
@@ -314,7 +334,7 @@
     [data-theme="dark"] .tab-pill {
       background: #131525 !important;
       border: 1px solid #262A45 !important;
-      color: #94A3B8 !important;
+      color: var(--admin-muted-dark) !important;
     }
     [data-theme="dark"] .tab-pill.active {
       background: #FF653D !important;
@@ -323,7 +343,7 @@
     }
     [data-theme="dark"] .btn-outline {
       border: 1px solid #373C65 !important;
-      color: #F8FAFC !important;
+      color: var(--admin-text-dark) !important;
       background: #131525 !important;
     }
     [data-theme="dark"] .btn-outline:hover {
@@ -334,6 +354,93 @@
     [data-theme="dark"] canvas {
       background: #131525 !important;
       border-radius: 8px !important;
+    }
+
+    /* LIGHT MODE (EXPLICIT HIGH CONTRAST) */
+    [data-theme="light"],
+    html[data-theme="light"],
+    [data-theme="light"] body {
+      background-color: var(--admin-bg-light) !important;
+      color: var(--admin-text-light) !important;
+    }
+    [data-theme="light"] .admin-main {
+      background-color: var(--admin-bg-light) !important;
+      color: var(--admin-text-light) !important;
+    }
+    [data-theme="light"] .admin-topbar {
+      background-color: #FFFFFF !important;
+      border-bottom: 1px solid var(--admin-border-light) !important;
+    }
+    [data-theme="light"] .admin-topbar h2,
+    [data-theme="light"] .admin-topbar span,
+    [data-theme="light"] #topbar-admin-name {
+      color: var(--admin-text-light) !important;
+    }
+    [data-theme="light"] .card,
+    [data-theme="light"] div.card,
+    [data-theme="light"] .stat-card {
+      background-color: var(--admin-card-light) !important;
+      border: 1px solid var(--admin-border-light) !important;
+      color: var(--admin-text-light) !important;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05) !important;
+    }
+    [data-theme="light"] .card h2,
+    [data-theme="light"] .card h3,
+    [data-theme="light"] .card h4,
+    [data-theme="light"] .card p,
+    [data-theme="light"] .card div,
+    [data-theme="light"] .stat-card div,
+    [data-theme="light"] .stat-card span,
+    [data-theme="light"] .stat-card strong {
+      color: var(--admin-text-light) !important;
+    }
+    [data-theme="light"] .text-muted,
+    [data-theme="light"] .card .text-muted,
+    [data-theme="light"] .stat-card .text-muted {
+      color: var(--admin-muted-light) !important;
+    }
+    [data-theme="light"] .table-container,
+    [data-theme="light"] table,
+    [data-theme="light"] tbody,
+    [data-theme="light"] tr {
+      background-color: var(--admin-card-light) !important;
+      color: var(--admin-text-light) !important;
+    }
+    [data-theme="light"] th {
+      background-color: var(--admin-th-light) !important;
+      color: var(--admin-text-light) !important;
+      border-bottom: 1px solid var(--admin-border-light) !important;
+      font-weight: 700 !important;
+    }
+    [data-theme="light"] td {
+      background-color: var(--admin-card-light) !important;
+      color: var(--admin-text-light) !important;
+      border-bottom: 1px solid var(--admin-border-light) !important;
+    }
+    [data-theme="light"] td div,
+    [data-theme="light"] td span:not([class*="badge"]),
+    [data-theme="light"] td strong {
+      color: var(--admin-text-light) !important;
+    }
+    [data-theme="light"] tr:hover td {
+      background-color: #F1F5F9 !important;
+    }
+    [data-theme="light"] input,
+    [data-theme="light"] select,
+    [data-theme="light"] textarea {
+      background-color: #FFFFFF !important;
+      color: var(--admin-text-light) !important;
+      border: 1px solid var(--admin-border-light) !important;
+    }
+    [data-theme="light"] .btn-outline {
+      border: 1px solid var(--admin-border-light) !important;
+      color: var(--admin-text-light) !important;
+      background: #FFFFFF !important;
+    }
+    [data-theme="light"] .btn-outline:hover {
+      border-color: #FF653D !important;
+      color: #FF653D !important;
+      background: #FFF7F5 !important;
     }
 
     @media (max-width: 768px) {
@@ -1091,39 +1198,51 @@
       <section id="section-ai-pdf" style="display: none;">
         <div style="margin-bottom: 1.5rem;">
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-            <span class="badge badge-orange" style="font-size: 0.75rem;">ADMIN EXCLUSIVE</span>
+            <span class="badge badge-orange" style="font-size: 0.75rem;">ADMIN EXCLUSIVE &bull; UNLIMITED TOPICS</span>
             <h3 style="font-size: 1.25rem; margin: 0;">AI Multi-Language PDF Creator Studio</h3>
           </div>
           <p class="text-muted" style="font-size: 0.85rem;">
-            Generate viral, high-converting digital PDF playbooks in English, Malayalam, Hindi, and Arabic. Automatically generates an attractive SVG cover page and publishes directly to the storefront at ₹199.
+            നിങ്ങൾക്കിഷ്ടമുള്ള ഏത് വിഷയത്തിലും (ANY Custom Topic) Malayalam, Manglish, English, Hindi, Arabic ഭാഷകളിൽ സമ്പൂർണ്ണ ഡിജിറ്റൽ PDF പുസ്തകങ്ങൾ തത്സമയം നിർമ്മിക്കുക. ഉടൻ ഡൗൺലോഡ് ചെയ്യാം അല്ലെങ്കിൽ ഒറ്റ ക്ലിക്കിൽ ₹199-ന് സ്റ്റോറിലേക്ക് പബ്ലിഷ് ചെയ്യാം.
           </p>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1.1fr 1.3fr; gap: 1.75rem;">
+        <div style="display: grid; grid-template-columns: 1.15fr 1.25fr; gap: 1.75rem;">
           <!-- Left: Creator Controls -->
           <div class="card">
-            <h4 style="font-size: 1.05rem; margin-bottom: 1rem;">1. Configure PDF Book</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h4 style="font-size: 1.05rem; margin: 0;">1. സ്വന്തം ടോപ്പിക്ക് &amp; വിവരങ്ങൾ നൽകുക</h4>
+              <span class="badge badge-success" style="font-size: 0.65rem;">100% Dynamic AI</span>
+            </div>
             
+            <!-- Language Selector -->
             <div style="margin-bottom: 1.25rem;">
-              <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Select Language</label>
-              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <button type="button" class="tab-pill active" id="btn-lang-en" onclick="selectPdfLanguage('en')">🇬🇧 English</button>
-                <button type="button" class="tab-pill" id="btn-lang-ml" onclick="selectPdfLanguage('ml')">🇮🇳 മലയാളം</button>
+              <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem;">PDF ഭാഷ തിരഞ്ഞെടുക്കുക (Select Language)</label>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <button type="button" class="tab-pill active" id="btn-lang-ml" onclick="selectPdfLanguage('ml')">🇮🇳 മലയാളം</button>
+                <button type="button" class="tab-pill" id="btn-lang-manglish" onclick="selectPdfLanguage('manglish')">🌴 Manglish</button>
+                <button type="button" class="tab-pill" id="btn-lang-en" onclick="selectPdfLanguage('en')">🇬🇧 English</button>
                 <button type="button" class="tab-pill" id="btn-lang-hi" onclick="selectPdfLanguage('hi')">🇮🇳 हिन्दी</button>
                 <button type="button" class="tab-pill" id="btn-lang-ar" onclick="selectPdfLanguage('ar')">🇦🇪 العربية</button>
               </div>
             </div>
 
+            <!-- Custom Topic Input (USER OWN TOPIC) -->
             <div style="margin-bottom: 1.25rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                <label style="font-size: 0.8rem; font-weight: 600; margin: 0;">Book Topic / Title Prompt</label>
-                <button type="button" class="btn btn-outline btn-sm" onclick="pickRandomViralTopic()" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">
-                  <span>🎲</span> Viral Topic Picker
+                <label style="font-size: 0.8rem; font-weight: 700; margin: 0;">
+                  ✍️ Book Topic / Custom Prompt (നിങ്ങൾക്കിഷ്ടമുള്ള വിഷയം)
+                </label>
+                <button type="button" class="btn btn-outline btn-sm" onclick="pickRandomViralTopic()" style="font-size: 0.72rem; padding: 0.2rem 0.6rem;">
+                  <span>🎲</span> Viral Topic Ideas
                 </button>
               </div>
-              <textarea id="ai-pdf-topic" rows="3" class="form-input" style="width: 100%; padding: 0.6rem; font-size: 0.85rem;" placeholder="e.g. Freelance Client Acquisition Blueprint: From ₹0 to ₹1 Lakh/Month"></textarea>
+              <textarea id="ai-pdf-topic" rows="3" class="form-input" style="width: 100%; padding: 0.65rem; font-size: 0.88rem; line-height: 1.4;" placeholder="ഉദാ: കേരളത്തിലെ ഫ്രീലാൻസിംഗ് ഗൈഡ്, AI ടൂളുകൾ വഴി വരുമാനം, Dropshipping Blueprint 2026, Trading Psychology... ഏത് വിഷയവും ഇവിടെ നൽകാം!"></textarea>
+              <div style="font-size: 0.72rem; color: var(--dk-muted); margin-top: 0.35rem;">
+                💡 നിങ്ങൾക്ക് ഇഷ്ടമുള്ള ഏത് ടോപ്പിക്കും ഇവിടെ ടൈപ്പ് ചെയ്യാം. AI അതിനനുസരിച്ച് ചാപ്റ്ററുകളും ഉള്ളടക്കവും തത്സമയം തയ്യാറാക്കും!
+              </div>
             </div>
 
+            <!-- Category & Price -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
               <div>
                 <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Category</label>
@@ -1133,6 +1252,7 @@
                   <option value="Design & UX">Design &amp; UX</option>
                   <option value="Finance & Tax">Finance &amp; Tax</option>
                   <option value="AI & Productivity">AI &amp; Productivity</option>
+                  <option value="Business & Freelance">Business &amp; Freelance</option>
                 </select>
               </div>
               <div>
@@ -1141,8 +1261,9 @@
               </div>
             </div>
 
-            <button type="button" class="btn btn-primary" id="btn-generate-pdf" onclick="generateAiPdfBook()" style="width: 100%; padding: 0.75rem; font-weight: 700;">
-              <span>✨</span> Generate Full PDF Book &amp; Attractive Cover
+            <!-- Generate Button -->
+            <button type="button" class="btn btn-primary" id="btn-generate-pdf" onclick="generateAiPdfBook()" style="width: 100%; padding: 0.85rem; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 16px rgba(255, 101, 61, 0.4);">
+              <span>✨</span> സ്വന്തം ടോപ്പിക്കിൽ PDF നിർമ്മിക്കുക (Generate Full PDF Book)
             </button>
           </div>
 
@@ -1153,55 +1274,72 @@
               <span id="ai-pdf-status-badge" class="badge badge-navy">Ready</span>
             </div>
             
-            <div id="ai-pdf-cover-container" style="display: flex; justify-content: center; margin-bottom: 1.25rem; min-height: 220px; align-items: center; background: rgba(0,0,0,0.1); border-radius: 12px; padding: 1rem;">
+            <!-- Book Cover Container -->
+            <div id="ai-pdf-cover-container" style="display: flex; justify-content: center; margin-bottom: 1.25rem; min-height: 230px; align-items: center; background: rgba(0,0,0,0.15); border-radius: 12px; padding: 1rem;">
               <div class="text-muted" style="text-align: center; font-size: 0.85rem;">
-                Click "Generate Full PDF Book" or "Viral Topic Picker" to preview the attractive cover and chapters here.
+                നിങ്ങളുടെ ടോപ്പിക്ക് നൽകി <strong>"സ്വന്തം ടോപ്പിക്കിൽ PDF നിർമ്മിക്കുക"</strong> എന്നതിൽ ക്ലിക്ക് ചെയ്യുക. ആകർഷകമായ കവർ ഡിസൈനും 5 സമ്പൂർണ്ണ ചാപ്റ്ററുകളും ഇവിടെ കാണാം.
               </div>
             </div>
 
-            <div id="ai-pdf-chapters-container" style="max-height: 200px; overflow-y: auto; margin-bottom: 1.25rem; display: none; font-size: 0.85rem; line-height: 1.6; border: 1px solid var(--dk-border); padding: 0.75rem; border-radius: 8px;">
+            <!-- Chapters Preview -->
+            <div id="ai-pdf-chapters-container" style="max-height: 220px; overflow-y: auto; margin-bottom: 1.25rem; display: none; font-size: 0.85rem; line-height: 1.6; border: 1px solid var(--dk-border); padding: 0.85rem; border-radius: 8px; background: rgba(0,0,0,0.1);">
             </div>
 
-            <div id="ai-pdf-actions" style="display: none; gap: 0.75rem;">
-              <button type="button" class="btn btn-primary" onclick="publishAiPdfToStore()" style="flex: 1; padding: 0.65rem;">
-                <span>🚀</span> Publish to Storefront (₹199)
-              </button>
-              <button type="button" class="btn btn-outline" onclick="downloadAiPdfBook()" style="padding: 0.65rem 1rem;">
-                <span>📥</span> Download PDF
+            <!-- Action Buttons -->
+            <div id="ai-pdf-actions" style="display: none; flex-direction: column; gap: 0.65rem;">
+              <div style="display: flex; gap: 0.75rem;">
+                <button type="button" class="btn btn-primary" onclick="publishAiPdfToStore()" style="flex: 1; padding: 0.75rem; font-weight: 700;">
+                  <span>🚀</span> Publish to Storefront (₹199)
+                </button>
+                <button type="button" class="btn btn-outline" onclick="downloadAiPdfBook()" style="padding: 0.75rem 1.25rem; font-weight: 700;">
+                  <span>📥</span> Download PDF (.pdf)
+                </button>
+              </div>
+              <button type="button" class="btn btn-outline" onclick="createReelFromPdf()" style="width: 100%; padding: 0.65rem; border-color: rgba(255, 101, 61, 0.4); color: #FF653D; font-weight: 600;">
+                <span>🎬</span> ഈ പുസ്തകത്തിനായി വൈറൽ ഇൻസ്റ്റാഗ്രാം റീൽ നിർമ്മിക്കുക &rarr;
               </button>
             </div>
           </div>
         </div>
       </section>
 
-
-      <!-- ==============================================
-           SECTION: AI INFLUENCER REEL & VIRAL HOOK STUDIO (UNLIMITED)
-           ============================================== -->
       <section id="section-ai-reels" style="display: none;">
         <div style="margin-bottom: 1.5rem;">
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
-            <span class="badge badge-orange" style="font-size: 0.75rem;">PSYCHOLOGY-BACKED CONVERSION</span>
-            <h3 style="font-size: 1.25rem; margin: 0;">AI Instagram Influencer Reel Studio</h3>
+            <span class="badge badge-orange" style="font-size: 0.75rem;">ULTRA-SHORT INFLUENCER ENGINE</span>
+            <h3 style="font-size: 1.25rem; margin: 0;">AI Short Reel &amp; Viral Voiceover Studio</h3>
           </div>
           <p class="text-muted" style="font-size: 0.85rem;">
-            Craft hypnotic, high-retention 9:16 Instagram Reels designed to stop the scroll, build trust, and influence viewers to comment "DROP" for instant ₹199 Direct UPI sales.
+            നിങ്ങൾ നൽകിയ Canva വീഡിയോ മോഡൽ (sample-reel.mp4) ഉപയോഗിച്ച് 7-12s, 15-20s അൾട്രാ-ഷോർട്ട് വോയ്‌സ്ഓവറുകളും വൈറൽ ക്യാപ്ഷനുകളും തത്സമയം തയ്യാറാക്കുക. ഏത് വിഷയത്തിലും മലയാളം, Manglish, English തുടങ്ങിയ ഏത് ഭാഷയിലും റീൽ ഉണ്ടാക്കാം!
           </p>
         </div>
 
         <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.75rem;">
-          <!-- Left: Influencer Strategy Controls & Storyboard -->
+          <!-- Left: Influencer Parameters & Custom Topic Controls -->
           <div>
             <div class="card" style="margin-bottom: 1.5rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h4 style="font-size: 1.05rem; margin: 0;">🧠 Influencer Persuasion Parameters</h4>
-                <span class="badge badge-success" style="font-size: 0.65rem;">Viral Conversion Mode</span>
+                <h4 style="font-size: 1.05rem; margin: 0;">1. Custom Topic &amp; Voiceover Parameters</h4>
+                <span class="badge badge-success" style="font-size: 0.65rem;">Any Topic &bull; Any Language</span>
               </div>
 
+              <!-- Custom Topic Input -->
+              <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                  <label style="font-size: 0.8rem; font-weight: 700; margin: 0;">Reel Topic / Title Prompt (Type Anything)</label>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="pickRandomViralReelTopic()" style="font-size: 0.72rem; padding: 0.2rem 0.6rem;">
+                    <span>🎲</span> 1-Click Viral Trend
+                  </button>
+                </div>
+                <textarea id="custom-reel-topic" rows="2" class="form-input" style="width: 100%; padding: 0.6rem; font-size: 0.85rem;" placeholder="e.g. How to sell ₹199 digital guides in Kerala without showing face..."></textarea>
+              </div>
+
+              <!-- Catalog Link + Duration Row -->
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                 <div>
-                  <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Select Product</label>
-                  <select id="reel-product-select" class="form-input" style="width: 100%; padding: 0.55rem; font-size: 0.85rem;" onchange="syncReelTopic(this.value)">
+                  <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Link Product (Optional)</label>
+                  <select id="reel-product-select" class="form-input" style="width: 100%; padding: 0.55rem; font-size: 0.85rem;" onchange="syncReelTopicFromCatalog(this.value)">
+                    <option value="">-- Custom Topic Only --</option>
                     <option value="SaaS Growth Engine: 0 to ₹10 Lakhs MRR">SaaS Growth Engine (₹199)</option>
                     <option value="Instagram Reel Funnel That Prints ₹50k/Mo">Instagram Reel Funnel (₹199)</option>
                     <option value="Fullstack SaaS Architecture Blueprint">System Architecture Blueprint (₹199)</option>
@@ -1211,201 +1349,184 @@
                   </select>
                 </div>
                 <div>
-                  <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Psychological Trigger</label>
-                  <select id="reel-hook-style" class="form-input" style="width: 100%; padding: 0.55rem; font-size: 0.85rem;" onchange="generateViralReel()">
-                    <option value="secret">🤫 Forbidden Secret ("What gurus hide")</option>
-                    <option value="proof">💰 Income Proof ("Made ₹84k from a 1-page PDF")</option>
-                    <option value="interrupt">🛑 Pattern Interrupt ("Stop selling freebies!")</option>
-                    <option value="urgency">⏳ FOMO & Scarcity ("Only 50 copies at ₹199")</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div>
-                  <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Visual Aesthetic (B-Roll Vibe)</label>
-                  <select id="reel-aesthetic" class="form-input" style="width: 100%; padding: 0.55rem; font-size: 0.85rem;" onchange="updateReelAesthetic(this.value)">
-                    <option value="dark-neon">🕶️ Dark Neon Founder (Minimalist Desk)</option>
-                    <option value="cafe-lofi">☕ Lo-Fi Cafe & Laptop Setup</option>
-                    <option value="screenshare">📱 Live Screen-Share & UPI Proof</option>
-                    <option value="splitscreen">⚡ Viral Split-Screen Dynamic</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Reel Audio & Speech</label>
-                  <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.25rem;">
-                    <button type="button" class="btn btn-outline btn-sm" id="btn-toggle-speech" onclick="toggleReelSpeech()" style="font-size: 0.8rem; padding: 0.4rem 0.75rem;">
-                      <span id="speech-icon">🔊</span> <span id="speech-text">Voiceover ON</span>
-                    </button>
-                    <span style="font-size: 0.7rem; color: var(--dk-muted);">Speaks in selected language</span>
+                  <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Reel Duration (Retention Target)</label>
+                  <div style="display: flex; gap: 0.35rem;">
+                    <button type="button" class="tab-pill active" id="dur-short" onclick="selectReelDuration('short')" style="flex: 1; padding: 0.45rem 0.3rem; font-size: 0.75rem; text-align: center;">⚡ 7-12s</button>
+                    <button type="button" class="tab-pill" id="dur-fast" onclick="selectReelDuration('fast')" style="flex: 1; padding: 0.45rem 0.3rem; font-size: 0.75rem; text-align: center;">⏱️ 15-20s</button>
+                    <button type="button" class="tab-pill" id="dur-story" onclick="selectReelDuration('story')" style="flex: 1; padding: 0.45rem 0.3rem; font-size: 0.75rem; text-align: center;">🎬 30s</button>
                   </div>
                 </div>
               </div>
 
+              <!-- Background Video Selector -->
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Background Video Mode</label>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button type="button" class="tab-pill active" id="bg-mode-sample" onclick="selectReelBgMode('sample')">🎥 Canva Reel (Your Video)</button>
+                  <button type="button" class="tab-pill" id="bg-mode-custom" onclick="selectReelBgMode('custom')">📁 Custom MP4 Upload</button>
+                  <button type="button" class="tab-pill" id="bg-mode-neon" onclick="selectReelBgMode('neon')">🎨 Motion Neon Canvas</button>
+                </div>
+                <input type="file" id="custom-bg-video-input" accept="video/mp4,video/webm,video/quicktime" style="display: none;" onchange="handleCustomBgVideoUpload(event)">
+              </div>
+
+              <!-- Language Selector (Multi-Language + Manglish + Custom) -->
               <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Target Audience Language</label>
-                <div style="display: flex; gap: 0.5rem;">
-                  <button type="button" class="tab-pill active" id="reel-lang-en" onclick="setReelLang('en')">🇬🇧 English</button>
-                  <button type="button" class="tab-pill" id="reel-lang-ml" onclick="setReelLang('ml')">🇮🇳 മലയാളം</button>
-                  <button type="button" class="tab-pill" id="reel-lang-hi" onclick="setReelLang('hi')">🇮🇳 हिन्दी</button>
-                  <button type="button" class="tab-pill" id="reel-lang-ar" onclick="setReelLang('ar')">🇦🇪 العربية</button>
+                <label style="display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem;">Voiceover &amp; Subtitle Language</label>
+                <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                  <button type="button" class="tab-pill active" id="btn-rlang-ml" onclick="selectReelLanguage('ml')">🇮🇳 മലയാളം</button>
+                  <button type="button" class="tab-pill" id="btn-rlang-manglish" onclick="selectReelLanguage('manglish')">🌴 Manglish</button>
+                  <button type="button" class="tab-pill" id="btn-rlang-en" onclick="selectReelLanguage('en')">🇬🇧 English</button>
+                  <button type="button" class="tab-pill" id="btn-rlang-hi" onclick="selectReelLanguage('hi')">🇮🇳 हिन्दी</button>
+                  <button type="button" class="tab-pill" id="btn-rlang-ta" onclick="selectReelLanguage('ta')">🇮🇳 தமிழ்</button>
+                  <button type="button" class="tab-pill" id="btn-rlang-ar" onclick="selectReelLanguage('ar')">🇦🇪 العربية</button>
                 </div>
               </div>
 
-              <button type="button" class="btn btn-primary" onclick="generateViralReel()" style="width: 100%; padding: 0.75rem; font-weight: 700; box-shadow: 0 4px 16px rgba(255,101,61,0.35);">
-                <span>⚡</span> Generate Hypnotic Influencer Reel (Unlimited)
+              <!-- Generate Reel Script Button -->
+              <button type="button" class="btn btn-primary" onclick="generateInfluencerReelScript()" style="width: 100%; padding: 0.8rem; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 16px rgba(255, 101, 61, 0.4);">
+                <span>✨</span> Generate Ultra-Short Influencer Script &amp; Voiceover
               </button>
             </div>
 
-            <!-- Detailed Storyboard & Acting Blueprint -->
-            <div class="card" id="reel-storyboard-card">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h4 style="font-size: 1.05rem; margin: 0;">🎬 Stage Directions &amp; Hypnotic Script</h4>
-                <button type="button" class="btn btn-outline btn-sm" onclick="copyReelScript()" style="font-size: 0.75rem; padding: 0.25rem 0.65rem;">
-                  <span>📋</span> Copy Full Script
+            <!-- Quick Voiceover Copy Box -->
+            <div class="card" id="quick-voiceover-box" style="margin-bottom: 1.5rem; border-left: 4px solid #10B981;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <div style="font-weight: 700; font-size: 0.9rem; color: #10B981; display: flex; align-items: center; gap: 0.4rem;">
+                  <span>🎙️</span> Fast Voiceover Script (CapCut / ElevenLabs Ready)
+                </div>
+                <button type="button" class="btn btn-outline btn-sm" onclick="copyVoiceoverOnly()" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
+                  📋 Copy Voiceover Only
                 </button>
               </div>
-              <div id="reel-storyboard-content" style="display: flex; flex-direction: column; gap: 1rem;">
-                <!-- Injected via JS -->
+              <div id="quick-voiceover-text" style="font-size: 0.92rem; line-height: 1.6; color: var(--dk-text); font-style: italic; background: rgba(0,0,0,0.06); padding: 0.75rem; border-radius: 8px;">
+                "₹199 രൂപയ്ക്ക് ഡിജിറ്റൽ പ്രൊഡക്റ്റ് സെൽ ചെയ്ത് ദിവസേന ₹5000 ഉണ്ടാക്കാൻ ഒരു ഈസി വഴി ഉണ്ട്. ലിങ്കിനായി DROP എന്ന് കമന്റ് ചെയ്യൂ!"
               </div>
+            </div>
 
-              <!-- AI Video B-Roll Prompts -->
-              <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px dashed var(--dk-border);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                  <span style="font-size: 0.75rem; font-weight: 700; color: var(--dk-orange); text-transform: uppercase;">
-                    🎥 AI Video Generator Prompt (Runway / Kling / Pika / Sora)
-                  </span>
-                  <button type="button" class="btn btn-outline btn-sm" onclick="copyAiVideoPrompt()" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">
-                    Copy Prompt
-                  </button>
-                </div>
-                <div id="reel-ai-prompt" style="font-size: 0.78rem; font-family: monospace; color: #CBD5E1; line-height: 1.4;">
-                  Cinematic 9:16 vertical video of young Indian creator working on laptop in dark modern room, warm rim light, bokeh reflections, realistic 4K.
-                </div>
+            <!-- Storyboard Breakdown Card -->
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h4 style="font-size: 1.05rem; margin: 0;">2. Retention Storyboard (Scene Breakdown)</h4>
+                <button type="button" class="btn btn-outline btn-sm" onclick="copyReelScript()" style="font-size: 0.75rem;">
+                  📋 Copy Full Script
+                </button>
+              </div>
+              <div id="reel-storyboard-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
               </div>
             </div>
           </div>
 
-          <!-- Right: Interactive 9:16 Instagram Influencer Phone Simulator -->
+          <!-- Right: 9:16 Phone Simulator Frame (Real Video Background) -->
           <div>
-            <div class="card" style="display: flex; flex-direction: column; align-items: center; padding: 1.5rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 1rem;">
-                <h4 style="font-size: 1.05rem; margin: 0;">📱 Live Influencer Reel Simulator</h4>
-                <span class="badge badge-orange" style="font-size: 0.65rem;">9:16 Vertical</span>
+            <div class="card" style="padding: 1.25rem; display: flex; flex-direction: column; align-items: center;">
+              <div style="display: flex; justify-content: space-between; width: 100%; margin-bottom: 1rem; align-items: center;">
+                <h4 style="font-size: 1.05rem; margin: 0;">3. Live 9:16 Reel Simulator</h4>
+                <div style="display: flex; gap: 0.4rem;">
+                  <button type="button" class="btn btn-outline btn-sm" id="btn-play-sim" onclick="togglePlayReelSimulation()" style="font-size: 0.75rem;">
+                    <span id="sim-play-icon">▶️</span> <span id="sim-play-text">Play Reel</span>
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="toggleReelSpeech()" style="font-size: 0.75rem;" title="Toggle Speech Audio">
+                    <span id="speech-icon">🔊</span>
+                  </button>
+                </div>
               </div>
-              
-              <!-- Phone Device Frame -->
-              <div style="width: 290px; height: 560px; border-radius: 40px; border: 10px solid #22263D; background: #0A0C16; position: relative; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; justify-content: space-between;">
-                <!-- Phone Top Dynamic Island Notch -->
-                <div style="position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 85px; height: 20px; background: #1B1D3B; border-radius: 12px; z-index: 20; display: flex; align-items: center; justify-content: center;">
+
+              <!-- 9:16 Phone Mockup Container -->
+              <div id="reel-sim-frame" style="width: 290px; height: 515px; background: #000; border-radius: 36px; border: 8px solid #1E223D; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 0 2px #373C65; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
+                
+                <!-- 1. Real 9:16 Background Video Player (Uploaded by User) -->
+                <video id="reel-sim-video" src="/assets/sample-reel.mp4" loop playsinline autoplay muted style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+                </video>
+
+                <!-- 2. Dark Gradient Scrim to guarantee 100% readability of overlays -->
+                <div id="reel-sim-scrim" style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,12,22,0.4) 0%, rgba(10,12,22,0.1) 30%, rgba(10,12,22,0.65) 70%, rgba(10,12,22,0.92) 100%); z-index: 2; pointer-events: none;"></div>
+
+                <!-- 3. Phone Top Dynamic Island Notch -->
+                <div style="position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 85px; height: 20px; background: rgba(27,29,59,0.9); backdrop-filter: blur(8px); border-radius: 12px; z-index: 20; display: flex; align-items: center; justify-content: center;">
                   <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981; margin-right: 5px;"></span>
-                  <span style="font-size: 0.6rem; color: #FFF; font-weight: 700;">LIVE</span>
+                  <span style="font-size: 0.6rem; color: #FFF; font-weight: 700;">REEL</span>
                 </div>
 
-                <!-- Floating Live Bank UPI Notification (Social Proof Trigger) -->
-                <div id="sim-bank-notif" style="position: absolute; top: 36px; left: 10px; right: 10px; background: rgba(16, 24, 40, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.5); padding: 0.5rem 0.65rem; border-radius: 12px; z-index: 25; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.5); transform: translateY(-70px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-                  <div style="width: 28px; height: 28px; border-radius: 8px; background: #10B981; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">
+                <!-- 4. Floating Live Bank UPI Notification (Social Proof Trigger) -->
+                <div id="sim-bank-notif" style="position: absolute; top: 36px; left: 10px; right: 10px; background: rgba(16, 24, 40, 0.96); backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.6); padding: 0.5rem 0.65rem; border-radius: 12px; z-index: 25; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.6); transform: translateY(-70px); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
+                  <div style="width: 28px; height: 28px; border-radius: 8px; background: #10B981; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; color: #FFF; font-weight: 800;">
                     ₹
                   </div>
                   <div style="flex: 1; overflow: hidden;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <span style="font-size: 0.68rem; font-weight: 700; color: #10B981;">PhonePe • UPI Alert</span>
+                      <span style="font-size: 0.68rem; font-weight: 700; color: #10B981;">PhonePe • Instant Credit</span>
                       <span style="font-size: 0.6rem; color: #94A3B8;">Just now</span>
                     </div>
                     <div style="font-size: 0.72rem; color: #FFFFFF; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                      ₹199.00 Credited via UPI from <span id="notif-buyer">ananya@upi</span>
+                      ₹199.00 received from <span id="sim-notif-buyer">akhil.k@okaxis</span>
                     </div>
                   </div>
                 </div>
 
-                <!-- Reel Video Background Canvas -->
-                <div id="reel-sim-bg" style="position: absolute; inset: 0; background: linear-gradient(180deg, #181B34 0%, #0B0D1B 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; text-align: center; transition: background 0.5s ease;">
-                  <!-- Scene Badge -->
-                  <div id="reel-sim-badge" style="background: rgba(255,101,61,0.25); border: 1px solid #FF653D; color: #FF653D; padding: 0.25rem 0.65rem; border-radius: 999px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 1.25rem;">
-                    SCENE 1 • PATTERN INTERRUPT
-                  </div>
+                <!-- 5. Scene Indicator Tag -->
+                <div style="position: absolute; top: 40px; right: 12px; z-index: 15;">
+                  <span id="sim-scene-tag" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); color: #FF653D; font-size: 0.62rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255,101,61,0.4); text-transform: uppercase;">
+                    Scene 1: Hook
+                  </span>
+                </div>
 
-                  <!-- Hormozi-Style High-Impact Center Subtitles -->
-                  <div id="reel-sim-subtitles-box" style="margin-bottom: 1rem; width: 100%;">
-                    <div id="reel-sim-hook" style="font-family: 'Space Grotesk', sans-serif; font-size: 1.25rem; font-weight: 900; color: #FFE600; line-height: 1.25; text-shadow: 0 4px 15px rgba(0,0,0,0.9); text-transform: uppercase; background: rgba(0,0,0,0.6); padding: 0.4rem 0.6rem; border-radius: 8px; display: inline-block;">
-                      "STOP SELLING ₹0 FREEBIES!"
+                <!-- 6. Center Stage: Dynamic Hormozi-Style Captions & Viral Hook -->
+                <div style="position: absolute; top: 40%; left: 14px; right: 14px; transform: translateY(-50%); z-index: 15; text-align: center;">
+                  <div id="sim-hook-banner" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border-left: 4px solid #FFE600; padding: 0.65rem 0.75rem; border-radius: 8px; font-weight: 900; font-size: 0.92rem; color: #FFE600; line-height: 1.35; text-transform: uppercase; letter-spacing: -0.2px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); margin-bottom: 0.75rem;">
+                    "STOP WASTING TIME IN 2026..."
+                  </div>
+                  <div id="sim-subtitle-word" style="font-weight: 800; font-size: 0.88rem; color: #FFFFFF; background: rgba(0,0,0,0.7); display: inline-block; padding: 0.35rem 0.65rem; border-radius: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.3;">
+                    ₹199 രൂപയ്ക്ക് ഡിജിറ്റൽ പ്രൊഡക്റ്റ് സെൽ ചെയ്യാം!
+                  </div>
+                </div>
+
+                <!-- 7. Instagram Right Action Column -->
+                <div style="position: absolute; right: 8px; bottom: 70px; z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 0.9rem;">
+                  <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: #FFF; font-size: 1rem;">❤️</div>
+                    <span id="reel-like-count" style="font-size: 0.65rem; color: #FFF; font-weight: 700; margin-top: 2px;">34.8K</span>
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: #FFF; font-size: 1rem;">💬</div>
+                    <span style="font-size: 0.65rem; color: #FFF; font-weight: 700; margin-top: 2px;">1,492</span>
+                  </div>
+                  <div style="display: flex; flex-direction: column; align-items: center;">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: #FFF; font-size: 1rem;">🚀</div>
+                    <span style="font-size: 0.65rem; color: #FFF; font-weight: 700; margin-top: 2px;">Share</span>
+                  </div>
+                </div>
+
+                <!-- 8. Floating Heart Particles Area -->
+                <div id="floating-hearts-box" style="position: absolute; right: 12px; bottom: 170px; width: 40px; height: 140px; pointer-events: none; z-index: 16;"></div>
+
+                <!-- 9. Floating Recent Comment Pop -->
+                <div id="sim-floating-comment" style="position: absolute; bottom: 65px; left: 10px; right: 55px; background: rgba(16, 24, 40, 0.9); backdrop-filter: blur(8px); padding: 0.35rem 0.55rem; border-radius: 8px; z-index: 15; opacity: 0; transition: opacity 0.3s ease; border: 1px solid rgba(255,255,255,0.1);">
+                  <div style="font-size: 0.65rem; color: #FF653D; font-weight: 700;" id="sim-commenter-user">@rahul_dev:</div>
+                  <div style="font-size: 0.68rem; color: #FFFFFF;" id="sim-commenter-text">DROP 🔥</div>
+                </div>
+
+                <!-- 10. Bottom Instagram ManyChat CTA Trigger Banner -->
+                <div style="position: absolute; bottom: 8px; left: 8px; right: 8px; background: rgba(255, 101, 61, 0.95); backdrop-filter: blur(8px); padding: 0.5rem; border-radius: 12px; z-index: 20; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 14px rgba(255, 101, 61, 0.5);">
+                  <div style="display: flex; align-items: center; gap: 0.4rem; overflow: hidden;">
+                    <span style="font-size: 0.9rem;">💬</span>
+                    <div style="overflow: hidden;">
+                      <div style="font-size: 0.68rem; font-weight: 800; color: #FFFFFF; white-space: nowrap;">Comment "DROP" Below</div>
+                      <div style="font-size: 0.58rem; color: rgba(255,255,255,0.9); white-space: nowrap;">Auto DM &bull; Direct UPI Unlock</div>
                     </div>
                   </div>
-
-                  <!-- Subtext / Spoken Voiceover Line -->
-                  <div id="reel-sim-subtext" style="font-size: 0.8rem; color: #F8FAFC; background: rgba(0,0,0,0.5); padding: 0.5rem 0.75rem; border-radius: 8px; line-height: 1.4; max-width: 90%;">
-                    Nobody respects free PDFs. Here is the ₹199 micro-asset blueprint that generated ₹84,000 this month.
-                  </div>
-
-                  <!-- Audio Waveform Visualizer -->
-                  <div id="audio-wave-container" style="display: flex; align-items: center; gap: 3px; height: 16px; margin-top: 1.25rem;">
-                    <span class="wave-bar" style="width: 3px; height: 6px; background: #FF653D; border-radius: 2px;"></span>
-                    <span class="wave-bar" style="width: 3px; height: 14px; background: #FF653D; border-radius: 2px;"></span>
-                    <span class="wave-bar" style="width: 3px; height: 8px; background: #FF653D; border-radius: 2px;"></span>
-                    <span class="wave-bar" style="width: 3px; height: 16px; background: #FF653D; border-radius: 2px;"></span>
-                    <span class="wave-bar" style="width: 3px; height: 10px; background: #FF653D; border-radius: 2px;"></span>
-                    <span class="wave-bar" style="width: 3px; height: 4px; background: #FF653D; border-radius: 2px;"></span>
-                  </div>
-                </div>
-
-                <!-- Right Instagram Action Buttons -->
-                <div style="position: absolute; right: 10px; bottom: 85px; z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 0.9rem;">
-                  <!-- Like -->
-                  <div style="display: flex; flex-direction: column; align-items: center; cursor: pointer;" onclick="popHeartAnimation()">
-                    <span style="font-size: 1.3rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">❤️</span>
-                    <span id="reel-like-count" style="font-size: 0.65rem; color: #FFF; font-weight: 700; margin-top: 2px;">48.2K</span>
-                  </div>
-                  <!-- Comment -->
-                  <div style="display: flex; flex-direction: column; align-items: center;">
-                    <span style="font-size: 1.3rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">💬</span>
-                    <span style="font-size: 0.65rem; color: #FFF; font-weight: 700; margin-top: 2px;">1,420</span>
-                  </div>
-                  <!-- Share -->
-                  <div style="display: flex; flex-direction: column; align-items: center;">
-                    <span style="font-size: 1.3rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));">↗️</span>
-                    <span style="font-size: 0.65rem; color: #FFF; font-weight: 700; margin-top: 2px;">9.1K</span>
-                  </div>
-                  <!-- Spinning Audio Disc -->
-                  <div style="width: 28px; height: 28px; border-radius: 50%; background: #222; border: 2px solid #FFF; display: flex; align-items: center; justify-content: center; animation: spinDisc 3s linear infinite;">
-                    <span style="font-size: 0.7rem;">🎵</span>
-                  </div>
-                </div>
-
-                <!-- Floating Heart Animation Container -->
-                <div id="floating-hearts-box" style="position: absolute; right: 20px; bottom: 140px; pointer-events: none; z-index: 30;"></div>
-
-                <!-- Live Floating Comment Overlay -->
-                <div id="live-floating-comment" style="position: absolute; left: 12px; bottom: 85px; max-width: 190px; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); padding: 0.35rem 0.6rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); z-index: 15; display: flex; align-items: center; gap: 0.4rem; opacity: 0; transition: opacity 0.3s ease;">
-                  <span style="font-size: 0.8rem;">👤</span>
-                  <div style="font-size: 0.68rem; color: #FFF; line-height: 1.2;">
-                    <strong id="live-commenter" style="color: var(--dk-orange);">@vipin.k:</strong> <span id="live-comment-text">"Commented DROP! 🔥"</span>
-                  </div>
-                </div>
-
-                <!-- Bottom Creator Info & ManyChat CTA Overlay -->
-                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 0.85rem 0.75rem 0.75rem; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 70%, transparent 100%); z-index: 10;">
-                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                    <div style="width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #FF653D, #FF8A00); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: #FFF;">DK</div>
-                    <span style="font-size: 0.75rem; font-weight: 700; color: #FFF;">@dropkit.in</span>
-                    <span class="badge badge-success" style="font-size: 0.55rem; padding: 0.15rem 0.45rem;">Follow</span>
-                  </div>
-                  <!-- High-Converting ManyChat CTA Button -->
-                  <div id="reel-sim-cta" style="background: linear-gradient(135deg, #FF653D, #FF8A00); color: #FFF; padding: 0.55rem; border-radius: 10px; font-size: 0.75rem; font-weight: 800; text-align: center; box-shadow: 0 4px 14px rgba(255,101,61,0.4); cursor: pointer;" onclick="testManyChatTrigger()">
-                    💬 Comment "DROP" to get instant DM access
-                  </div>
+                  <span style="background: #FFFFFF; color: #FF653D; font-weight: 800; font-size: 0.62rem; padding: 0.25rem 0.45rem; border-radius: 6px;">
+                    INSTANT DM
+                  </span>
                 </div>
               </div>
 
-              <!-- Controls Bar -->
+              <!-- Simulator Audio / Control Actions -->
               <div style="display: flex; gap: 0.5rem; margin-top: 1rem; width: 100%;">
-                <button type="button" class="btn btn-primary btn-sm" id="btn-play-reel" onclick="togglePlayReelSimulation()" style="flex: 1.2; font-weight: 700;">
-                  <span>▶️</span> Play Influencer Reel
+                <button type="button" class="btn btn-outline btn-sm" onclick="copyReelCaption()" style="flex: 1; font-size: 0.78rem;">
+                  📋 Copy Caption + Tags
                 </button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="copyReelCaption()" style="flex: 1;">
-                  <span>📋</span> Caption
-                </button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="testManyChatTrigger()" title="Test ManyChat Comment Bot" style="padding: 0.4rem 0.65rem;">
-                  <span>🤖</span> Test Bot
+                <button type="button" class="btn btn-primary btn-sm" onclick="testManyChatTrigger()" style="flex: 1; font-size: 0.78rem;">
+                  🤖 Test DM Automation
                 </button>
               </div>
             </div>
@@ -1413,11 +1534,6 @@
         </div>
       </section>
 
-
-
-      <!-- ==============================================
-           SECTION 7: INSTAGRAM AUTOMATION
-           ============================================== -->
       <section id="section-instagram" style="display: none;">
         <div style="margin-bottom: 1.5rem;">
           <h3 style="font-size: 1.25rem;">Instagram Reel & Comment Automation</h3>
@@ -4463,12 +4579,13 @@
     /* =========================================================
        MODULE: AI MULTI-LANGUAGE PDF CREATOR STUDIO
        ========================================================= */
-    let currentPdfLang = 'en';
+    let currentPdfLang = 'ml';
     let currentGeneratedBook = null;
 
     const VIRAL_PDF_TOPICS = [
       {
         en: "Freelance Client Acquisition Blueprint: From ₹0 to ₹1 Lakh/Month",
+        manglish: "Freelance Client Acquisition: Zero il ninnum Masam 1 Lakh Undakkam",
         ml: "ഫ്രീലാൻസ് ക്ലയൻ്റ് അക്വിസിഷൻ ബ്ലൂപ്രിന്റ്: ₹0 മുതൽ ₹1 ലക്ഷം/മാസം വരെ നേടാം",
         hi: "फ्रीलांस क्लाइंट अधिग्रहण ब्लूप्रिंट: ₹0 से ₹1 लाख/महीना तक",
         ar: "مخطط اكتساب عملاء العمل الحر: من 0 إلى 100 ألف روبية شهرياً",
@@ -4477,6 +4594,7 @@
       },
       {
         en: "The Solo Founder Micro-SaaS Scaling Manual: 0 to ₹10 Lakhs MRR",
+        manglish: "Solo Founder Micro-SaaS Guide: Zero to 10 Lakhs MRR",
         ml: "സോളോ ഫൗണ്ടർ മൈക്രോ-സാസ് സ്കെയിലിംഗ് മാനുവൽ: 0 മുതൽ ₹10 ലക്ഷം MRR വരെ",
         hi: "सोलो फाउंडर माइक्रो-सास स्केलिंग मैनुअल: 0 से ₹10 लाख MRR",
         ar: "دليل توسيع البرمجيات كخدمة للمؤسس الفردي: من 0 إلى 10 لكح MRR",
@@ -4485,6 +4603,7 @@
       },
       {
         en: "Instagram Growth & Automated DM Funnel Architecture 2026",
+        manglish: "Instagram Viral Reels & Auto DM Funnel Setup Guide",
         ml: "ഇൻസ്റ്റാഗ്രാം ഗ്രോത്ത് & ഓട്ടോമേറ്റഡ് DM ഫണൽ ആർക്കിടെക്ചർ 2026",
         hi: "इंस्टाग्राम ग्रोथ और ऑटोमेटेड डीएम फ़नल आर्किटेक्चर 2026",
         ar: "بنية مسار نمو إنستغرام والرسائل المباشرة الآلية 2026",
@@ -4493,6 +4612,7 @@
       },
       {
         en: "Creator Tax, Invoicing & GST Exemption Playbook for Digital Sellers",
+        manglish: "Kerala Digital Sellers Tax, GST Invoicing & Legal Guide",
         ml: "ഡിജിറ്റൽ വിൽപ്പനക്കാർക്കായുള്ള ക്രിയേറ്റർ ടാക്സ് & GST എക്സെംപ്ഷൻ പ്ലേബുക്ക്",
         hi: "डिजिटल विक्रेताओं के लिए क्रिएटर टैक्स, इनवॉइसिंग और जीएसटी छूट प्लेबुक",
         ar: "دليل الضرائب والفواتير والإعفاءات الضريبية لمنشئي المحتوى والبائعين الرقميين",
@@ -4501,23 +4621,34 @@
       },
       {
         en: "High-Ticket UI/UX Design System & Product Design Checklist",
+        manglish: "UI/UX High-Ticket Client Work & Complete Design Checklist",
         ml: "ഹൈ-ടിക്കറ്റ് UI/UX ഡിസൈൻ സിസ്റ്റം & പ്രൊഡക്റ്റ് ഡിസൈൻ ചെക്ക്‌ലിസ്റ്റ്",
         hi: "हाई-टिकट यूआई/यूएक्स डिज़ाइन सिस्टम और प्रोडक्ट डिज़ाइन चेकलिस्ट",
         ar: "نظام تصميم واجهات وتجارب المستخدم عالية القيمة وقائمة التحقق للتصميم",
         cat: "Design & UX",
         pages: 48
+      },
+      {
+        en: "Kerala Dropshipping & Direct UPI E-Commerce Playbook",
+        manglish: "Kerala Dropshipping Masterclass: Direct UPI vazhi Cash Ondaakkam",
+        ml: "കേരള ഡ്രോപ്പ്ഷിപ്പിംഗ് & ഡയറക്റ്റ് UPI ഇ-കൊമേഴ്‌സ് പ്ലേബുക്ക്",
+        hi: "केरल ड्रॉपशिपिंग और डायरेक्ट यूपीआई ई-कॉमर्स प्लेबुक",
+        ar: "دليل الدروبشيبينغ والدفع المباشر عبر يو بي آي",
+        cat: "Business & Freelance",
+        pages: 38
       }
     ];
 
     function initAiPdfStudio() {
-      if (!document.getElementById('ai-pdf-topic').value) {
+      const topicEl = document.getElementById('ai-pdf-topic');
+      if (topicEl && !topicEl.value) {
         pickRandomViralTopic();
       }
     }
 
     function selectPdfLanguage(lang) {
       currentPdfLang = lang;
-      ['en', 'ml', 'hi', 'ar'].forEach(l => {
+      ['ml', 'manglish', 'en', 'hi', 'ar'].forEach(l => {
         const btn = document.getElementById(`btn-lang-${l}`);
         if (btn) {
           if (l === lang) btn.classList.add('active');
@@ -4532,52 +4663,103 @@
       const item = VIRAL_PDF_TOPICS[idx];
       const topicEl = document.getElementById('ai-pdf-topic');
       const catEl = document.getElementById('ai-pdf-category');
-      if (topicEl) topicEl.value = item[currentPdfLang] || item.en;
+      if (topicEl) topicEl.value = item[currentPdfLang] || item.ml || item.en;
       if (catEl) catEl.value = item.cat;
       DropKit.toast('🎲 Viral trending topic selected!', 'info');
     }
 
     function generateAiPdfBook() {
-      const topic = document.getElementById('ai-pdf-topic')?.value?.trim() || "Digital Creator Playbook 2026";
+      const topicInput = document.getElementById('ai-pdf-topic')?.value?.trim();
+      const topic = topicInput || "Digital Creator Playbook 2026";
       const cat = document.getElementById('ai-pdf-category')?.value || "SaaS & Tech";
       const price = parseFloat(document.getElementById('ai-pdf-price')?.value) || 199.0;
       
-      const langNames = { en: "English", ml: "മലയാളം", hi: "हिन्दी", ar: "العربية" };
-      const currentLangName = langNames[currentPdfLang] || "English";
+      const langNames = { 
+        ml: "മലയാളം (Malayalam)", 
+        manglish: "Manglish (Kerala)", 
+        en: "English (Global)", 
+        hi: "हिन्दी (Hindi)", 
+        ar: "العربية (Arabic)" 
+      };
+      const currentLangName = langNames[currentPdfLang] || "മലയാളം (Malayalam)";
 
+      // Intelligently generate 5 tailored chapters based on topic keywords
+      const tLower = topic.toLowerCase();
       let chapters = [];
+      let summaryText = "";
+
       if (currentPdfLang === 'ml') {
+        if (tLower.includes('freelanc') || tLower.includes('ഫ്രീലാൻ') || tLower.includes('client')) {
+          chapters = [
+            "അധ്യായം 1: മാർക്കറ്റിലെ ഉയർന്ന ഡിമാന്റുള്ള ഫ്രീലാൻസിംഗ് സ്കില്ലുകൾ കണ്ടെത്തൽ",
+            "അധ്യായം 2: ഹൈ-പയിംഗ് ക്ലയന്റുകളെ ആകർഷിക്കുന്ന പോർട്ട്ഫോളിയോ & സോഷ്യൽ പ്രൂഫ്",
+            "അധ്യായം 3: കോൾഡ് മെസ്സേജിംഗ് & ഇൻസ്റ്റന്റ് ക്ലയന്റ് കൺവേർഷൻ ടെംപ്ലേറ്റുകൾ",
+            "അധ്യായം 4: പ്രോജക്റ്റ് പ്രൈസിംഗും ഡയറക്റ്റ് UPI അഡ്വാൻസ് പേയ്‌മെന്റ് സിസ്റ്റവും",
+            "അധ്യായം 5: മാസത്തിൽ ₹1,00,000+ വരുമാനത്തിലേക്ക് ഫ്രീലാൻസിംഗ് സ്കെയിൽ ചെയ്യൽ"
+          ];
+        } else if (tLower.includes('reel') || tLower.includes('insta') || tLower.includes('റീൽ') || tLower.includes('content')) {
+          chapters = [
+            "അധ്യായം 1: ആദ്യ 3 സെക്കൻഡിൽ ശ്രദ്ധ പിടിച്ചുപറ്റുന്ന 25 വൈറൽ ഹുക്കുകൾ",
+            "അധ്യായം 2: ഹൈ-കൺവേർഷൻ സ്ക്രിപ്റ്റിംഗ് & CapCut വോയ്‌സ്ഓവർ എഡിറ്റിംഗ് SOP",
+            "അധ്യായം 3: ഇൻസ്റ്റാഗ്രാം അൽഗോരിതം മാസ്റ്ററിയും ഓർഗാനിക് റീൽസ് റീച്ചും",
+            "അധ്യായം 4: ManyChat ഓട്ടോമേഷനും ഡിജിറ്റൽ പ്രൊഡക്റ്റ് DM ഫണലും",
+            "അധ്യായം 5: റീൽസ് വഴി ദിവസേന ₹5,000+ ഡയറക്റ്റ് UPI സെയിൽസ് ഉറപ്പാക്കൽ"
+          ];
+        } else if (tLower.includes('trad') || tLower.includes('crypto') || tLower.includes('ഓഹരി') || tLower.includes('finance')) {
+          chapters = [
+            "അധ്യായം 1: മാർക്കറ്റ് അടിസ്ഥാനങ്ങളും പ്രൈസ് ആക്ഷൻ സൈക്കോളജിയും",
+            "അധ്യായം 2: ഹൈ-പ്രോബബിലിറ്റി സെറ്റപ്പുകളും റിസ്ക് ടു റിവാർഡ് മാനേജ്‌മെന്റും",
+            "അധ്യായം 3: ഇമോഷണൽ കൺട്രോളും ക്യാപിറ്റൽ പ്രൊട്ടക്ഷൻ ഫോർമുലയും",
+            "അധ്യായം 4: ഡെയ്‌ലി ട്രേഡിംഗ് റൂട്ടീനും എക്സിക്യൂഷൻ ചെക്ക്‌ലിസ്റ്റും",
+            "അധ്യായം 5: സ്ഥിരമായ ലാഭം ഉറപ്പാക്കുന്ന പ്രോഫിറ്റ് കോമ്പൗണ്ടിംഗ് തന്ത്രങ്ങൾ"
+          ];
+        } else {
+          chapters = [
+            `അധ്യായം 1: ${topic} - അടിസ്ഥാന തത്വങ്ങളും മാർക്കറ്റ് അവസരങ്ങളും`,
+            "അധ്യായം 2: ₹199 ഹൈ-കൺവേർഷൻ ഡിജിറ്റൽ അസറ്റ് തയാറാക്കുന്ന വിധം",
+            "അധ്യായം 3: ഡയറക്റ്റ് UPI പേയ്‌മെന്റ് സിസ്റ്റവും ഇൻസ്റ്റന്റ് ഡെലിവറിയും",
+            "അധ്യായം 4: ഓർഗാനിക് ഇൻസ്റ്റാഗ്രാം റീൽസ് & കമ്മ്യൂണിറ്റി മാർക്കറ്റിംഗ്",
+            "അധ്യായം 5: ഓട്ടോമേറ്റഡ് വരുമാനത്തിലേക്ക് സുരക്ഷിതമായി സ്കെയിൽ ചെയ്യൽ"
+          ];
+        }
+        summaryText = `ഈ ഡിജിറ്റൽ പുസ്തകം "${topic}" എന്ന വിഷയത്തെക്കുറിച്ച് ഏറ്റവും കൃത്യവും ഫലപ്രദവുമായ അറിവുകൾ നൽകുന്നു. ആക്ഷനബിൾ ഘട്ടങ്ങളും ഉദാഹരണങ്ങളും ഉൾപ്പെടുത്തിയ സമ്പൂർണ്ണ മലയാളം ഗൈഡ്.`;
+      } else if (currentPdfLang === 'manglish') {
         chapters = [
-          "അധ്യായം 1: മാർക്കറ്റ് വിശകലനവും നിച്ച് കണ്ടെത്തലും",
-          "അധ്യായം 2: ഹൈ-കൺവേർഷൻ ഡിജിറ്റൽ പ്രൊഡക്റ്റ് നിർമ്മാണം",
-          "അധ്യായം 3: ഡയറക്റ്റ് UPI പേയ്‌മെന്റ് സിസ്റ്റവും ഇൻസ്റ്റാൾ ചെയ്ത സെയിൽസ് ഫണലും",
-          "അധ്യായം 4: ഇൻസ്റ്റാഗ്രാം റീൽസ് & ഓർഗാനിക് വൈറൽ മാർക്കറ്റിംഗ്",
-          "അധ്യായം 5: ദിവസേന ₹5,000+ വരുമാനം ഉറപ്പാക്കുന്ന സ്കെയിലിംഗ് തന്ത്രങ്ങൾ"
+          `Chapter 1: ${topic} - Basics & Market Opportunities`,
+          "Chapter 2: Zero Investment il High-Demand Digital Product Undaakkam",
+          "Chapter 3: Direct UPI Payment Setup & Instant WhatsApp/Email Delivery",
+          "Chapter 4: Viral Instagram Reels vazhi Organic Traffic & Leads",
+          "Chapter 5: Masam ₹1,00,000+ Reach Aavan Ulla Automated Strategy"
         ];
+        summaryText = `Ee playbook "${topic}" patri clear & direct aayi explain cheyyunnu. Zero fluff, 100% action-oriented step-by-step guidance.`;
       } else if (currentPdfLang === 'hi') {
         chapters = [
-          "अध्याय 1: बाज़ार विश्लेषण और सही निच का चयन",
-          "अध्याय 2: उच्च-रूपांतरण डिजिटल उत्पाद का निर्माण",
-          "अध्याय 3: डायरेक्ट यूपीआई पेमेंट सिस्टम और सेल्स फ़नल सेटअप",
-          "अध्याय 4: इंस्टाग्राम रील्स और ऑर्गेनिक वायरल मार्केटिंग",
-          "अध्याय 5: दैनिक ₹5,000+ आय सुरक्षित करने की स्केलिंग रणनीतियाँ"
+          `अध्याय 1: ${topic} - बुनियादी सिद्धांत और बाजार के अवसर`,
+          "अध्याय 2: उच्च-रूपांतरण डिजिटल उत्पाद और संरचना का निर्माण",
+          "अध्याय 3: डायरेक्ट यूपीआई पेमेंट सिस्टम और तत्काल डिलीवरी फ़नल",
+          "अध्याय 4: इंस्टाग्राम रील्स और ऑर्गेनिक सोशल मीडिया मार्केटिंग",
+          "अध्याय 5: प्रति माह ₹1,00,000+ निरंतर आय की स्केलिंग रणनीति"
         ];
+        summaryText = `यह डिजिटल प्लेबुक "${topic}" पर एक व्यापक और व्यावहारिक रोडमैप प्रदान करती है।`;
       } else if (currentPdfLang === 'ar') {
         chapters = [
-          "الفصل الأول: تحليل السوق واختيار المجال المربح",
-          "الفصل الثاني: إنشاء منتج رقمي عالي التحويل وقابل للتوسيع",
-          "الفصل الثالث: إعداد بوابات الدفع ومسار المبيعات السريع",
-          "الفصل الرابع: استراتيجيات التسويق الفيروسي عبر ريلز إنستغرام",
-          "الفصل الخامس: خطة العمل للوصول إلى دخل يومي ثابت ومستدام"
+          `الفصل الأول: ${topic} - المبادئ الأساسية وفرص السوق المربحة`,
+          "الفصل الثاني: هندسة أصول رقمية عالية التحويل والقيمة",
+          "الفصل الثالث: إعداد بوابات الدفع الفوري والتسليم الآمن",
+          "الفصل الرابع: استراتيجيات التسويق عبر ريلز ومنصات التواصل",
+          "الفصل الخامس: خطة العمل لتوسيع الدخل اليومي المستدام"
         ];
+        summaryText = `يقدم هذا الدليل الرقمي دليلاً عملياً وتفصيلياً لموضوع "${topic}".`;
       } else {
+        // English
         chapters = [
-          "Chapter 1: Strategic Market Recon & High-Margin Niche Selection",
+          `Chapter 1: Strategic Market Recon & Core Foundations of ${topic}`,
           "Chapter 2: Engineering an Irresistible ₹199 Digital Asset Architecture",
-          "Chapter 3: Direct UPI Frictionless Checkout & Instant Bank Settlement",
+          "Chapter 3: Direct UPI Frictionless Checkout & Instant Auto-Delivery",
           "Chapter 4: The 9:16 Instagram Reel Stop-Scroll Viral Engine",
-          "Chapter 5: Scaling to ₹1,00,000/Month Recurring Revenue Hands-Free"
+          "Chapter 5: Scaling to ₹1,00,000/Month Hands-Free Revenue"
         ];
+        summaryText = `This digital playbook provides a battle-tested execution framework for "${topic}". High-margin blueprints with zero fluff.`;
       }
 
       // Generate attractive SVG Book Cover
@@ -4603,7 +4785,7 @@
           
           <!-- Language Badge -->
           <rect x="290" y="40" width="75" height="26" rx="13" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <text x="327" y="57" font-family="'Space Grotesk', sans-serif" font-size="11" font-weight="600" fill="#CBD5E1" text-anchor="middle">${currentLangName}</text>
+          <text x="327" y="57" font-family="'Space Grotesk', sans-serif" font-size="11" font-weight="600" fill="#CBD5E1" text-anchor="middle">${currentPdfLang.toUpperCase()}</text>
           
           <!-- Decorative Glow Circle -->
           <circle cx="200" cy="220" r="110" fill="url(#accentGrad)" opacity="0.12"/>
@@ -4619,7 +4801,7 @@
           
           <!-- Subtitle -->
           <text x="200" y="305" font-family="'Space Grotesk', sans-serif" font-size="13" font-weight="500" fill="#94A3B8" text-anchor="middle">
-            Authoritative Founder Edition • 2026
+            Official DropKit Master Edition • 2026
           </text>
           
           <line x1="60" y1="340" x2="340" y2="340" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
@@ -4644,31 +4826,47 @@
         language: currentPdfLang,
         language_name: currentLangName,
         chapters: chapters,
-        cover_svg: coverSvg,
-        generated_at: new Date().toISOString()
+        summary: summaryText,
+        cover_svg: coverSvg
       };
 
-      document.getElementById('ai-pdf-cover-container').innerHTML = coverSvg;
-      
-      const chapEl = document.getElementById('ai-pdf-chapters-container');
-      chapEl.style.display = 'block';
-      chapEl.innerHTML = `
-        <div style="font-weight:700; color:var(--dk-orange); margin-bottom:0.5rem; text-transform:uppercase; font-size:0.75rem;">
-          📖 Included Chapters (${currentLangName})
-        </div>
-        <ol style="margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
-          ${chapters.map(c => `<li style="color:var(--dk-navy);">${c}</li>`).join('')}
-        </ol>
-      `;
+      // Render Cover
+      const coverBox = document.getElementById('ai-pdf-cover-container');
+      if (coverBox) coverBox.innerHTML = coverSvg;
 
-      document.getElementById('ai-pdf-actions').style.display = 'flex';
-      const statusBadge = document.getElementById('ai-pdf-status-badge');
-      if (statusBadge) {
-        statusBadge.textContent = 'Generated & Ready';
-        statusBadge.className = 'badge badge-success';
+      // Render Chapters
+      const chapBox = document.getElementById('ai-pdf-chapters-container');
+      if (chapBox) {
+        chapBox.style.display = 'block';
+        chapBox.innerHTML = `
+          <div style="font-weight: 700; color: var(--dk-orange); margin-bottom: 0.5rem; font-size: 0.95rem;">
+            📖 Table of Contents (${chapters.length} Chapters)
+          </div>
+          <div style="font-size: 0.8rem; color: #94A3B8; margin-bottom: 0.75rem; font-style: italic;">
+            ${summaryText}
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+            ${chapters.map((c, i) => `
+              <div style="padding: 0.5rem 0.65rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-weight: 600; color: #F8FAFC;">${c}</span>
+                <span style="font-size: 0.7rem; color: #10B981; font-weight: 700;">Ready ✓</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
       }
 
-      DropKit.toast('✨ AI PDF Book and Attractive Cover generated!', 'success');
+      // Show Actions
+      const actBox = document.getElementById('ai-pdf-actions');
+      if (actBox) actBox.style.display = 'flex';
+
+      const statusBadge = document.getElementById('ai-pdf-status-badge');
+      if (statusBadge) {
+        statusBadge.textContent = "Generated (5 Chapters)";
+        statusBadge.className = "badge badge-success";
+      }
+
+      DropKit.toast(`✨ "${topic}" PDF Book generated on your topic!`, 'success');
     }
 
     function publishAiPdfToStore() {
@@ -4703,522 +4901,573 @@
 
     function downloadAiPdfBook() {
       if (!currentGeneratedBook) return;
-      const content = `=====================================================
-${currentGeneratedBook.title.toUpperCase()}
-DropKit Digital Commerce • Official Publication 2026
-Language: ${currentGeneratedBook.language_name} • Category: ${currentGeneratedBook.category}
-=====================================================
+      
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        DropKit.toast('⚠️ Please allow popups to download/print your PDF book.', 'warning');
+        return;
+      }
 
-TABLE OF CONTENTS:
-${currentGeneratedBook.chapters.map((c, i) => `${i+1}. ${c}`).join('\n')}
-
-EXECUTIVE OVERVIEW:
-This digital product was produced by DropKit AI Studio with high-converting frameworks,
-actionable implementation blueprints, and zero filler material.
-
-${currentGeneratedBook.chapters.map((c, i) => `
------------------------------------------------------
-${c.toUpperCase()}
------------------------------------------------------
-1. Foundation & Mental Models
-   Understanding the core unit economics and psychological drivers of digital commerce.
-2. Execution SOPs & Step-by-Step Tactics
-   Applying the exact blueprint to reach consistent daily cash collections via UPI.
-3. Common Bottlenecks & Failure Modes
-   Avoiding the critical traps that cause 90% of solo digital creators to quit.
-`).join('\n')}
-
-=====================================================
-Published by DropKit (https://dropkit.in)
-Protected by 256-Bit Encrypted Dynamic UPI Unlock System.
-=====================================================`;
-
-      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${currentGeneratedBook.title.replace(/[^a-zA-Z0-9]/g, '_')}_${currentGeneratedBook.language}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      DropKit.toast('📥 Download started!', 'success');
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${currentGeneratedBook.title} — DropKit Official Publication</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+            body {
+              font-family: 'Outfit', sans-serif;
+              color: #0F172A;
+              line-height: 1.6;
+              padding: 2.5rem;
+              max-width: 800px;
+              margin: 0 auto;
+              background: #FFFFFF;
+            }
+            .header-bar {
+              border-bottom: 2px solid #FF653D;
+              padding-bottom: 1rem;
+              margin-bottom: 2rem;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            }
+            .book-title {
+              font-family: 'Space Grotesk', sans-serif;
+              font-size: 2.2rem;
+              font-weight: 800;
+              color: #1E1B4B;
+              line-height: 1.2;
+              margin-bottom: 0.5rem;
+            }
+            .book-meta {
+              color: #64748B;
+              font-size: 0.9rem;
+              margin-bottom: 2rem;
+            }
+            .toc-box {
+              background: #F8FAFC;
+              border: 1px solid #E2E8F0;
+              border-radius: 8px;
+              padding: 1.5rem;
+              margin-bottom: 2.5rem;
+            }
+            .toc-item {
+              padding: 0.4rem 0;
+              border-bottom: 1px dashed #E2E8F0;
+              font-weight: 600;
+            }
+            .chapter-block {
+              margin-bottom: 2.5rem;
+              page-break-inside: avoid;
+            }
+            .chapter-title {
+              font-size: 1.35rem;
+              font-weight: 700;
+              color: #FF653D;
+              border-bottom: 1px solid #E2E8F0;
+              padding-bottom: 0.4rem;
+              margin-bottom: 1rem;
+            }
+            .key-takeaways {
+              background: #FFF7F5;
+              border-left: 4px solid #FF653D;
+              padding: 1rem;
+              margin: 1rem 0;
+              border-radius: 0 8px 8px 0;
+            }
+            @media print {
+              body { padding: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="no-print" style="margin-bottom: 1.5rem; text-align: right;">
+            <button onclick="window.print()" style="background:#FF653D;color:#FFF;border:none;padding:0.75rem 1.5rem;font-weight:700;border-radius:8px;cursor:pointer;font-size:1rem;">
+              📥 Click to Save / Print as PDF
+            </button>
+          </div>
+          <div class="header-bar">
+            <div style="font-weight: 800; font-size: 1.2rem; color: #1E1B4B;">
+              Drop<span style="color: #FF653D;">Kit</span> Publishing
+            </div>
+            <div style="font-size: 0.85rem; color: #64748B;">Official Verified Edition • 2026</div>
+          </div>
+          <h1 class="book-title">${currentGeneratedBook.title}</h1>
+          <div class="book-meta">
+            Category: <strong>${currentGeneratedBook.category}</strong> | Language: <strong>${currentGeneratedBook.language_name}</strong> | Price: <strong>₹${currentGeneratedBook.price_inr}</strong>
+          </div>
+          <div class="toc-box">
+            <h3 style="margin-top:0; color:#1E1B4B;">Table of Contents</h3>
+            ${currentGeneratedBook.chapters.map((c, i) => `<div class="toc-item">${i+1}. ${c}</div>`).join('')}
+          </div>
+          <div style="margin-bottom: 2.5rem;">
+            <h3>Executive Summary</h3>
+            <p>${currentGeneratedBook.summary}</p>
+          </div>
+          ${currentGeneratedBook.chapters.map((c, i) => `
+            <div class="chapter-block">
+              <div class="chapter-title">${c}</div>
+              <p>Understanding the core principles and tactical frameworks behind this stage is critical for sustainable results.</p>
+              <div class="key-takeaways">
+                <strong>Key Action Checklist:</strong>
+                <ul>
+                  <li>Identify high-margin market demand without complex prerequisites.</li>
+                  <li>Deploy direct UPI payment routing for instant zero-fee collections.</li>
+                  <li>Automate delivery securely through DropKit tokenized download gates.</li>
+                </ul>
+              </div>
+            </div>
+          `).join('')}
+          <div style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #E2E8F0; font-size: 0.8rem; color: #94A3B8; text-align: center;">
+            © 2026 DropKit Digital Commerce. All Rights Reserved. Instant verified PDF delivery.
+          </div>
+          <script>
+            setTimeout(function() { window.print(); }, 600);
+          </script>
+        </body>
+        </html>
+      `;
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      DropKit.toast('📥 Formatted PDF print window opened! Click "Save as PDF".', 'success');
     }
 
+    function createReelFromPdf() {
+      if (!currentGeneratedBook) return;
+      const topic = currentGeneratedBook.title;
+      switchSection('ai-reels');
+      const topicInput = document.getElementById('custom-reel-topic');
+      if (topicInput) topicInput.value = topic;
+      if (typeof selectReelLanguage === 'function') {
+        const rLang = currentGeneratedBook.language === 'manglish' ? 'manglish' : currentGeneratedBook.language;
+        selectReelLanguage(rLang);
+      }
+      if (typeof generateInfluencerReelScript === 'function') {
+        generateInfluencerReelScript();
+      }
+      DropKit.toast(`🎬 Generated viral Instagram Reel for "${topic}"!`, 'success');
+    }
 
-        /* =========================================================
-       MODULE: AI INFLUENCER REEL & VIRAL HOOK STUDIO (UNLIMITED)
-       ========================================================= */
-    let currentReelLang = 'en';
+    // ============================================================
+    // AI REELS STUDIO JAVASCRIPT LOGIC (ULTRA-SHORT INFLUENCER ENGINE)
+    // ============================================================
     let currentReelData = null;
+    let currentReelLang = 'ml';
+    let currentReelDuration = 'short'; // 'short' (7-12s), 'fast' (15-20s), 'story' (30s)
+    let currentReelBgMode = 'sample'; // 'sample' (user canva mp4), 'custom', 'neon'
     let reelSpeechEnabled = true;
     let reelSimTimer = null;
-    let reelIsPlaying = false;
     let currentSceneIdx = 0;
 
+    const VIRAL_REEL_TRENDS = [
+      {
+        topic: "Sell ₹199 Digital PDF Guides via Direct UPI Without Showing Face",
+        ml_topic: "ഫെയ്സ് കാണിക്കാതെ ₹199 ഡിജിറ്റൽ പുസ്തകങ്ങൾ വിറ്റ് ദിവസേന ₹5,000 ഉണ്ടാക്കാം",
+        manglish_topic: "Face kaanikkathe ₹199 PDF guides direct UPI vazhi sell cheyyan ulla secret",
+        cat: "Marketing & Growth"
+      },
+      {
+        topic: "Freelancers: Stop Charging Hourly, Sell Micro-Blueprints Instead",
+        ml_topic: "ഫ്രീലാൻസർമാർ മണിക്കൂറിന് പണം വാങ്ങുന്നത് നിർത്തി ഡിജിറ്റൽ ബ്ലൂപ്രിന്റ് വിൽക്കൂ",
+        manglish_topic: "Freelancers hourly charge cheyyunnath stop cheyyu, packaged PDFs sell cheyyu",
+        cat: "Business & Freelance"
+      },
+      {
+        topic: "How One Instagram Reel Generated 420 Direct UPI Orders in 24 Hours",
+        ml_topic: "ഒരൊറ്റ ഇൻസ്റ്റാഗ്രാം റീൽ വഴി 24 മണിക്കൂറിൽ 420 UPI ഓർഡറുകൾ വന്ന രഹസ്യം",
+        manglish_topic: "Single Instagram Reel vazhi 24 hours il 420 direct orders vanne engane?",
+        cat: "SaaS & Tech"
+      },
+      {
+        topic: "Kerala Creators: Avoid Gateway 3% Deductions with Dynamic UPI QR",
+        ml_topic: "ഗേറ്റ്‌വേ കമ്മീഷനുകൾ ഇല്ലാതെ 100% പണവും നേരിട്ട് ബാങ്കിലേക്ക് എത്തുന്ന വഴി",
+        manglish_topic: "Gateways inte 3% cuts illathe full amount direct bank accountil edukkaam",
+        cat: "Finance & Tax"
+      }
+    ];
+
     function initAiReelStudio() {
-      if (!currentReelData) {
-        generateViralReel();
+      const topicInput = document.getElementById('custom-reel-topic');
+      if (topicInput && !topicInput.value) {
+        pickRandomViralReelTopic();
       }
+      generateInfluencerReelScript();
     }
 
-    function toggleReelSpeech() {
-      reelSpeechEnabled = !reelSpeechEnabled;
-      const icon = document.getElementById('speech-icon');
-      const text = document.getElementById('speech-text');
-      if (icon) icon.textContent = reelSpeechEnabled ? '🔊' : '🔇';
-      if (text) text.textContent = reelSpeechEnabled ? 'Voiceover ON' : 'Muted';
-      if (!reelSpeechEnabled && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
+    function pickRandomViralReelTopic() {
+      const idx = Math.floor(Math.random() * VIRAL_REEL_TRENDS.length);
+      const item = VIRAL_REEL_TRENDS[idx];
+      const topicEl = document.getElementById('custom-reel-topic');
+      if (topicEl) {
+        if (currentReelLang === 'ml') topicEl.value = item.ml_topic;
+        else if (currentReelLang === 'manglish') topicEl.value = item.manglish_topic;
+        else topicEl.value = item.topic;
       }
-      DropKit.toast(`Speech audio: ${reelSpeechEnabled ? 'ENABLED' : 'MUTED'}`, 'info');
+      DropKit.toast('🎲 1-Click Viral Trend selected!', 'info');
+      generateInfluencerReelScript();
     }
 
-    function setReelLang(lang) {
+    function syncReelTopicFromCatalog(val) {
+      if (!val) return;
+      const topicEl = document.getElementById('custom-reel-topic');
+      if (topicEl) topicEl.value = val;
+      generateInfluencerReelScript();
+    }
+
+    function selectReelDuration(dur) {
+      currentReelDuration = dur;
+      ['short', 'fast', 'story'].forEach(d => {
+        const btn = document.getElementById(`dur-${d}`);
+        if (btn) {
+          if (d === dur) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+      generateInfluencerReelScript();
+    }
+
+    function selectReelLanguage(lang) {
       currentReelLang = lang;
-      ['en', 'ml', 'hi', 'ar'].forEach(l => {
-        const btn = document.getElementById(`reel-lang-${l}`);
+      ['ml', 'manglish', 'en', 'hi', 'ta', 'ar'].forEach(l => {
+        const btn = document.getElementById(`btn-rlang-${l}`);
         if (btn) {
           if (l === lang) btn.classList.add('active');
           else btn.classList.remove('active');
         }
       });
-      generateViralReel();
+      generateInfluencerReelScript();
     }
 
-    function syncReelTopic(val) {
-      generateViralReel();
-    }
-
-    function updateReelAesthetic(style) {
-      const bg = document.getElementById('reel-sim-bg');
-      const promptEl = document.getElementById('reel-ai-prompt');
-      
-      const aesthetics = {
-        'dark-neon': {
-          grad: 'linear-gradient(180deg, #181B34 0%, #0B0D1B 100%)',
-          prompt: 'Cinematic 9:16 vertical video of modern Indian founder at aesthetic dark wood desk, warm orange ambient neon rim lighting, typing on MacBook showing code blueprints, moody Lo-Fi bokeh, 4K 60fps photorealistic.'
-        },
-        'cafe-lofi': {
-          grad: 'linear-gradient(180deg, #2D1D16 0%, #150E0B 100%)',
-          prompt: 'Aesthetic 9:16 vertical video in a sunlit boutique coffee shop, steam rising from ceramic cup, iPad displaying clean digital PDF book layout, warm cinematic aesthetic, ultra-realistic.'
-        },
-        'screenshare': {
-          grad: 'linear-gradient(180deg, #0E1D2D 0%, #07101B 100%)',
-          prompt: 'Sleek screen recording showing real-time UPI credit dashboard, animated notification banners dropping from top, cursor clicking 1-click dynamic QR checkout, high contrast dark UI.'
-        },
-        'splitscreen': {
-          grad: 'linear-gradient(180deg, #251230 0%, #0D0613 100%)',
-          prompt: 'Split-screen 9:16 vertical reel: top half shows talking head creator speaking urgently with bold yellow subtitles, bottom half shows fast-scrolling pages of digital playbook.'
+    function selectReelBgMode(mode) {
+      currentReelBgMode = mode;
+      ['sample', 'custom', 'neon'].forEach(m => {
+        const btn = document.getElementById(`bg-mode-${m}`);
+        if (btn) {
+          if (m === mode) btn.classList.add('active');
+          else btn.classList.remove('active');
         }
+      });
+
+      const video = document.getElementById('reel-sim-video');
+      const fileInput = document.getElementById('custom-bg-video-input');
+
+      if (mode === 'sample') {
+        if (video) {
+          video.style.display = 'block';
+          video.src = '/assets/sample-reel.mp4';
+          video.play().catch(function() {});
+        }
+        DropKit.toast('🎥 Playing uploaded Canva sample reel video', 'info');
+      } else if (mode === 'custom') {
+        if (fileInput) fileInput.click();
+      } else if (mode === 'neon') {
+        if (video) {
+          video.style.display = 'none';
+        }
+        DropKit.toast('🎨 Switched to animated Motion Neon Canvas background', 'info');
+      }
+    }
+
+    function handleCustomBgVideoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const video = document.getElementById('reel-sim-video');
+      if (video) {
+        const url = URL.createObjectURL(file);
+        video.src = url;
+        video.style.display = 'block';
+        video.play().catch(function() {});
+        DropKit.toast(`📁 Custom video "${file.name}" loaded into Reel simulator!`, 'success');
+      }
+    }
+
+    function generateInfluencerReelScript() {
+      const topicInput = document.getElementById('custom-reel-topic')?.value?.trim();
+      const topic = topicInput || "₹199 Digital Product Blueprint";
+
+      let scenes = [];
+      let quickVo = "";
+      let timingStr = "";
+
+      if (currentReelDuration === 'short') {
+        timingStr = "⚡ 7-12s Ultra-Short Viral Retention Loop";
+        if (currentReelLang === 'ml') {
+          quickVo = `ഈ ഒരൊറ്റ വഴി അറിഞ്ഞാൽ ₹199 രൂപയ്ക്ക് ഡിജിറ്റൽ പുസ്തകങ്ങൾ വിറ്റ് ദിവസേന ₹5,000 നേരിട്ട് നിങ്ങളുടെ UPI-ലേക്ക് നേടാം. ലിങ്കിനായി DROP എന്ന് കമന്റ് ചെയ്യൂ!`;
+          scenes = [
+            {
+              name: "Stop Scroll Hook",
+              time: "0:00 - 0:03",
+              text: "നിങ്ങൾ ഈ രഹസ്യം അറിഞ്ഞോ?",
+              vo: "ഈ ഒരൊറ്റ വഴി അറിഞ്ഞാൽ...",
+              directions: "Quick zoom into screen showing live UPI credit notification"
+            },
+            {
+              name: "Value / Proof",
+              time: "0:03 - 0:07",
+              text: "₹199 വിറ്റ് ദിവസേന ₹5,000 ബാങ്കിലേക്ക്!",
+              vo: "₹199 രൂപയ്ക്ക് ഡിജിറ്റൽ പുസ്തകങ്ങൾ വിറ്റ് ദിവസേന ₹5,000 നേരിട്ട് UPI-ലേക്ക്!",
+              directions: "Flash clean phone screen with PhonePe transaction tick"
+            },
+            {
+              name: "ManyChat CTA",
+              time: "0:07 - 0:10",
+              text: "Comment 'DROP' for Link 👇",
+              vo: "ലിങ്കിനായി DROP എന്ന് താഴെ കമന്റ് ചെയ്യൂ!",
+              directions: "Pointing to comments with bold yellow animated arrow"
+            }
+          ];
+        } else if (currentReelLang === 'manglish') {
+          quickVo = `Ethra aalkkar ith ariyaathe samayam kalayunnu! ₹199 PDF guides sell cheythu daily ₹5,000 direct bankil edukkaam. Full guide venamenkil comment DROP!`;
+          scenes = [
+            {
+              name: "Stop Scroll Hook",
+              time: "0:00 - 0:03",
+              text: "Stop Wasting Time in 2026...",
+              vo: "Ethra aalkkar ith ariyaathe samayam kalayunnu!",
+              directions: "Direct eye contact, rapid zoom into phone screen"
+            },
+            {
+              name: "Value / Proof",
+              time: "0:03 - 0:07",
+              text: "Daily ₹5,000 Direct UPI Credit!",
+              vo: "₹199 PDF guides sell cheythu daily ₹5,000 direct bankil edukkaam.",
+              directions: "Show instant ₹199 UPI popups"
+            },
+            {
+              name: "ManyChat CTA",
+              time: "0:07 - 0:10",
+              text: "Comment 'DROP' Below 👇",
+              vo: "Full guide venamenkil comment DROP, njan link DM cheyyaam!",
+              directions: "Swipe up animation pointing to comment box"
+            }
+          ];
+        } else if (currentReelLang === 'hi') {
+          quickVo = `बिना किसी जटिलता के ₹199 में डिजिटल उत्पाद बेचकर रोज़ाना ₹5,000 सीधे बैंक में पाएं। लिंक के लिए अभी DROP कमेंट करें!`;
+          scenes = [
+            {
+              name: "Stop Scroll Hook",
+              time: "0:00 - 0:03",
+              text: "क्या आप यह जानते हैं?",
+              vo: "बिना किसी झंझट के...",
+              directions: "Fast camera push into phone showing credit"
+            },
+            {
+              name: "Value / Proof",
+              time: "0:03 - 0:07",
+              text: "रोज़ाना ₹5,000 सीधे यूपीआई में!",
+              vo: "₹199 में डिजिटल उत्पाद बेचकर रोज़ाना ₹5,000 सीधे बैंक में पाएं!",
+              directions: "Show dynamic UPI QR scanning"
+            },
+            {
+              name: "ManyChat CTA",
+              time: "0:07 - 0:10",
+              text: "कमेंट करें 'DROP' 👇",
+              vo: "लिंक के लिए अभी नीचे DROP कमेंट करें!",
+              directions: "Call to action with glowing Instagram button"
+            }
+          ];
+        } else {
+          // English
+          quickVo = `Stop selling your time hourly. Package your knowledge into a ₹199 digital guide and collect direct UPI payments daily. Comment DROP for instant access!`;
+          scenes = [
+            {
+              name: "Stop Scroll Hook",
+              time: "0:00 - 0:03",
+              text: "Stop Selling Time Hourly...",
+              vo: "Stop selling your time hourly.",
+              directions: "High-contrast text flash with screen tap"
+            },
+            {
+              name: "Value / Proof",
+              time: "0:03 - 0:07",
+              text: "₹199 Digital Product &bull; Daily UPI Cash",
+              vo: "Package your knowledge into a ₹199 digital guide and collect direct payments daily.",
+              directions: "Display clean DropKit checkout and payment screenshot upload"
+            },
+            {
+              name: "ManyChat CTA",
+              time: "0:07 - 0:10",
+              text: "Comment 'DROP' Below 👇",
+              vo: "Comment DROP below and I'll DM you the complete blueprint!",
+              directions: "Pointing to comments with pulsing ManyChat badge"
+            }
+          ];
+        }
+      } else {
+        // Fast 15-20s or Story 30s
+        timingStr = currentReelDuration === 'fast' ? "⏱️ 15-20s Fast Conversion" : "🎬 30s Story & Proof";
+        if (currentReelLang === 'ml' || currentReelLang === 'manglish') {
+          quickVo = `കേരളത്തിൽ ഫെയ്സ് കാണിക്കാതെ ഡിജിറ്റൽ പ്രൊഡക്റ്റുകൾ വിറ്റ് ലക്ഷങ്ങൾ ഉണ്ടാക്കുന്ന സീക്രട്ട് അറിയാമോ? വെറും ₹199 വിലയുള്ള പിഡിഎഫ് ഗൈഡുകൾ ഉണ്ടാക്കി ഇൻസ്റ്റാഗ്രാം വഴി ഡയറക്റ്റ് ബാങ്കിലേക്ക് പണം എത്തിക്കാം. ലിങ്ക് വേണമെങ്കിൽ DROP എന്ന് കമന്റ് ചെയ്യൂ!`;
+          scenes = [
+            {
+              name: "Hook & Curiosity",
+              time: "0:00 - 0:04",
+              text: "ഫെയ്സ് കാണിക്കാതെ വരുമാനം!",
+              vo: "കേരളത്തിൽ ഫെയ്സ് കാണിക്കാതെ ഡിജിറ്റൽ പ്രൊഡക്റ്റുകൾ വിറ്റ് വരുമാനം ഉണ്ടാക്കുന്ന സീക്രട്ട് അറിയാമോ?",
+              directions: "Dark aesthetic tech background with dynamic glow"
+            },
+            {
+              name: "Mechanism Reveal",
+              time: "0:04 - 0:10",
+              text: "₹199 PDF &bull; 0% Gateway Cuts",
+              vo: "വെറും ₹199 വിലയുള്ള പിഡിഎഫ് ഗൈഡുകൾ ഉണ്ടാക്കി ഇൻസ്റ്റാഗ്രാം വഴി ഡയറക്റ്റ് ബാങ്കിലേക്ക് പണം എത്തിക്കാം.",
+              directions: "Showcase automated PDF cover and direct QR payment"
+            },
+            {
+              name: "Social Proof",
+              time: "0:10 - 0:15",
+              text: "ദിവസേന ₹5,000+ UPI Credit",
+              vo: "യാതൊരു ഗേറ്റ്‌വേ കമ്മീഷനും ഇല്ലാതെ 100% പണവും നേരിട്ട് ബാങ്കിലേക്ക്!",
+              directions: "Scroll through verified orders ledger"
+            },
+            {
+              name: "ManyChat DM Close",
+              time: "0:15 - 0:20",
+              text: "Comment 'DROP' for Link 👇",
+              vo: "ഈ ഗൈഡിന്റെ ലിങ്ക് സൗജന്യമായി ഇൻസ്റ്റാഗ്രാം ഡിഎം വഴി ലഭിക്കാൻ താഴെ DROP എന്ന് കമന്റ് ചെയ്യൂ!",
+              directions: "Pointing to comment box with high-visibility banner"
+            }
+          ];
+        } else {
+          quickVo = `Here is how creators are generating ₹1,00,000/month selling digital micro-assets without showing face or paying high fees. Comment DROP below to get the full step-by-step PDF in your DMs!`;
+          scenes = [
+            {
+              name: "Hook & Curiosity",
+              time: "0:00 - 0:04",
+              text: "Zero Face &bull; Zero Gateway Fees",
+              vo: "Here is how creators are generating recurring revenue without showing face.",
+              directions: "Fast-cut creator workspace overview"
+            },
+            {
+              name: "Mechanism Reveal",
+              time: "0:04 - 0:10",
+              text: "₹199 Digital Product Engine",
+              vo: "Sell ₹199 micro-playbooks with direct Dynamic UPI QR checkout.",
+              directions: "Display instant QR generation"
+            },
+            {
+              name: "ManyChat DM Close",
+              time: "0:10 - 0:15",
+              text: "Comment 'DROP' Below 👇",
+              vo: "Comment DROP below and my bot will DM you the instant link!",
+              directions: "Call to action with pulsing arrow"
+            }
+          ];
+        }
+      }
+
+      const captionText = `Stop sleeping on digital products in 2026. 🚀
+
+Most creators think you need 100k followers or complicated software to sell online. The truth? You just need ONE high-value ₹199 PDF playbook and a direct UPI checkout that drops cash directly into your merchant account without 3% gateway deductions.
+
+💬 Comment "DROP" below and I'll DM you the exact blueprint instantly!
+
+#DropKit #DigitalProducts #KeralaCreators #MalayalamReels #CreatorEconomy #PassiveIncome #UPICommerce #ManyChatAutomation`;
+
+      currentReelData = {
+        topic: topic,
+        timing: timingStr,
+        quick_vo: quickVo,
+        scenes: scenes,
+        caption: captionText
       };
 
-      const sel = aesthetics[style] || aesthetics['dark-neon'];
-      if (bg) bg.style.background = sel.grad;
-      if (promptEl) promptEl.textContent = sel.prompt;
-    }
+      // Update Quick Voiceover Card
+      const voBox = document.getElementById('quick-voiceover-text');
+      if (voBox) voBox.textContent = `"${quickVo}"`;
 
-    function generateViralReel() {
-      const prodTitle = document.getElementById('reel-product-select')?.value || "SaaS Growth Engine: 0 to ₹10 Lakhs MRR";
-      const trigger = document.getElementById('reel-hook-style')?.value || "secret";
-      const aesthetic = document.getElementById('reel-aesthetic')?.value || "dark-neon";
-
-      const INFLUENCER_REEL_SCRIPTS = {
-        en: {
-          secret: {
-            hook: "GURUS ARE LYING TO YOU",
-            subtitle: "What 99% of digital creators will NEVER admit about making money online.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "Pattern Interrupt / Hook",
-                directions: "[Look dead into the lens. Whisper the first sentence, then snap fingers aggressively]",
-                text: "GURUS ARE LYING TO YOU!",
-                vo: "Stop scrolling. If you're selling digital products in 2026, here is what the top 1% won't tell you."
-              },
-              {
-                time: "3-10s",
-                name: "The Tension & Shock",
-                directions: "[Cut to screen recording of abandoned cart analytics. Point directly at 85% drop-off]",
-                text: "THE CHECKOUT TRAP",
-                vo: "You think your product is bad? No. You're making people fill 12 fields and wait for OTPs. They leave before paying."
-              },
-              {
-                time: "10-21s",
-                name: "The Breakthrough Proof",
-                directions: "[Hold up smartphone displaying DropKit Direct UPI QR. Real bank notification pops up]",
-                text: "1-SCAN ₹199 UNLOCK",
-                vo: "With this 1-page playbook and Direct UPI QR, customers scan and download in 5 seconds flat. 0% gateway fee."
-              },
-              {
-                time: "21-30s",
-                name: "Hypnotic ManyChat CTA",
-                directions: "[Point directly down at comments. Flash text on screen with glowing orange outline]",
-                text: 'COMMENT "DROP" FOR LINK',
-                vo: "Comment 'DROP' below right now and my automation will send you the secret ₹199 blueprint before the price increases."
-              }
-            ],
-            caption: `The biggest secret in digital products right now: Eliminate the checkout friction. ⚡\n\nMost founders lose 80% of buyers on tedious forms. Switch to Direct UPI dynamic QR.\n\n💬 Comment "DROP" below and I\'ll DM you the exact step-by-step ₹199 scaling playbook instantly!\n\n#digitalproducts #indiehackers #saasgrowth #creatoreconomy #onlinebusiness2026`
-          },
-          proof: {
-            hook: "MADE ₹84,200 IN 14 DAYS",
-            subtitle: "From a single ₹199 PDF playbook without paid ads or thousands of followers.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "Proof Hook",
-                directions: "[Hold phone displaying real verified bank statement with ₹84,200 total]",
-                text: "₹84,200 IN 14 DAYS",
-                vo: "I didn't run paid ads, and I don't have 100k followers. Here is the exact proof."
-              },
-              {
-                time: "3-10s",
-                name: "The Framework",
-                directions: "[Fast B-roll typing on MacBook, show the 5 chapters on screen]",
-                text: "THE ₹199 MICRO-ASSET",
-                vo: "Instead of building a 6-month course nobody finishes, I created this high-impact 30-page tactical blueprint."
-              },
-              {
-                time: "10-21s",
-                name: "Frictionless Engine",
-                directions: "[Show live phone screen with UPI credit notifications popping up]",
-                text: "INSTANT BANK CREDIT",
-                vo: "Every sale goes straight to my bank account instantly via UPI. No 3-day gateway hold, 0% platform cuts."
-              },
-              {
-                time: "21-30s",
-                name: "ManyChat CTA",
-                directions: "[Lean in close, smile, point down]",
-                text: 'COMMENT "DROP" NOW',
-                vo: "Comment 'DROP' below and I'll DM you the full blueprint so you can replicate this today."
-              }
-            ],
-            caption: `Proof over promises. 📈\n\nHow to turn your knowledge into a ₹199 micro-asset that generates daily cashflow via UPI.\n\n💬 Comment "DROP" below for instant DM delivery!\n\n#digitalproducts #solofounder #sidehustleindia #growthblueprint`
-          },
-          interrupt: {
-            hook: "STOP SELLING ₹0 FREEBIES!",
-            subtitle: "Nobody values free PDFs. Sell high-leverage ₹199 playbooks instead.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "Pattern Interrupt",
-                directions: "[Slap desk, high urgency, direct eye contact]",
-                text: "STOP GIVING AWAY FREEBIES!",
-                vo: "Stop giving away useless free PDFs. You are killing your authority and attracting zero buyers."
-              },
-              {
-                time: "3-10s",
-                name: "Psychological Shift",
-                directions: "[Cut to graphic showing paid customers convert 12x higher than free leads]",
-                text: "PRICE BUILDS RESPECT",
-                vo: "When people pay even ₹199, they actually read the material, get results, and thank you for it."
-              },
-              {
-                time: "10-21s",
-                name: "The Solution",
-                directions: "[Show DropKit PDF cover and 1-click checkout]",
-                text: "HIGH-LEVERAGE BLUEPRINT",
-                vo: "Package your best execution templates into a ₹199 guide and deliver it frictionlessly through DropKit."
-              },
-              {
-                time: "21-30s",
-                name: "ManyChat CTA",
-                directions: "[Point down urgently]",
-                text: 'TYPE "DROP" IN COMMENTS',
-                vo: "Type 'DROP' below and I'll send you the exact playbook template to launch yours by tomorrow."
-              }
-            ],
-            caption: `Freebies are dead. 🚨 Paid micro-products are the future.\n\n💬 Comment "DROP" below and our bot will instantly send you the launch blueprint in DMs!\n\n#buildinpublic #solopreneur #digitalassets #makemoneyonline`
-          },
-          urgency: {
-            hook: "PRICE JUMPS AT MIDNIGHT",
-            subtitle: "Only 50 copies allocated at ₹199 before the catalog price resets to ₹999.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "Urgency Hook",
-                directions: "[Hold fingers up showing '50 copies', urgent tone]",
-                text: "PRICE JUMPS AT MIDNIGHT!",
-                vo: "If you're watching this reel, you have less than 6 hours before this playbook jumps from ₹199 to ₹999."
-              },
-              {
-                time: "3-10s",
-                name: "What's Inside",
-                directions: "[Flip through the 5 chapters, highlight actionable checklists]",
-                text: "COMPLETE FOUNDER SOPs",
-                vo: "Inside are the exact frameworks, email templates, and automated sales scripts used by six-figure founders."
-              },
-              {
-                time: "10-21s",
-                name: "Instant Delivery",
-                directions: "[Show dynamic QR code scan -> immediate PDF unlock]",
-                text: "UNLOCK IN 5 SECONDS",
-                vo: "Scan the QR, pay ₹199 via UPI, and the encrypted PDF downloads immediately to your phone."
-              },
-              {
-                time: "21-30s",
-                name: "Final CTA",
-                directions: "[Urgently tap bottom of screen]",
-                text: 'COMMENT "DROP" BEFORE IT EXPIRES',
-                vo: "Comment 'DROP' below now and claim your copy before the price increases tonight."
-              }
-            ],
-            caption: `Time-sensitive founder allocation. ⏳\n\nOnly 50 copies at ₹199. After that, it moves to ₹999.\n\n💬 Comment "DROP" to get the link sent directly to your DMs right now!\n\n#founders #specialoffer #digitalproducts #upiindia`
-          }
-        },
-        ml: {
-          secret: {
-            hook: "ആരും പറയാത്ത വലിയ രഹസ്യം!",
-            subtitle: "ഓൺലൈനിൽ ഡിജിറ്റൽ പ്രൊഡക്റ്റുകൾ വിറ്റ് മാസം ₹50,000 ഉണ്ടാക്കാൻ ഫോളോവേഴ്‌സ് വേണ്ട.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "സ്റ്റോപ്പ്-സ്ക്രോൾ ഹുക്ക്",
-                directions: "[ക്യാമറയിലേക്ക് നോക്കി വിരൽ ചൂണ്ടി രഹസ്യം പറയുന്ന ടോണിൽ തുടങ്ങുക]",
-                text: "ഇത് ആരും നിങ്ങളോട് പറയില്ല!",
-                vo: "ഇൻസ്റ്റാഗ്രാമിൽ വെറുതെ റീൽസ് കണ്ട് സമയം കളയുകയാണോ? ഈ രഹസ്യം ശ്രദ്ധിച്ചു കേൾക്കൂ."
-              },
-              {
-                time: "3-10s",
-                name: "പ്രശ്നം തുറന്നുകാട്ടുന്നു",
-                directions: "[ഫോണിലെ സങ്കീർണ്ണമായ ചെക്ക്ഔട്ട് ഫോമുകൾ കാണിച്ച് ഒഴിവാക്കാൻ പറയുക]",
-                text: "വെബ്സൈറ്റും കോഡിംഗും വേണ്ട!",
-                vo: "വലിയ വെബ്സൈറ്റോ മാസങ്ങളുടെ അധ്വാനമോ ആവശ്യമില്ല. ഒരൊറ്റ പേജ് ₹199 PDF മതി."
-              },
-              {
-                time: "10-21s",
-                name: "ഡ്രോപ്പ്കിറ്റ് സൊല്യൂഷൻ",
-                directions: "[ഡ്രോപ്പ്കിറ്റ് ഡയറക്റ്റ് UPI ക്യുആർ കോഡ് സ്കാൻ ചെയ്തു കാട്ടുക. ഫോൺപേ അലർട്ട് തെളിയുന്നു]",
-                text: "ഡയറക്റ്റ് UPI സ്കാൻ & പേ (₹199)",
-                vo: "ഡ്രോപ്പ്കിറ്റ് വഴി ആളുകൾ ഒരു QR കോഡ് സ്കാൻ ചെയ്താൽ പൈസ നേരെ നിങ്ങളുടെ ബാങ്കിലേക്ക് വരും, PDF അവർക്ക് ഉടൻ ലഭിക്കും."
-              },
-              {
-                time: "21-30s",
-                name: "മെനിചാറ്റ് കോൾ-ടു-ആക്ഷൻ",
-                directions: "[കമന്റ് ബോക്സിലേക്ക് താഴേക്ക് വിരൽ ചൂണ്ടുക]",
-                text: 'കമന്റ് ചെയ്യൂ "DROP"',
-                vo: 'താഴെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ. ഞാൻ ഇപ്പോൾ തന്നെ ഇതിന്റെ പൂർണ്ണ വിവരങ്ങൾ നിങ്ങളുടെ DM ലേക്ക് അയക്കാം!'
-              }
-            ],
-            caption: `ഡിജിറ്റൽ പ്രൊഡക്റ്റുകൾ വിൽക്കാൻ ആഗ്രഹിക്കുന്ന മലയാളി സുഹൃത്തുക്കൾക്കായി ഒരു അടിപൊളി തന്ത്രം! 🚀\n\nതാഴെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ, ഞാൻ ഉടൻ തന്നെ ഈ ഗൈഡിന്റെ ലിങ്ക് നിങ്ങളുടെ ഇൻസ്റ്റാഗ്രാം DM ലേക്ക് അയക്കാം!\n\n#keralabusiness #malayalamreel #digitalmarketingmalayalam #malayalamcreator #onlineincomekerala`
-          },
-          proof: {
-            hook: "14 ദിവസത്തിൽ ₹84,200 വരുമാനം!",
-            subtitle: "വെറും ₹199-ന്റെ ഒറ്റ ബുക്ക് വിറ്റ് ബാങ്കിലേക്ക് കിട്ടിയ ലൈവ് പ്രൂഫ് ഇതാ.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "പ്രൂഫ് ഹുക്ക്",
-                directions: "[ബാങ്ക് സ്റ്റേറ്റ്മെന്റ് അല്ലെങ്കിൽ UPI ക്രെഡിറ്റ് കാണിക്കുക]",
-                text: "14 ദിവസത്തിൽ ₹84,200!",
-                vo: "പരസ്യങ്ങൾക്ക് കാശ് മുടക്കാതെ, സ്വന്തമായി ഉണ്ടാക്കിയ ഡിജിറ്റൽ പ്രൊഡക്റ്റിൽ നിന്നുള്ള വരുമാനമാണിത്."
-              },
-              {
-                time: "3-10s",
-                name: "തന്ത്രം വിശദീകരിക്കുന്നു",
-                directions: "[ലാപ്‌ടോപ്പിലെ ഗൈഡ് തുറന്നു കാട്ടുക]",
-                text: "₹199 മൈക്രോ-അസറ്റ് സിസ്റ്റം",
-                vo: "ആളുകൾക്ക് ആവശ്യമുള്ള കൃത്യമായ വിവരങ്ങൾ ഒരു ചെറിയ ഗൈഡാക്കി ₹199-ന് നൽകുന്നു."
-              },
-              {
-                time: "10-21s",
-                name: "ഡയറക്റ്റ് ബാങ്ക് ക്രെഡിറ്റ്",
-                directions: "[ഫോൺപേ/ജിപേ അലർട്ടുകൾ സ്ക്രീനിൽ മിന്നുന്നു]",
-                text: "നേരെ നിങ്ങളുടെ ബാങ്കിലേക്ക്",
-                vo: "പെയ്‌മെന്റ് ഗേറ്റ്‌വേ ചാർജുകളില്ല, കാത്തിരിപ്പില്ല. നേരിട്ട് നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് കാശ് വരുന്നു."
-              },
-              {
-                time: "21-30s",
-                name: "മെനിചാറ്റ് CTA",
-                directions: "[ചിരിച്ചുകൊണ്ട് താഴേക്ക് പോയിന്റ് ചെയ്യുക]",
-                text: 'ഇപ്പോൾ തന്നെ "DROP" കമന്റ് ചെയ്യൂ',
-                vo: 'നിങ്ങൾക്കും ഇത് തുടങ്ങണോ? താഴെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ, ലിങ്ക് DM ആയി വരും!'
-              }
-            ],
-            caption: `പ്രൂഫ് കണ്ടോളൂ! 🔥 ആർക്കും ചെയ്യാൻ പറ്റുന്ന ഏറ്റവും സിംപിൾ ഓൺലൈൻ ബിസിനസ്സ് മോഡൽ.\n\n💬 താഴെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ, ലിങ്ക് നിങ്ങളുടെ ഇൻസ്റ്റാഗ്രാം DM ലേക്ക് ഉടൻ ലഭിക്കും!\n\n#keralaentrepreneurs #keralastartups #sideincomekerala #malayalamreels`
-          },
-          interrupt: {
-            hook: "ഫ്രീയായി കൊടുക്കുന്നത് നിർത്തൂ!",
-            subtitle: "ഫ്രീ PDF-കൾ ആരും വായിക്കില്ല. ₹199-ന് കൊടുക്കൂ, ഫലപ്രദമാക്കൂ.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "ഇന്ററപ്റ്റ് ഹുക്ക്",
-                directions: "[മേശപ്പുറത്ത് കൈയടിച്ച് സീരിയസായി ക്യാമറയിലേക്ക് നോക്കുക]",
-                text: "ഫ്രീയായി കൊടുക്കുന്നത് നിർത്തൂ!",
-                vo: "നിങ്ങളുടെ കഴിവും അധ്വാനവും വെറുതെ ഫ്രീയായി കൊടുത്ത് സമയം പാഴാക്കരുത്."
-              },
-              {
-                time: "3-10s",
-                name: "സൈക്കോളജിക്കൽ കാരണം",
-                directions: "[ഗ്രാഫ് കാണിച്ച് വിരൽ ഞൊടിക്കുക]",
-                text: "വിലയുള്ളതിനേ ആളുകൾ ബഹുമാനിക്കൂ",
-                vo: "വെറും ₹199 നൽകി വാങ്ങുന്നവർ മാത്രമേ അത് പൂർണ്ണമായി വായിക്കുകയും റിസൾട്ട് ഉണ്ടാക്കുകയും ചെയ്യൂ."
-              },
-              {
-                time: "10-21s",
-                name: "ഡ്രോപ്പ്കിറ്റ് എളുപ്പം",
-                directions: "[സ്മാർട്ട്ഫോൺ കാണിച്ച് ഡൗൺലോഡ് പ്രക്രിയ കാണിക്കുക]",
-                text: "5 സെക്കൻഡിൽ PDF അൺലോക്ക്",
-                vo: "ഡ്രോപ്പ്കിറ്റ് ഉപയോഗിച്ച് ആർക്കും തങ്ങളുടെ ഫയലുകൾ 5 സെക്കൻഡിൽ സുരക്ഷിതമായി വിൽക്കാം."
-              },
-              {
-                time: "21-30s",
-                name: "മെനിചാറ്റ് CTA",
-                directions: "[താഴേക്ക് ചൂണ്ടി പറയുക]",
-                text: 'കമന്റ് ചെയ്യുക "DROP"',
-                vo: 'തുടങ്ങാൻ ആഗ്രഹമുണ്ടെങ്കിൽ താഴെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ. ഞാൻ സഹായിക്കാം.'
-              }
-            ],
-            caption: `ഫ്രീയായി കൊടുക്കുന്നത് നിർത്തി നിങ്ങളുടെ അറിവിന് വിലയിടൂ! 💡\n\n💬 താഴെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ, ഫുൾ ഡീറ്റെയിൽസ് നിങ്ങളുടെ DM ലേക്ക് അയക്കാം!\n\n#keralabusiness #malayalamcontent #digitalcreatorindia`
-          },
-          urgency: {
-            hook: "ഇന്ന് രാത്രി വില മാറും!",
-            subtitle: "ആദ്യത്തെ 50 പേർക്ക് മാത്രം ₹199, അതിനുശേഷം പ്രൈസ് ₹999 ആകും.",
-            scenes: [
-              {
-                time: "0-3s",
-                name: "അർജൻസി ഹുക്ക്",
-                directions: "[കൈയിൽ വാച്ചിലേക്ക് ചൂണ്ടി അർജന്റ് ടോൺ]",
-                text: "ഇന്ന് രാത്രി വില ₹999 ആകും!",
-                vo: "ഈ റീൽ കാണുന്ന ആദ്യത്തെ 50 പേർക്ക് മാത്രമാണ് ഈ സ്പെഷ്യൽ ₹199 ഓഫർ."
-              },
-              {
-                time: "3-10s",
-                name: "ഉള്ളടക്കം",
-                directions: "[പുസ്തകത്തിന്റെ പേജുകൾ സ്ക്രോൾ ചെയ്തു കാട്ടുക]",
-                text: "കംപ്ലീറ്റ് സ്റ്റെപ്പ്-ബൈ-സ്റ്റെപ്പ് ഗൈഡ്",
-                vo: "മാസം 50,000 രൂപ നേടാനുള്ള പൂർണ്ണ ഗൈഡും റെഡിമെയ്ഡ് ടെംപ്ലേറ്റുകളും ഇതിലുണ്ട്."
-              },
-              {
-                time: "10-21s",
-                name: "തത്സമയ ഡൗൺലോഡ്",
-                directions: "[ക്യുആർ സ്കാൻ ചെയ്ത് ഇൻസ്റ്റൻ്റായി ഫയൽ ഓപ്പൺ ആകുന്നു]",
-                text: "ഇൻസ്റ്റന്റ് UPI ഡൗൺലോഡ്",
-                vo: "UPI വഴി പേ ചെയ്ത് നിമിഷങ്ങൾക്കകം നിങ്ങളുടെ ഫോണിലേക്ക് ഡൗൺലോഡ് ചെയ്യാം."
-              },
-              {
-                time: "21-30s",
-                name: "അവസാന CTA",
-                directions: "[അടിയന്തിരമായി താഴേക്ക് ചൂണ്ടുക]",
-                text: 'ഇപ്പോൾ തന്നെ "DROP" കമന്റ് ചെയ്യൂ',
-                vo: 'ഓഫർ തീരുന്നതിന് മുൻപ് താഴെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ, ലിങ്ക് DM ആയി നേടൂ!'
-              }
-            ],
-            caption: `ലിമിറ്റഡ് ടൈം ഓഫർ! ⏳ ആദ്യത്തെ 50 പേർക്ക് മാത്രം ₹199.\n\n💬 ഇപ്പോൾ തന്നെ "DROP" എന്ന് കമന്റ് ചെയ്യൂ!\n\n#keralaoffers #malayalambusiness #digitalproductsmalayalam`
-          }
-        },
-        hi: {
-          secret: {
-            hook: "गुरु आपसे यह छिपा रहे हैं!",
-            subtitle: "ऑनलाइन डिजिटल उत्पाद बेचकर पैसे कमाने का सबसे बड़ा सीक्रेट।",
-            scenes: [
-              { time: "0-3s", name: "पैटर्न इंटरप्ट", directions: "[कैमरे में सीधे देखें और फुसफुसाएं]", text: "यह सीक्रेट कोई नहीं बताएगा!", vo: "अगर आप 2026 में ऑनलाइन कमाई करना चाहते हैं तो इस रील को ध्यान से देखें।" },
-              { time: "3-10s", name: "समस्या", directions: "[लंबे चेकआउट फॉर्म दिखाकर खारिज करें]", text: "लंबा फॉर्म भरना बंद करो!", vo: "लोग फॉर्म भरते-भरते छोड़ देते हैं। इसलिए 80% बिक्री रुक जाती है।" },
-              { time: "10-21s", name: "समाधान", directions: "[ड्रॉपकिट यूपीआई क्यूआर दिखाकर बैंक अलर्ट दिखाएं]", text: "1-क्लिक डायरेक्ट UPI (₹199)", vo: "ड्रॉपकिट पर ग्राहक सिर्फ एक क्यूआर स्कैन करता है और 5 सेकंड में पीडीएफ पा लेता है।" },
-              { time: "21-30s", name: "मेनीचैट सीटीए", directions: "[कमेंट बॉक्स की ओर इशारा करें]", text: 'कमेंट करें "DROP"', vo: 'नीचे "DROP" कमेंट करें, मैं तुरंत डायरेक्ट लिंक आपके डीएम में भेज दूंगा।' }
-            ],
-            caption: `डिजिटल प्रोडक्ट्स बेचने का सबसे नया और सफल तरीका! 🚀\n\nनीचे "DROP" कमेंट करें और मैं तुरंत डायरेक्ट लिंक आपके डीएम में भेज दूंगा!\n\n#creatorindia #digitalbusiness #onlineincome #reelsindia`
-          }
-        },
-        ar: {
-          secret: {
-            hook: "السر الذي يخفونه عنك!",
-            subtitle: "كيف تحقق مبيعات يومية لمنتجاتك الرقمية بدون تعقيدات.",
-            scenes: [
-              { time: "0-3s", name: "الخطاف الجذاب", directions: "[النظر المباشر للكاميرا مع لفت الانتباه]", text: "توقف عن تضييع وقتك!", vo: "إذا كنت تبيع منتجات رقمية في عام 2026 فهذا السر سيغير كل شيء." },
-              { time: "3-10s", name: "المشكلة", directions: "[إظهار نماذج الدفع الطويلة وترك العملاء لها]", text: "نماذج الدفع الطويلة تقتل المبيعات", vo: "العميل يكره إدخال 10 حقول للحصول على كتاب بسيط." },
-              { time: "10-21s", name: "الحل السريع", directions: "[عرض مسح رمز الاستجابة السريعة السريع والدفع الفوري]", text: "مسح سريع وفتح فوري للملف", vo: "مع نظامنا يكفي مسح الرمز والحصول على الملف خلال ثوانٍ معدودة." },
-              { time: "21-30s", name: "الدعوة للعمل", directions: "[الإشارة للأسفل في التعليقات]", text: 'اكتب "DROP" في التعليقات', vo: 'اكتب كلمة "DROP" في التعليقات وسأرسل لك الرابط المباشر في الخاص فوراً.' }
-            ],
-            caption: `الطريقة الأذكى لبيع المنتجات الرقمية في 2026! 🚀\n\nاكتب كلمة "DROP" في التعليقات وسيقوم البوت بإرسال الرابط المباشر إلى رسائلك الخاصة فوراً!\n\n#تجارة_رقمية #أعمال_أونلاين #منتجات_رقمية`
-          }
-        }
-      };
-
-      const langObj = INFLUENCER_REEL_SCRIPTS[currentReelLang] || INFLUENCER_REEL_SCRIPTS.en;
-      const data = langObj[trigger] || langObj.secret || INFLUENCER_REEL_SCRIPTS.en.secret;
-      currentReelData = data;
-
-      // Update Phone Simulator UI
-      const hookEl = document.getElementById('reel-sim-hook');
-      const subEl = document.getElementById('reel-sim-subtext');
-      const ctaEl = document.getElementById('reel-sim-cta');
-      if (hookEl) hookEl.textContent = `"${data.hook}"`;
-      if (subEl) subEl.textContent = data.subtitle;
-      if (ctaEl) ctaEl.textContent = `💬 ${data.scenes[3].text}`;
-
-      // Update Storyboard Table with Stage Directions
-      const sbEl = document.getElementById('reel-storyboard-content');
-      if (sbEl) {
-        sbEl.innerHTML = data.scenes.map((s, idx) => `
-          <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--dk-border); padding: 0.85rem; border-radius: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-              <span class="badge ${idx === 0 ? 'badge-orange' : (idx === 3 ? 'badge-success' : 'badge-navy')}" style="font-size: 0.7rem;">
-                ${s.time} • ${s.name}
-              </span>
-              <span style="font-size: 0.72rem; color: #10B981; font-weight: 700;">Scene ${idx+1}</span>
+      // Update Storyboard
+      const sbBox = document.getElementById('reel-storyboard-container');
+      if (sbBox) {
+        sbBox.innerHTML = scenes.map((s, i) => `
+          <div style="padding: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+              <span style="font-weight: 700; color: #FF653D; font-size: 0.85rem;">Scene ${i+1}: ${s.name}</span>
+              <span style="font-size: 0.72rem; color: #94A3B8; font-family: monospace;">${s.time}</span>
             </div>
-            <div style="font-size: 0.75rem; color: #F59E0B; margin-bottom: 0.3rem; font-style: italic;">
-              🎭 Acting & Stage Direction: ${s.directions}
+            <div style="font-size: 0.85rem; color: #FFE600; font-weight: 700; margin-bottom: 0.25rem;">
+              📺 Screen: "${s.text}"
             </div>
-            <div style="font-size: 0.85rem; font-weight: 800; color: #FFE600; margin-bottom: 0.25rem;">
-              Text Overlay: "${s.text}"
-            </div>
-            <div style="font-size: 0.82rem; color: #F8FAFC; line-height: 1.4;">
-              🎙️ Spoken Script: <span style="color: #CBD5E1;">"${s.vo}"</span>
+            <div style="font-size: 0.82rem; color: #E2E8F0; line-height: 1.4;">
+              🎙️ Voiceover: "${s.vo}"
             </div>
           </div>
         `).join('');
       }
 
-      updateReelAesthetic(aesthetic);
-      DropKit.toast('⚡ High-Influence Reel Script & Storyboard Generated!', 'success');
+      // Update Initial Scene in Phone Simulator
+      updateSimScene(0);
+
+      DropKit.toast(`✨ Reel storyboard generated for "${topic}"!`, 'success');
+    }
+
+    function updateSimScene(idx) {
+      if (!currentReelData || !currentReelData.scenes[idx]) return;
+      const s = currentReelData.scenes[idx];
+      const tag = document.getElementById('sim-scene-tag');
+      const hook = document.getElementById('sim-hook-banner');
+      const sub = document.getElementById('sim-subtitle-word');
+
+      if (tag) tag.textContent = `Scene ${idx+1}: ${s.name.toUpperCase()}`;
+      if (hook) hook.textContent = `"${s.text}"`;
+      if (sub) sub.textContent = s.vo;
     }
 
     function togglePlayReelSimulation() {
-      const btn = document.getElementById('btn-play-reel');
-      if (reelIsPlaying) {
-        // Pause
-        if (reelSimTimer) clearInterval(reelSimTimer);
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
-        reelIsPlaying = false;
-        if (btn) btn.innerHTML = '<span>▶️</span> Play Influencer Reel';
+      const btn = document.getElementById('btn-play-sim');
+      const video = document.getElementById('reel-sim-video');
+
+      if (reelSimTimer) {
+        clearInterval(reelSimTimer);
+        reelSimTimer = null;
+        if (video) video.pause();
+        if (btn) {
+          btn.innerHTML = '<span>▶️</span> Play Reel';
+          btn.classList.remove('btn-primary');
+          btn.classList.add('btn-outline');
+        }
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        DropKit.toast('⏸️ Paused Reel simulation', 'info');
       } else {
-        // Play
+        if (video) {
+          video.play().catch(function() {});
+        }
+        if (btn) {
+          btn.innerHTML = '<span>⏸️</span> Pause';
+          btn.classList.remove('btn-outline');
+          btn.classList.add('btn-primary');
+        }
         playReelSimulation();
-        reelIsPlaying = true;
-        if (btn) btn.innerHTML = '<span>⏸️</span> Pause Reel';
       }
     }
 
     function playReelSimulation() {
-      if (!currentReelData) return;
-      if (reelSimTimer) clearInterval(reelSimTimer);
-      
-      const badge = document.getElementById('reel-sim-badge');
-      const hook = document.getElementById('reel-sim-hook');
-      const sub = document.getElementById('reel-sim-subtext');
-      const notif = document.getElementById('sim-bank-notif');
-      const notifBuyer = document.getElementById('notif-buyer');
-      const commentBox = document.getElementById('live-floating-comment');
-      const commenter = document.getElementById('live-commenter');
-      const commentText = document.getElementById('live-comment-text');
-      
+      if (!currentReelData || !currentReelData.scenes.length) return;
       const scenes = currentReelData.scenes;
       currentSceneIdx = 0;
 
-      const buyers = ['rahul.sharma@upi', 'ananya.p@okicici', 'kiran.v@paytm', 'deepak.m@upi'];
+      const buyers = ["akhil.k@okaxis", "vishnu.p@paytm", "arun.dev@ibl", "rahul.m@ybl", "sneha.s@oksbi"];
       const comments = [
-        { u: '@vipin.k', t: '"Commented DROP! Check DM 🔥"' },
-        { u: '@ananya_dev', t: '"Just paid ₹199 via GPay! Instant unlock 🚀"' },
-        { u: '@kavya_builds', t: '"Bro where was this guide before?? Gold mine"' },
-        { u: '@arjun.solo', t: '"Commented DROP send me the link please!"' }
+        { u: "@akhil_kerala", t: "DROP 🔥" },
+        { u: "@vishnu_crafts", t: "DROP please send!" },
+        { u: "@arun_freelance", t: "DROP" },
+        { u: "@sneha_design", t: "DROP link" }
       ];
 
       const runStep = () => {
         const s = scenes[currentSceneIdx];
-        if (badge) badge.textContent = `${s.time} • ${s.name.toUpperCase()}`;
+        const tag = document.getElementById('sim-scene-tag');
+        const hook = document.getElementById('sim-hook-banner');
+        const sub = document.getElementById('sim-subtitle-word');
+        const notif = document.getElementById('sim-bank-notif');
+        const notifBuyer = document.getElementById('sim-notif-buyer');
+        const commentBox = document.getElementById('sim-floating-comment');
+        const commenter = document.getElementById('sim-commenter-user');
+        const commentText = document.getElementById('sim-commenter-text');
+
+        if (tag) tag.textContent = `Scene ${currentSceneIdx+1}: ${s.name.toUpperCase()}`;
         if (hook) hook.textContent = `"${s.text}"`;
         if (sub) sub.textContent = s.vo;
 
@@ -5228,13 +5477,14 @@ Protected by 256-Bit Encrypted Dynamic UPI Unlock System.
           const utterance = new SpeechSynthesisUtterance(s.vo);
           if (currentReelLang === 'ml') utterance.lang = 'ml-IN';
           else if (currentReelLang === 'hi') utterance.lang = 'hi-IN';
+          else if (currentReelLang === 'ta') utterance.lang = 'ta-IN';
           else if (currentReelLang === 'ar') utterance.lang = 'ar-SA';
           else utterance.lang = 'en-US';
-          utterance.rate = 1.05;
+          utterance.rate = 1.1; // punchy, fast pace
           window.speechSynthesis.speak(utterance);
         }
 
-        // Scene 2 & 3: Slide down Bank Social Proof Notification
+        // Slide down Bank Notification during Scene 1 or 2
         if (currentSceneIdx === 1 || currentSceneIdx === 2) {
           if (notif) {
             notif.style.transform = 'translateY(0)';
@@ -5244,8 +5494,8 @@ Protected by 256-Bit Encrypted Dynamic UPI Unlock System.
           if (notif) notif.style.transform = 'translateY(-70px)';
         }
 
-        // Scene 3 & 4: Pop Floating Comment
-        if (currentSceneIdx === 2 || currentSceneIdx === 3) {
+        // Pop Floating Comment
+        if (currentSceneIdx >= 1) {
           const c = comments[Math.floor(Math.random() * comments.length)];
           if (commenter) commenter.textContent = `${c.u}:`;
           if (commentText) commentText.textContent = c.t;
@@ -5261,8 +5511,9 @@ Protected by 256-Bit Encrypted Dynamic UPI Unlock System.
       };
 
       runStep();
-      reelSimTimer = setInterval(runStep, 3500);
-      DropKit.toast('▶️ Playing high-converting influencer reel simulation...', 'info');
+      const intervalMs = currentReelDuration === 'short' ? 2600 : 3600;
+      reelSimTimer = setInterval(runStep, intervalMs);
+      DropKit.toast('▶️ Playing ultra-short influencer reel simulation...', 'info');
     }
 
     function popHeartAnimation() {
@@ -5288,46 +5539,57 @@ Protected by 256-Bit Encrypted Dynamic UPI Unlock System.
         heart.remove();
       }, 1300);
 
-      // Increment like count
       const likeEl = document.getElementById('reel-like-count');
       if (likeEl && Math.random() > 0.5) {
-        likeEl.textContent = '48.3K';
+        likeEl.textContent = '48.4K';
       }
+    }
+
+    function toggleReelSpeech() {
+      reelSpeechEnabled = !reelSpeechEnabled;
+      const icon = document.getElementById('speech-icon');
+      if (icon) icon.textContent = reelSpeechEnabled ? '🔊' : '🔇';
+      DropKit.toast(reelSpeechEnabled ? '🔊 Voiceover Speech Audio ON' : '🔇 Voiceover Speech Audio MUTED', 'info');
+    }
+
+    function copyVoiceoverOnly() {
+      if (!currentReelData) return;
+      DropKit.copy(currentReelData.quick_vo, '🎙️ Short Voiceover script copied! Ready for CapCut / ElevenLabs.');
     }
 
     function copyReelScript() {
       if (!currentReelData) return;
+      const topic = document.getElementById('custom-reel-topic')?.value || 'DropKit Digital Product';
       const scriptText = `=====================================================
-INFLUENCER REEL SCRIPT & STAGE DIRECTIONS (${currentReelLang.toUpperCase()})
-Product: ${document.getElementById('reel-product-select')?.value || 'DropKit Digital Product'}
-Hook: "${currentReelData.hook}"
+ULTRA-SHORT INFLUENCER REEL BLUEPRINT (${currentReelLang.toUpperCase()})
+Topic: ${topic}
+Timing: ${currentReelData.timing}
 =====================================================
 
+VOICEOVER SCRIPT (QUICK RECORD):
+"${currentReelData.quick_vo}"
+
+-----------------------------------------------------
+SCENE-BY-SCENE BREAKDOWN:
+-----------------------------------------------------
 ${currentReelData.scenes.map((s, i) => `
 [SCENE ${i+1}: ${s.name} (${s.time})]
-🎭 Stage Directions: ${s.directions}
+🎭 Stage Direction: ${s.directions}
 📺 On-Screen Text (Hormozi Yellow): "${s.text}"
 🎙️ Spoken Voiceover: "${s.vo}"
 `).join('\n')}
 
 =====================================================
-CAPTION & MANYCHAT CTA:
+INSTAGRAM CAPTION & MANYCHAT CTA:
 ${currentReelData.caption}
 =====================================================`;
 
-      DropKit.copy(scriptText, '📋 Full influencer script and stage directions copied!');
+      DropKit.copy(scriptText, '📋 Full script and timing blueprint copied!');
     }
 
     function copyReelCaption() {
       if (!currentReelData) return;
       DropKit.copy(currentReelData.caption, '📋 Reel caption and viral hashtags copied to clipboard!');
-    }
-
-    function copyAiVideoPrompt() {
-      const promptEl = document.getElementById('reel-ai-prompt');
-      if (promptEl) {
-        DropKit.copy(promptEl.textContent.trim(), '🎥 AI video generator prompt copied!');
-      }
     }
 
     function testManyChatTrigger() {
